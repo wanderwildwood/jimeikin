@@ -1,14 +1,15 @@
 # Releasing
 
-One repository, two apps. **Music Box** goes to GitHub. **Music Box K does not**: it is not on
-GitHub in any form (no release, no tag, no asset) and belongs only to the InkApps portal.
+One repository, two apps. **Music Box** goes to the public GitHub releases. **Music Box K** is never on
+the public releases page: its builds live only in the PRIVATE repository `wanderwildwood/jimeikin-k`
+(see the end of this file) and go to the InkApps portal.
 
 | | Music Box | Music Box K |
 |---|---|---|
 | flavour | `full` | `store` |
 | application id | `com.wanderwildwood.jimeikin` | `com.wanderwildwood.jimeikin.k` |
 | version line | 2.18.x (`defaultConfig`) | 1.0.x (in the `store` flavour) |
-| goes to | GitHub release `v<version>` | the InkApps portal, by hand |
+| goes to | public GitHub release `v<version>` | private repo `jimeikin-k` release, then the InkApps portal by hand |
 | built APK | `app/build/outputs/apk/full/release/jimeikin-full-<v>.apk` | `app/build/outputs/apk/store/release/jimeikin-k-<v>.apk` |
 
 Both are signed with the key in `signing/` (never in the repo). Builds are local:
