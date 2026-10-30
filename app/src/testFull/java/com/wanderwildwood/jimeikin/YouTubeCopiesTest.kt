@@ -18,7 +18,7 @@ class YouTubeCopiesTest {
         durationMillis = millis,
         trackNumber = track,
         discNumber = 1,
-        sourceType = "YOUTUBE",
+        sourceType = "ONLINE_SEARCH",
         audioUri = id,
         album = "Low Tide",
     )
@@ -30,7 +30,7 @@ class YouTubeCopiesTest {
             artist = artist,
             durationMillis = millis,
             trackNumber = track,
-            sourceType = "YOUTUBE_DOWNLOAD",
+            sourceType = "ONLINE_SEARCH_DOWNLOAD",
             audioUri = "file:///music/$name.m4a",
             album = "Low Tide",
         )

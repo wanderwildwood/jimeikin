@@ -27,16 +27,16 @@ import com.wanderwildwood.jimeikin.R
  */
 enum class Origin(val streams: Boolean) {
     SERVER(streams = true),
-    YOUTUBE(streams = true),
+    ONLINE_SEARCH(streams = true),
     SERVER_DOWNLOAD(streams = false),
-    YOUTUBE_DOWNLOAD(streams = false),
+    ONLINE_SEARCH_DOWNLOAD(streams = false),
 }
 
 fun originOf(sourceType: String?): Origin? = when (sourceType) {
     "SUBSONIC" -> Origin.SERVER
-    "YOUTUBE" -> Origin.YOUTUBE
+    "ONLINE_SEARCH" -> Origin.ONLINE_SEARCH
     "SUBSONIC_DOWNLOAD" -> Origin.SERVER_DOWNLOAD
-    "YOUTUBE_DOWNLOAD" -> Origin.YOUTUBE_DOWNLOAD
+    "ONLINE_SEARCH_DOWNLOAD" -> Origin.ONLINE_SEARCH_DOWNLOAD
     else -> null
 }
 
@@ -46,7 +46,7 @@ fun originOf(sourceType: String?): Origin? = when (sourceType) {
  */
 fun originOf(sourceTypes: Collection<String>): Origin? {
     val origins = sourceTypes.mapNotNull { originOf(it) }.toSet()
-    return listOf(Origin.SERVER, Origin.YOUTUBE, Origin.SERVER_DOWNLOAD, Origin.YOUTUBE_DOWNLOAD)
+    return listOf(Origin.SERVER, Origin.ONLINE_SEARCH, Origin.SERVER_DOWNLOAD, Origin.ONLINE_SEARCH_DOWNLOAD)
         .firstOrNull { it in origins }
 }
 
@@ -55,9 +55,9 @@ fun OriginMark(origin: Origin) {
     val description = stringResource(
         when (origin) {
             Origin.SERVER -> R.string.origin_server
-            Origin.YOUTUBE -> R.string.origin_online
+            Origin.ONLINE_SEARCH -> R.string.origin_online
             Origin.SERVER_DOWNLOAD -> R.string.origin_server_download
-            Origin.YOUTUBE_DOWNLOAD -> R.string.origin_online_download
+            Origin.ONLINE_SEARCH_DOWNLOAD -> R.string.origin_online_download
         },
     )
     Row(verticalAlignment = Alignment.CenterVertically) {

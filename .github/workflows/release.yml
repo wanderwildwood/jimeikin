@@ -19,6 +19,10 @@ concurrency:
 
 jobs:
   build-and-release:
+    # Music Box K (the store flavour) is never built or published from here: it goes to the
+    # InkApps portal only. Its tags would be k-v*, which the trigger above does not match; this
+    # also refuses a hand-started run on one.
+    if: ${{ !startsWith(github.ref_name, 'k-') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -58,8 +62,16 @@ jobs:
             echo "KEY_PASSWORD=$KEY_PASSWORD"
           } > signing/signing.properties
 
+      # Only the full flavour is ever built here, and nothing named for K may reach the upload.
       - name: Build release APK
         run: ./gradlew :app:assembleFullRelease
+
+      - name: Refuse anything of Music Box K
+        run: |
+          if find . -name 'jimeikin-k*' -not -path './.git/*' | grep -q .; then
+            echo "::error::A Music Box K file is in the workspace - it is never published here."
+            exit 1
+          fi
 
       # A release signed with the wrong key cannot be taken back once people have installed it,
       # and gradle prints BUILD SUCCESSFUL whether the APK is signed with the right key, the
@@ -70,7 +82,7 @@ jobs:
         env:
           EXPECTED_CERT: 1c65d9181220aa301ee081d172afad194763712ae9e0da634f6596ae1e20764f
         run: |
-          apk=$(find app/build/outputs/apk/full/release -maxdepth 1 -name '*.apk')
+          apk=$(find app/build/outputs/apk/full/release -maxdepth 1 -name 'jimeikin-full-*.apk')
           apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           certs=$("$apksigner" verify --print-certs "$apk")
           echo "$certs"
@@ -93,7 +105,7 @@ jobs:
       - name: Rename APK and generate checksum
         run: |
           apk_name="jimeikin-${GITHUB_REF_NAME}.apk"
-          apk_path=$(find app/build/outputs/apk/full/release -maxdepth 1 -name '*.apk')
+          apk_path=$(find app/build/outputs/apk/full/release -maxdepth 1 -name 'jimeikin-full-*.apk')
           cp "$apk_path" "$apk_name"
           sha256sum "$apk_name" > "${apk_name}.sha256"
           cp "$apk_path" jimeikin.apk

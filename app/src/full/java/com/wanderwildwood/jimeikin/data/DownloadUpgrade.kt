@@ -37,7 +37,7 @@ import java.io.File
 object DownloadUpgrade {
 
     private const val TAG = "DownloadUpgrade"
-    private const val YOUTUBE = "YOUTUBE_DOWNLOAD"
+    private const val ONLINE_SEARCH = "ONLINE_SEARCH_DOWNLOAD"
 
     /**
      * Debug builds only: with a file of this name in the app's own folder, YouTube is taken to
@@ -59,7 +59,7 @@ object DownloadUpgrade {
      * its path, is passed over: replacing it would mean Android asking about every one.
      */
     suspend fun candidates(app: CalmMusic, inUse: () -> Set<String>): List<SongEntity> = withContext(Dispatchers.IO) {
-        val rows = CalmMusicDatabase.getDatabase(app).songDao().getSongsBySourceType(YOUTUBE)
+        val rows = CalmMusicDatabase.getDatabase(app).songDao().getSongsBySourceType(ONLINE_SEARCH)
         if (rows.isEmpty()) return@withContext emptyList()
         val inHand = DownloadReplace.pending(app).flatMapTo(HashSet()) { listOf(it.key, it.value) }
         val found = mutableListOf<SongEntity>()

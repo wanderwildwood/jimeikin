@@ -18,6 +18,6 @@ class PlayingOnLockScreen : GlanceProvider() {
         val now = NowPlaying.current ?: return emptyList()
         val text = NowPlaying.text(now.title, now.artist) ?: return emptyList()
         val lead = context.getString(if (now.isPlaying) R.string.glance_playing else R.string.glance_paused)
-        return listOf(GlanceProvider.Line(text = text, lead = lead))
+        return listOf(GlanceProvider.Line(text = text, lead = lead, playing = now.isPlaying))
     }
 }

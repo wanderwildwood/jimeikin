@@ -9,7 +9,7 @@ its own: its own name, its own application id (`com.wanderwildwood.jimeikin.k`),
 version line (1.0.0 onward), its own data and its own download folder, **Music/Music Box K**. It
 installs beside Music Box, and does not replace it. It is built from the same source as Music
 Box (`./gradlew :app:assembleStoreRelease`, from `app/src/main` and `app/src/store`) and signed
-with the same key. Releases are tagged `k-v1.0.0` and so on.
+with the same key. It is offered only on the InkApps portal.
 
 ## Local music
 

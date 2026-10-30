@@ -12,7 +12,7 @@ class DownloadsTest {
         title: String = "Song $id",
         percent: Int? = null,
         updatedAt: Long = 0L,
-        kind: DownloadKind = DownloadKind.YOUTUBE,
+        kind: DownloadKind = DownloadKind.ONLINE_SEARCH,
     ) = DownloadItem(
         id = id,
         kind = kind,
@@ -162,7 +162,7 @@ class DownloadsTest {
         val items = listOf(
             DownloadItem(
                 id = "a",
-                kind = DownloadKind.YOUTUBE,
+                kind = DownloadKind.ONLINE_SEARCH,
                 songId = "dQw-4",
                 title = "Tabs\tand\nnew lines \\ too",
                 artist = "The Lanterns",
