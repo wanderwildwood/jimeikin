@@ -43,10 +43,10 @@ class MusicBoxKTest {
 
     @Test
     fun everyStringThatNamesMusicBoxNamesMusicBoxK() {
-        val own = File(res, "store/res/values/strings.xml").readText()
+        val own = File(res, "store/res/values/strings.xml").readText().replace(Regex("<!--.*?-->", RegexOption.DOT_MATCHES_ALL), "")
         for (dir in listOf("values", "values-de", "values-fr")) {
             val main = File(res, "main/res/$dir/strings.xml").readText()
-            val brand = File(res, "store/res/$dir/brand.xml").readText()
+            val brand = File(res, "store/res/$dir/brand.xml").readText().replace(Regex("<!--.*?-->", RegexOption.DOT_MATCHES_ALL), "")
             val names = Regex("""<string name="([^"]+)"[^>]*>([^<]*Music Box[^<]*)</string>""").findAll(main)
                 .filter { !it.value.contains("translatable=\"false\"") }.map { it.groupValues[1] }.toList()
             assertTrue(dir, names.isNotEmpty())
