@@ -254,7 +254,7 @@ There are two apps, from one source. **Music Box** (flavour `full`, application 
 `com.wanderwildwood.jimeikin.k`) is the one offered in Mudita's store: the same app without
 YouTube Music. Its code (`app/src/full`), NewPipeExtractor and the words about it are not in that
 APK at all; `app/src/store` stands in for them. It has its own name, its own version line
-(1.0.0 onward, tagged `k-v1.0.0`), its own data and its own download folder (Music/Music Box K),
+(1.0.0 onward, offered only on the InkApps portal, never on GitHub), its own data and its own download folder (Music/Music Box K),
 and installs beside Music Box; the two share only the signing key. Its description and privacy
 policy are in [store-edition/](store-edition/). How a release of each is made is in
 [RELEASING.md](RELEASING.md).

@@ -58,4 +58,16 @@ class MusicBoxKTest {
         }
         assertFalse(Regex("Music Box(?! K)").containsMatchIn(own))
     }
+
+    @Test
+    fun noCodeOrStringInMusicBoxKSourcesNamesYouTube() {
+        val sources = listOf("main/java", "store/java").map { File(res, it) }.flatMap { it.walkTopDown().filter { f -> f.extension == "kt" }.toList() }
+        assertTrue(sources.isNotEmpty())
+        for (f in sources) f.readLines().forEachIndexed { i, line ->
+            val t = line.trim()
+            if (t.startsWith("*") || t.startsWith("//") || t.startsWith("/*")) return@forEachIndexed
+            val code = t.substringBefore("//")
+            assertFalse("${f.path}:${i + 1}", Regex("youtube|newpipe|schabi", RegexOption.IGNORE_CASE).containsMatchIn(code))
+        }
+    }
 }

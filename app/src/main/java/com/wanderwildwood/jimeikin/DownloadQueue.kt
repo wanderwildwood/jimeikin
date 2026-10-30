@@ -130,7 +130,7 @@ class DownloadQueue(private val app: CalmMusic) {
         add(
             DownloadItem(
                 id = UUID.randomUUID().toString(),
-                kind = DownloadKind.YOUTUBE,
+                kind = DownloadKind.ONLINE_SEARCH,
                 songId = song.id,
                 title = song.title,
                 artist = song.artist,
@@ -314,7 +314,7 @@ class DownloadQueue(private val app: CalmMusic) {
     private suspend fun fetch(item: DownloadItem) {
         val outcome: Pair<DownloadState, String?> = try {
             when (item.kind) {
-                DownloadKind.YOUTUBE -> fetchOnline(item)
+                DownloadKind.ONLINE_SEARCH -> fetchOnline(item)
                 DownloadKind.SERVER -> fetchFromServer(item)
                 DownloadKind.UPGRADE -> fetchUpgrade(item)
             }

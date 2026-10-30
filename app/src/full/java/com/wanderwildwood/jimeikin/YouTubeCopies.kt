@@ -128,7 +128,7 @@ object YouTubeCopyMatch {
         recorded: Map<String, String>,
         downloads: List<SongUiModel>,
     ): SongUiModel? {
-        if (song.sourceType != "YOUTUBE") return null
+        if (song.sourceType != "ONLINE_SEARCH") return null
         recorded[song.id]?.let { id -> downloads.firstOrNull { it.id == id } }?.let { return it }
 
         val claimed = recorded.filterKeys { it != song.id }.values.toSet()
@@ -136,7 +136,7 @@ object YouTubeCopyMatch {
         val artist = key(song.artist)
         if (title.isEmpty()) return null
         return downloads.firstOrNull { copy ->
-            copy.sourceType == "YOUTUBE_DOWNLOAD" &&
+            copy.sourceType == "ONLINE_SEARCH_DOWNLOAD" &&
                 copy.id !in claimed &&
                 key(copy.title) == title &&
                 key(copy.artist) == artist &&
@@ -173,7 +173,7 @@ object YouTubeCopyMatch {
         downloads: List<SongUiModel>,
         isUnderway: (String) -> Boolean,
     ): List<SongUiModel> = songs.filter {
-        it.sourceType == "YOUTUBE" && !isUnderway(it.id) && copyOf(it, recorded, downloads) == null
+        it.sourceType == "ONLINE_SEARCH" && !isUnderway(it.id) && copyOf(it, recorded, downloads) == null
     }.distinctBy { it.id }
 
     /** By disc, then track; a song with no number keeps the order the list gave it, after them. */

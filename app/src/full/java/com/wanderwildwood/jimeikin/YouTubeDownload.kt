@@ -127,7 +127,7 @@ internal suspend fun performYouTubeDownloadInternal(
                     discNumber = song.discNumber,
                     trackNumber = song.trackNumber,
                     durationMillis = song.durationMillis,
-                    sourceType = "YOUTUBE",
+                    sourceType = "ONLINE_SEARCH",
                     audioUri = song.audioUri ?: videoId,
                     artistId = null,
                     releaseYear = null,
@@ -154,7 +154,7 @@ internal suspend fun performYouTubeDownloadInternal(
                 val albumArtistKey = effectiveAlbumArtist.toIdComponent()
 
                 val albumId = if (albumKey != null) {
-                    "YOUTUBE_DOWNLOAD:$albumArtistKey:$albumKey"
+                    "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey:$albumKey"
                 } else null
 
                 // The same rule the local library follows: an album's songs are filed under
@@ -162,13 +162,13 @@ internal suspend fun performYouTubeDownloadInternal(
                 // guests are credited on its tracks. Only a song with no album at all earns
                 // a row of its own under the track artist.
                 val artistId = if (albumId != null) {
-                    "YOUTUBE_DOWNLOAD:$albumArtistKey"
+                    "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey"
                 } else {
-                    "YOUTUBE_DOWNLOAD:$trackArtistKey"
+                    "ONLINE_SEARCH_DOWNLOAD:$trackArtistKey"
                 }
 
                 val localSongEntity = scannedAudio.song.copy(
-                    sourceType = "YOUTUBE_DOWNLOAD",
+                    sourceType = "ONLINE_SEARCH_DOWNLOAD",
                     artistId = artistId,
                     albumId = albumId
                 )
@@ -177,24 +177,24 @@ internal suspend fun performYouTubeDownloadInternal(
                     artistDao.upsertAll(listOf(ArtistEntity(
                         id = artistId,
                         name = song.artist,
-                        sourceType = "YOUTUBE_DOWNLOAD"
+                        sourceType = "ONLINE_SEARCH_DOWNLOAD"
                     )))
                 }
 
                 if (albumId != null && localSongEntity.album != null) {
-                    val albumEntityArtistId = "YOUTUBE_DOWNLOAD:$albumArtistKey"
+                    val albumEntityArtistId = "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey"
 
                     artistDao.upsertAll(listOf(ArtistEntity(
                         id = albumEntityArtistId,
                         name = effectiveAlbumArtist,
-                        sourceType = "YOUTUBE_DOWNLOAD"
+                        sourceType = "ONLINE_SEARCH_DOWNLOAD"
                     )))
 
                     albumDao.upsertAll(listOf(AlbumEntity(
                         id = albumId,
                         name = localSongEntity.album,
                         artist = effectiveAlbumArtist,
-                        sourceType = "YOUTUBE_DOWNLOAD",
+                        sourceType = "ONLINE_SEARCH_DOWNLOAD",
                         artistId = albumEntityArtistId
                     )))
                 }

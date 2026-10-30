@@ -130,7 +130,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
                 durationMillis = track.durationMillis,
                 trackNumber = track.trackNumber ?: (index + 1),
                 discNumber = 1,
-                sourceType = "YOUTUBE",
+                sourceType = "ONLINE_SEARCH",
                 audioUri = track.videoId,
                 album = album.title,
             )
@@ -175,7 +175,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
                     durationMillis = item.durationMillis,
                     trackNumber = index + 1,
                     discNumber = 1,
-                    sourceType = "YOUTUBE",
+                    sourceType = "ONLINE_SEARCH",
                     audioUri = item.videoId,
                     album = album.title,
                 )
@@ -259,7 +259,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
             durationMillis = item.durationMillis,
             discNumber = item.discNumber,
             trackNumber = item.trackNumber,
-            sourceType = "YOUTUBE",
+            sourceType = "ONLINE_SEARCH",
             audioUri = item.audioUri,
             album = item.album,
         )
@@ -311,7 +311,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
         durationMillis = durationMillis,
         trackNumber = trackNumber,
         discNumber = discNumber,
-        sourceType = "YOUTUBE",
+        sourceType = "ONLINE_SEARCH",
         audioUri = videoId,
         album = album,
     )
@@ -320,7 +320,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
         id = albumId,
         title = title,
         artist = artist ?: fallbackArtist,
-        sourceType = "YOUTUBE",
+        sourceType = "ONLINE_SEARCH",
         releaseYear = year,
     )
 

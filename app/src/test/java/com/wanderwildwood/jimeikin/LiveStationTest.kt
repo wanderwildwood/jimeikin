@@ -15,7 +15,7 @@ class LiveStationTest {
 
     @Test
     fun songsAreNotLive() {
-        assertFalse(isLiveSet(listOf(item("song-1"), item("YOUTUBE:abc"))))
+        assertFalse(isLiveSet(listOf(item("song-1"), item("ONLINE_SEARCH:abc"))))
         assertFalse(isLiveSet(emptyList()))
     }
 }

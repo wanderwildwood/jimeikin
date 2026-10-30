@@ -1,5 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.instrumentation.AsmClassVisitorFactory
+import com.android.build.api.instrumentation.ClassContext
+import com.android.build.api.instrumentation.ClassData
+import com.android.build.api.instrumentation.InstrumentationParameters
+import com.android.build.api.instrumentation.InstrumentationScope
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
+import java.util.Collections
 import java.util.Properties
+import java.util.zip.ZipFile
 
 plugins {
     id("com.android.application")
@@ -15,8 +25,8 @@ android {
         applicationId = "com.wanderwildwood.jimeikin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 88
-        versionName = "2.18.14"
+        versionCode = 89
+        versionName = "2.18.15"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -116,7 +126,29 @@ android {
     }
 }
 
-// jimeikin-full-2.18.14.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
+// Music Box K holds no YouTube word at all, and AndroidX's PatternsCompat (the web-address pattern
+// behind Linkify) lists "youtube" among its top-level domains. Only in K's build, that one entry
+// is taken out of the pattern as the class is packaged; a web address ending in .youtube is then
+// simply not underlined as a link, which nothing in this app does anyway.
+abstract class DropYouTubeTld : AsmClassVisitorFactory<InstrumentationParameters.None> {
+    override fun isInstrumentable(classData: ClassData): Boolean = classData.className == "androidx.core.util.PatternsCompat"
+
+    override fun createClassVisitor(classContext: ClassContext, nextClassVisitor: ClassVisitor): ClassVisitor =
+        object : ClassVisitor(Opcodes.ASM9, nextClassVisitor) {
+            // The pattern's pieces are compile-time constants: fields with a value, and loads of them.
+            override fun visitField(access: Int, name: String?, descriptor: String?, signature: String?, value: Any?) =
+                super.visitField(access, name, descriptor, signature, if (value is String) value.replace("|youtube|", "|").replace("youtube|", "") else value)
+
+            override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor =
+                object : MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                    override fun visitLdcInsn(value: Any?) {
+                        super.visitLdcInsn(if (value is String) value.replace("|youtube|", "|").replace("youtube|", "") else value)
+                    }
+                }
+        }
+}
+
+// jimeikin-full-2.18.15.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
 androidComponents {
     onVariants { variant ->
         val suffix = if (variant.buildType == "release") "" else "-${variant.buildType}"
@@ -125,6 +157,12 @@ androidComponents {
                 output.versionName.map { "jimeikin-${if (variant.flavorName == "store") "k" else variant.flavorName}-$it$suffix.apk" },
             )
         }
+    }
+}
+
+androidComponents {
+    onVariants(selector().withFlavor("edition" to "store")) { variant ->
+        variant.instrumentation.transformClassesWith(DropYouTubeTld::class.java, InstrumentationScope.ALL) {}
     }
 }
 
@@ -193,3 +231,38 @@ dependencies {
     implementation("net.jthink:jaudiotagger:3.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 }
+
+// Music Box K holds no YouTube, NewPipe or schabi anywhere: not a class, not a string in its dex,
+// its resources or its assets, in any letter case. Run after every K release build, and the
+// build fails if one is found.
+val checkStoreApk = tasks.register("checkStoreApk") {
+    doLast {
+        val words = listOf("youtube", "newpipe", "schabi")
+        val apks = layout.buildDirectory.dir("outputs/apk/store/release").get().asFile
+            .listFiles { f -> f.name.endsWith(".apk") }.orEmpty()
+        check(apks.isNotEmpty()) { "no store release APK to scan" }
+        val found = mutableListOf<String>()
+        for (apk in apks) {
+            val zip = ZipFile(apk)
+            try {
+                for (entry in Collections.list(zip.entries())) {
+                    if (entry.isDirectory) continue
+                    val n: String = entry.name
+                    for (w in words) if (n.contains(w, ignoreCase = true)) found += "${apk.name}: file name $n"
+                    if (n.endsWith(".dex") || n == "resources.arsc" || n == "AndroidManifest.xml" || n.startsWith("assets/") || n.startsWith("res/")) {
+                        val bytes: ByteArray = zip.getInputStream(entry).use { it.readBytes() }
+                        // dex and utf-8 string pools hold the word as bytes; a UTF-16 pool holds it with a zero between letters.
+                        val latin = String(bytes, Charsets.ISO_8859_1).lowercase()
+                        val wide = latin.replace("\u0000", "")
+                        for (w in words) if (latin.contains(w) || wide.contains(w)) found += "${apk.name}: $n contains \"$w\""
+                    }
+                }
+            } finally {
+                zip.close()
+            }
+        }
+        check(found.isEmpty()) { "Music Box K must not contain YouTube words:\n" + found.joinToString("\n") }
+        println("checkStoreApk: ${apks.joinToString { it.name }} clean")
+    }
+}
+tasks.matching { it.name == "assembleStoreRelease" }.configureEach { finalizedBy(checkStoreApk) }

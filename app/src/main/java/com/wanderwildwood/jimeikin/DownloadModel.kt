@@ -12,7 +12,7 @@ package com.wanderwildwood.jimeikin
  * asked for by the reader, so it waits behind everything that was and is not counted in the
  * line along the bottom.
  */
-enum class DownloadKind { YOUTUBE, SERVER, UPGRADE }
+enum class DownloadKind { ONLINE_SEARCH, SERVER, UPGRADE }
 
 enum class DownloadState {
     WAITING,
@@ -193,7 +193,7 @@ object Downloads {
         runCatching {
             DownloadItem(
                 id = f[1],
-                kind = DownloadKind.valueOf(f[2]),
+                kind = DownloadKind.valueOf(com.wanderwildwood.jimeikin.data.LegacyKinds.current(f[2])),
                 songId = f[3],
                 title = f[4],
                 artist = f[5],

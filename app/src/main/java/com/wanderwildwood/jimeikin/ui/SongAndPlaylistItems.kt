@@ -84,7 +84,7 @@ fun SongItem(
         localFileLabel,
     ) {
         val local = song.sourceType == "LOCAL_FILE" ||
-            song.sourceType == "YOUTUBE_DOWNLOAD" ||
+            song.sourceType == "ONLINE_SEARCH_DOWNLOAD" ||
             song.sourceType == "SUBSONIC_DOWNLOAD"
         val fileExtension = if (local) {
             val uriString = song.audioUri ?: song.id
@@ -287,7 +287,7 @@ fun SongItem(
                         // song downloaded already, listed again by YouTube, is here too.
                         val isDownloadedAlready = LocalIsDownloaded.current
                         if (song.sourceType == "SUBSONIC" ||
-                            (song.sourceType == "YOUTUBE" && !isDownloadedAlready(song))
+                            (song.sourceType == "ONLINE_SEARCH" && !isDownloadedAlready(song))
                         ) {
                             HorizontalDividerMMD(thickness = 1.dp)
                             DropdownMenuItemMMD(
@@ -331,7 +331,7 @@ fun SongItem(
                                     // back to streaming, and a YouTube one can be fetched again.
                                     // Only a file the reader put on the phone is erased for good.
                                     val isDownload = isDownloaded ||
-                                        song.sourceType == "YOUTUBE_DOWNLOAD" ||
+                                        song.sourceType == "ONLINE_SEARCH_DOWNLOAD" ||
                                         song.sourceType == "SUBSONIC_DOWNLOAD"
                                     TextMMD(
                                         text = when {

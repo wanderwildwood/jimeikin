@@ -133,7 +133,7 @@ private fun SearchArtistItem(
         )
 
         Spacer(modifier = Modifier.height(4.dp))
-        SubtitleLine(text = stringResource(R.string.library_search_result_artist), origin = Origin.YOUTUBE)
+        SubtitleLine(text = stringResource(R.string.library_search_result_artist), origin = Origin.ONLINE_SEARCH)
 
         Spacer(modifier = Modifier.height(12.dp))
 

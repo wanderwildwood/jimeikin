@@ -172,7 +172,7 @@ interface ArtistDao {
  * artist. (From upstream CalmMusic's feature/full-cleanup, narrowed to the YouTube kinds.)
  */
 suspend fun CalmMusicDatabase.dropOrphanedOnlineRows() {
-    val kinds = listOf("YOUTUBE", "YOUTUBE_DOWNLOAD")
+    val kinds = listOf("ONLINE_SEARCH", "ONLINE_SEARCH_DOWNLOAD")
     albumDao().deleteOrphaned(kinds)
     artistDao().deleteOrphaned(kinds)
 }
