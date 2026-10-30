@@ -25,8 +25,8 @@ android {
         applicationId = "com.wanderwildwood.jimeikin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 89
-        versionName = "2.18.15"
+        versionCode = 90
+        versionName = "2.18.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -52,8 +52,8 @@ android {
         create("store") {
             dimension = "edition"
             applicationIdSuffix = ".k"
-            versionCode = 1
-            versionName = "1.0.0"
+            versionCode = 2
+            versionName = "1.0.1"
             buildConfigField("String", "DOWNLOAD_FOLDER", "\"Music Box K\"")
         }
     }
