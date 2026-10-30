@@ -134,6 +134,7 @@ fun SongsScreen(
                         bottom = 0.dp,
                     ),
                 ) {
+                    item(key = "menu-hint") { MenuHintLine() }
                     items(
                         items = songs,
                         key = { it.id },
