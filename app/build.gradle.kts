@@ -1,5 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.instrumentation.AsmClassVisitorFactory
+import com.android.build.api.instrumentation.ClassContext
+import com.android.build.api.instrumentation.ClassData
+import com.android.build.api.instrumentation.InstrumentationParameters
+import com.android.build.api.instrumentation.InstrumentationScope
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
+import java.util.Collections
 import java.util.Properties
+import java.util.zip.ZipFile
 
 plugins {
     id("com.android.application")
@@ -116,6 +126,24 @@ android {
     }
 }
 
+// Music Box K holds no YouTube word at all, and AndroidX's PatternsCompat (the web-address pattern
+// behind Linkify) lists "youtube" among its top-level domains. Only in K's build, that one entry
+// is taken out of the pattern as the class is packaged; a web address ending in .youtube is then
+// simply not underlined as a link, which nothing in this app does anyway.
+abstract class DropYouTubeTld : AsmClassVisitorFactory<InstrumentationParameters.None> {
+    override fun isInstrumentable(classData: ClassData): Boolean = classData.className == "androidx.core.util.PatternsCompat"
+
+    override fun createClassVisitor(classContext: ClassContext, nextClassVisitor: ClassVisitor): ClassVisitor =
+        object : ClassVisitor(Opcodes.ASM9, nextClassVisitor) {
+            override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor =
+                object : MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                    override fun visitLdcInsn(value: Any?) {
+                        super.visitLdcInsn(if (value is String) value.replace("|youtube|", "|").replace("youtube|", "") else value)
+                    }
+                }
+        }
+}
+
 // jimeikin-full-2.18.14.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
 androidComponents {
     onVariants { variant ->
@@ -125,6 +153,12 @@ androidComponents {
                 output.versionName.map { "jimeikin-${if (variant.flavorName == "store") "k" else variant.flavorName}-$it$suffix.apk" },
             )
         }
+    }
+}
+
+androidComponents {
+    onVariants(selector().withFlavor("edition" to "store")) { variant ->
+        variant.instrumentation.transformClassesWith(DropYouTubeTld::class.java, InstrumentationScope.ALL) {}
     }
 }
 
@@ -204,17 +238,23 @@ val checkStoreApk = tasks.register("checkStoreApk") {
             .listFiles { f -> f.name.endsWith(".apk") }.orEmpty()
         check(apks.isNotEmpty()) { "no store release APK to scan" }
         val found = mutableListOf<String>()
-        for (apk in apks) java.util.zip.ZipFile(apk).use { zip ->
-            for (entry in zip.entries().asSequence().filter { !it.isDirectory }) {
-                for (w in words) if (entry.name.contains(w, ignoreCase = true)) found += "${apk.name}: file name ${entry.name}"
-                val n = entry.name
-                if (n.endsWith(".dex") || n == "resources.arsc" || n == "AndroidManifest.xml" || n.startsWith("assets/") || n.startsWith("res/")) {
-                    val bytes = zip.getInputStream(entry).readBytes()
-                    // dex and utf-8 string pools hold the word as bytes; a UTF-16 pool holds it with a zero between letters.
-                    val latin = String(bytes, Charsets.ISO_8859_1).lowercase()
-                    val wide = latin.replace("\u0000", "")
-                    for (w in words) if (latin.contains(w) || wide.contains(w)) found += "${apk.name}: ${entry.name} contains \"$w\""
+        for (apk in apks) {
+            val zip = ZipFile(apk)
+            try {
+                for (entry in Collections.list(zip.entries())) {
+                    if (entry.isDirectory) continue
+                    val n: String = entry.name
+                    for (w in words) if (n.contains(w, ignoreCase = true)) found += "${apk.name}: file name $n"
+                    if (n.endsWith(".dex") || n == "resources.arsc" || n == "AndroidManifest.xml" || n.startsWith("assets/") || n.startsWith("res/")) {
+                        val bytes: ByteArray = zip.getInputStream(entry).use { it.readBytes() }
+                        // dex and utf-8 string pools hold the word as bytes; a UTF-16 pool holds it with a zero between letters.
+                        val latin = String(bytes, Charsets.ISO_8859_1).lowercase()
+                        val wide = latin.replace("\u0000", "")
+                        for (w in words) if (latin.contains(w) || wide.contains(w)) found += "${apk.name}: $n contains \"$w\""
+                    }
                 }
+            } finally {
+                zip.close()
             }
         }
         check(found.isEmpty()) { "Music Box K must not contain YouTube words:\n" + found.joinToString("\n") }
