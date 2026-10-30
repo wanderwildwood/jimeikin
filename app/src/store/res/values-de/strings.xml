@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The store edition's own words, where the full edition's speak of its online catalogue. -->
+<resources>
+    <string name="main_title_online_sign_in">Anmelden</string>
+    <string name="main_search_error">Die Suche wurde nicht beendet</string>
+    <!-- Player: a song kept from the full edition's online catalogue, which this edition cannot play -->
+    <string name="main_not_in_this_edition">Dieser Titel stammt aus einem Dienst, den diese App nicht enthält. Wird übersprungen.</string>
+    <string name="player_downloads_online">Online</string>
+    <string name="player_downloads_as_aac">Erneut online, als AAC</string>
+    <string name="origin_online">Streams</string>
+    <string name="origin_online_download">Heruntergeladen</string>
+    <string name="library_search_searching">Suche…</string>
+    <string name="library_search_failed">Die Suche wurde nicht beendet</string>
+    <string name="library_nothing_added_yet">Wähle den Ordner auf diesem Telefon oder seiner Karte, in dem deine Musik liegt. Music Box K liest nur die Dateien dort, um deine Bibliothek aufzubauen, und ändert sie nie, außer du bearbeitest selbst die Details eines Titels. Oder verbinde deinen eigenen Musikserver.</string>
+
+    <!-- About -->
+    <string name="about_what">Spielt die Musik auf diesem Telefon und auf deinem eigenen Musikserver sowie Internetradio.</string>
+    <string name="about_privacy_phone">Deine Bibliothek, Wiedergabelisten, Warteschlange, Herzen und Einstellungen bleiben auf diesem Telefon. Das Passwort eines Musikservers wird mit einem Schlüssel im Keystore des Telefons versiegelt, bevor es gespeichert wird. An den Hersteller der App wird nichts gesendet.</string>
+    <string name="about_privacy_online">Die App geht nur für das online, was du nutzt: deinen eigenen Musikserver (Navidrome oder einen anderen Subsonic-Server) unter der Adresse, die du eingibst; radio.garden, um Sender zu durchsuchen, und den Stream des jeweiligen Senders, während er läuft; und api.zippopotam.us, nur für eine US- oder kanadische Postleitzahl in der Radiosuche. Ein Server im Heimnetz läuft oft über einfaches http, was dorthin geht, ist also nicht verschlüsselt.</string>
+    <string name="about_terms">Diese App ist freie Software unter der GNU General Public License v3. Sie kommt ohne Gewährleistung: Nutzung auf eigene Gefahr. Radiosender und Musikserver werden von anderen betrieben, nach deren eigenen Bedingungen.</string>
+    <string name="library_artist_online_failed">Die übrigen Alben konnten nicht geladen werden.</string>
+</resources>
