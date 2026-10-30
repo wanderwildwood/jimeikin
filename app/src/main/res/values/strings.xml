@@ -393,7 +393,7 @@
     <string name="player_radio_by_address_subtitle">For one not listed here: paste its stream</string>
     <string name="player_radio_address_label">Stream address</string>
     <string name="player_radio_address_name_label">Name</string>
-    <string name="player_radio_address_note">The address of the stream itself, or of a .m3u or .pls playlist that names it. It is played once, silently, before it is kept.</string>
+    <string name="player_radio_address_note">The address of the stream itself, or of a .m3u or .pls playlist that names it. MP3, AAC, Ogg, Opus, FLAC and HLS (.m3u8) streams play. It is played once, silently, before it is kept.</string>
     <string name="player_radio_address_check">Check and keep</string>
     <string name="player_radio_address_checking">Listening for it…</string>
     <string name="player_radio_address_not_an_address">That is not a web address. A stream address starts with http:// or https://.</string>
