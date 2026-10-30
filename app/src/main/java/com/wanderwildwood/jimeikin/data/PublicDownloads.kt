@@ -34,7 +34,7 @@ object PublicDownloads {
     private const val TAG = "PublicDownloads"
 
     /** The folder under Music, on whichever storage it is on. */
-    const val FOLDER = "Music Box"
+    val FOLDER: String = com.wanderwildwood.jimeikin.BuildConfig.DOWNLOAD_FOLDER
 
     val relativePath: String = Environment.DIRECTORY_MUSIC + "/" + FOLDER + "/"
 

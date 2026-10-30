@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    A self-hosted music server on a home network is served over plain http, because that is
-    what Navidrome does out of the box and there is no certificate to be had for an address like 192.168.1.10.
-    Android blocks cleartext by default from API 28, so a request to such a server fails before
-    it leaves the phone.
+    Cleartext http stays permitted, for two things only: a music server on a home network, which
+    Navidrome serves over plain http out of the box (there is no certificate to be had for an
+    address like 192.168.1.10), and radio streams, many of which are offered over http and
+    nothing else. Android cannot scope cleartext to a range of addresses here (a
+    domain-config names domains, not 192.168.0.0/16, and a station can be anywhere), so it is
+    permitted app-wide and everything else the app does is https because it asks for https.
 
-    This permits it. The cost is real and worth stating: anything this app fetches over http is
-    readable by whoever else is on the network. In practice that is only the server the reader
-    typed in themselves - everything else the app talks to (YouTube, YouTube Music) is https and
-    stays https, because permitting cleartext does not prevent https, it only stops refusing
-    http. The server screen says the same thing in the reader's own terms.
+    What the app does about it: an address typed without a scheme is https; plain http is used
+    only when typed, and the screen warns, in plain words, when that is a host that is not on a
+    home network. The cost is real: anything fetched over http can be read by whoever else is on
+    the path. The server screen and the privacy policy say the same.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="true">

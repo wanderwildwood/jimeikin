@@ -404,7 +404,7 @@ internal fun ArmedRow(
     var armed by remember { mutableStateOf(false) }
     LaunchedEffect(armed) {
         if (armed) {
-            delay(4000)
+            delay(6000)
             armed = false
         }
     }

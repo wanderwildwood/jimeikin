@@ -1,6 +1,6 @@
-# Music Box (store edition) — Privacy Policy
+# Music Box K — Privacy Policy
 
-Version 2.18.13. Last reviewed 27 October 2026.
+Version 1.0.0. Last reviewed 30 October 2026.
 
 ## The short version
 
@@ -10,7 +10,7 @@ The developer collects nothing about you. There is no account, no sign-up, no an
 
 wander wildwood, the author of this version of the app. Contact: email@wanderthe.dev
 
-Music Box is a fork of CalmMusic by David Ray Wilson (GPL-3.0), rebuilt on Mudita's public MMD library.
+Music Box K is the version of Music Box without YouTube, a fork of CalmMusic by David Ray Wilson (GPL-3.0), rebuilt on Mudita's public MMD library.
 
 Because no personal data is transmitted to or held by the developer, there is no data controller relationship for the developer to administer. Where the app processes personal data, that processing happens on your own device, under your control.
 
@@ -18,9 +18,9 @@ Because no personal data is transmitted to or held by the developer, there is no
 
 On the phone, in the app's own private storage: the library index, playlists, the queue, a list of the last week's downloads, the names you give songs, albums and artists, the songs you heart, and settings. These never leave the phone except as described under backups below.
 
-**A music server's address, user name and password.** If you add a Navidrome or other Subsonic server, its address and user name are kept in the app's settings file, and the password is sealed with an AES-GCM key generated in the phone's hardware-backed keystore (a key that cannot be exported) before it is written. If the key is lost, as after a restore onto another phone, the password cannot be read back and the app asks again. Usually the password is not sent: each request carries a salted hash of it (Subsonic's token sign-in). A server that does not accept that, such as Nextcloud Music, is sent the password itself, hex-encoded and not encrypted, with each request, as its protocol requires; Music Box says so on the server page. Use https for such a server. The developer runs no server and receives nothing.
+**A music server's address, user name and password.** If you add a Navidrome or other Subsonic server, its address and user name are kept in the app's settings file, and the password is sealed with an AES-GCM key generated in the phone's hardware-backed keystore (a key that cannot be exported) before it is written. If the key is lost, as after a restore onto another phone, the password cannot be read back and the app asks again. Usually the password is not sent: each request carries a salted hash of it (Subsonic's token sign-in). A server that does not accept that, such as Nextcloud Music, is sent the password itself, hex-encoded and not encrypted, with each request, as its protocol requires; Music Box K says so on the server page. Use https for such a server. The developer runs no server and receives nothing.
 
-**Downloaded songs.** Songs you download from your music server are saved as ordinary music files in Music/Music Box, on the memory card if there is one (on Android 9 and 10, in the app's own storage instead). They stay there if the app is uninstalled, and other apps on the phone can see them. Music files you put on the phone yourself are left alone.
+**Downloaded songs.** Songs you download from your music server are saved as ordinary music files in Music/Music Box K, on the memory card if there is one (on Android 9 and 10, in the app's own storage instead). They stay there if the app is uninstalled, and other apps on the phone can see them. Music files you put on the phone yourself are left alone.
 
 **Backups.** The app allows Android's backup (`allowBackup="true"`). Android may therefore copy the library database and the preferences into your Google backup, or to a new phone when you transfer, as your phone's backup settings decide; the app's own files folder is included in a device-to-device transfer and, on Android 11 and older, in a full backup (songs saved in Music/Music Box are not in that folder, except on Android 9 and 10). The settings file, which holds the server password, is excluded from all of these. The developer holds no backup of any of it.
 
@@ -39,11 +39,11 @@ From `app/src/main/AndroidManifest.xml`, plus one that the libraries add when th
 - `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`: so the system does not stop playback.
 - `READ_MEDIA_AUDIO`, and `READ_EXTERNAL_STORAGE` on Android 12 and older (which is what the Kompakt runs): asked for only when another app hands over a music file by its path rather than sharing it, so the app can play it. A file shared from another app comes with that app's permission to read that one file. You can refuse.
 
-The store also lists `com.wanderwildwood.jimeikin.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` because it reads the APK. AndroidX declares it for its own internal receivers; it is signature-level and namespaced to this app, so nothing else can hold it and it grants no access to anything on the phone.
+The app's listing also shows `com.wanderwildwood.jimeikin.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` because it reads the APK. AndroidX declares it for its own internal receivers; it is signature-level and namespaced to this app, so nothing else can hold it and it grants no access to anything on the phone.
 
 The manifest also names the FM radio apps that may be on the phone (`com.android.fmradio`, `com.mediatek.fmradio`, `com.caf.fmradio`), so the app can offer to open one; it reads nothing from them.
 
-Cleartext http is permitted (network security config), because a music server on a home network is usually served over plain http. Anything fetched over http can be read by others on that network. In practice that is only a server you typed in yourself, or a radio station that streams over http.
+Cleartext http is permitted (network security config), because a music server on a home network is usually served over plain http and many radio stations stream over nothing else. An address you type without a scheme is taken as https; plain http is used only when you type `http://` yourself, and for a server or station that is not on a home network the screen says that what is sent can be read on the way. Anything fetched over http can be read by others on that network.
 
 Nothing a permission grants access to is sent anywhere, except as described in the next section.
 

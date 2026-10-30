@@ -54,11 +54,11 @@ object RadioAddress {
     private const val PLAYLIST_BYTES = 64 * 1024L
     private const val LISTEN_MS = 20_000L
 
-    /** The address as typed, given http:// when it has no scheme; null when it is not a web address. */
+    /** The address as typed, given https:// when it has no scheme (plain http only when typed); null when it is not a web address. */
     fun normalise(input: String): String? {
         val trimmed = input.trim()
         if (trimmed.isEmpty() || trimmed.any { it.isWhitespace() }) return null
-        val withScheme = if ("://" in trimmed) trimmed else "http://$trimmed"
+        val withScheme = if ("://" in trimmed) trimmed else "https://$trimmed"
         val url = withScheme.toHttpUrlOrNull() ?: return null
         return url.toString()
     }

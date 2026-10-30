@@ -248,14 +248,16 @@ configuration.
 ./gradlew :app:installFullDebug
 ```
 
-There are two editions, from one source. **full** is this one, the GitHub release. **store**
-(`:app:assembleStoreRelease`) is the edition offered in Mudita's store: the same app without
-YouTube Music. Its code (`app/src/full`), NewPipeExtractor and the words about it are not in
-that APK at all; `app/src/store` stands in for them. Both have the same application id, key and
-version code, so either installs over the other, and a library carries over: songs streamed
-from YouTube are left out of the store edition's lists and skipped if one is played, and
-downloads are files in either. Its own description and privacy policy are in
-[store-edition/](store-edition/).
+There are two apps, from one source. **Music Box** (flavour `full`, application id
+`com.wanderwildwood.jimeikin`) is this one, the GitHub release, tagged `v2.18.x`.
+**Music Box K** (flavour `store`, `:app:assembleStoreRelease`, application id
+`com.wanderwildwood.jimeikin.k`) is the one offered in Mudita's store: the same app without
+YouTube Music. Its code (`app/src/full`), NewPipeExtractor and the words about it are not in that
+APK at all; `app/src/store` stands in for them. It has its own name, its own version line
+(1.0.0 onward, tagged `k-v1.0.0`), its own data and its own download folder (Music/Music Box K),
+and installs beside Music Box; the two share only the signing key. Its description and privacy
+policy are in [store-edition/](store-edition/). How a release of each is made is in
+[RELEASING.md](RELEASING.md).
 
 Both build types share a checked-in debug-style keystore; see `app/build.gradle.kts`. A
 tagged push (`v*`) triggers a GitHub Actions release build that publishes a signed APK to

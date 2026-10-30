@@ -4,14 +4,14 @@
     <string name="main_title_online_sign_in">Sign in</string>
     <string name="main_search_error">The search did not finish</string>
     <!-- Player: a song kept from the full edition's online catalogue, which this edition cannot play -->
-    <string name="main_not_in_this_edition">This song streams from a service this edition does not include. Skipping.</string>
+    <string name="main_not_in_this_edition">This song streams from a service this app does not include. Skipping.</string>
     <string name="player_downloads_online">Online</string>
     <string name="player_downloads_as_aac">Online again, as AAC</string>
     <string name="origin_online">Streams</string>
     <string name="origin_online_download">Downloaded</string>
     <string name="library_search_searching">Searching…</string>
     <string name="library_search_failed">The search did not finish</string>
-    <string name="library_nothing_added_yet">Pick the folder on this phone or its card where your music is kept. Music Box only reads the files there to build your library, and never changes them unless you edit a song\'s details yourself. Or connect your own music server.</string>
+    <string name="library_nothing_added_yet">Pick the folder on this phone or its card where your music is kept. Music Box K only reads the files there to build your library, and never changes them unless you edit a song\'s details yourself. Or connect your own music server.</string>
 
     <!-- About -->
     <string name="about_what">Plays the music on this phone and on your own music server, and internet radio.</string>

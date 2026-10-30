@@ -1,12 +1,15 @@
-# Music Box (store edition)
+# Music Box K
 
 A music player for the [Mudita Kompakt](https://mudita.com/products/mudita-kompakt): the music
 on the phone and its card, a Navidrome or other Subsonic server of your own, and internet
 radio, on the e-ink screen and in Mudita's MMD design.
 
-This is the edition offered in Mudita's store. It is built from the same source as the
-edition on GitHub (`./gradlew :app:assembleStoreRelease`, from `app/src/main` and
-`app/src/store`), signed with the same key, under the same name and version.
+Music Box K is Music Box without YouTube, and the one offered in Mudita's store. It is an app of
+its own: its own name, its own application id (`com.wanderwildwood.jimeikin.k`), its own
+version line (1.0.0 onward), its own data and its own download folder, **Music/Music Box K**. It
+installs beside Music Box, and does not replace it. It is built from the same source as Music
+Box (`./gradlew :app:assembleStoreRelease`, from `app/src/main` and `app/src/store`) and signed
+with the same key. Releases are tagged `k-v1.0.0` and so on.
 
 ## Local music
 
@@ -29,7 +32,7 @@ A song held both on the server and on the card is shown once, as the copy on the
 rule under a row means it needs the network.
 
 Long press a song for **Download**, or use the download button on an album, an artist or a
-playlist. Downloads go one at a time, in the order asked for, into **Music/Music Box** as
+playlist. Downloads go one at a time, in the order asked for, into **Music/Music Box K** as
 ordinary music files, and keep going with the screen off. **Downloads** lists what is waiting,
 underway and finished in the last week.
 
