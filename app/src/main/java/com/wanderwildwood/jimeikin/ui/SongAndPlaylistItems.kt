@@ -138,6 +138,7 @@ fun SongItem(
         Pair(local, sub)
     }
 
+    val appContext = androidx.compose.ui.platform.LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     val hearts = LocalHearts.current
     val isHearted = song.sourceType != "RADIO" && hearts?.isHearted?.invoke(song) == true
@@ -171,7 +172,7 @@ fun SongItem(
             .fillMaxWidth()
             .combinedClickable(
                 onClick = onClick,
-                onLongClick = { showMenu = true }
+                onLongClick = { MenuHint.songHeld(appContext); showMenu = true }
             )
             .padding(bottom = 8.dp),
     ) {

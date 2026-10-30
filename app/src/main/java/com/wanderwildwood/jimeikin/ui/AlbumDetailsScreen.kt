@@ -138,6 +138,7 @@ fun AlbumDetailsScreen(
                         bottom = 0.dp,
                     ),
                 ) {
+                        item(key = "menu-hint") { MenuHintLine(displaySongs.isNotEmpty()) }
                         items(displaySongs.size) { index ->
                             val song = displaySongs[index]
                             SongItem(

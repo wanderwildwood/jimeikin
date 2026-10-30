@@ -57,6 +57,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 )
             }
             item { Para(stringResource(R.string.about_what)) }
+            item { Para(stringResource(R.string.about_paging)) }
             item { Heading(stringResource(R.string.about_privacy_heading)) }
             item { Para(stringResource(R.string.about_privacy_phone), top = 4.dp) }
             item { Para(stringResource(R.string.about_privacy_online)) }
