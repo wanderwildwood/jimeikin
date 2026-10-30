@@ -403,7 +403,7 @@ fun CalmMusic(
     // A YouTube song's download is a row of its own, keyed on the file; these are what a
     // YouTube listing's songs are looked for among before anything offers to download them.
     val onlineDownloads = remember(librarySongs) {
-        librarySongs.filter { it.sourceType == "YOUTUBE_DOWNLOAD" }
+        librarySongs.filter { it.sourceType == "ONLINE_SEARCH_DOWNLOAD" }
     }
     val recordedOnlineCopies by app.online.recorded.collectAsState()
     val isDownloaded: (SongUiModel) -> Boolean = remember(onlineDownloads, recordedOnlineCopies) {
@@ -637,7 +637,7 @@ fun CalmMusic(
         val song = queue[startIndex]
         val controller = localMediaController
 
-        val needsLocalController = song.sourceType == "LOCAL_FILE" || song.sourceType == "YOUTUBE" || song.sourceType == "YOUTUBE_DOWNLOAD"
+        val needsLocalController = song.sourceType == "LOCAL_FILE" || song.sourceType == "ONLINE_SEARCH" || song.sourceType == "ONLINE_SEARCH_DOWNLOAD"
         if (needsLocalController && controller == null) {
             libraryScope.launch {
                 snackbarHostState.showSnackbar(
@@ -1056,7 +1056,7 @@ fun CalmMusic(
      * streaming provider. Into the same queue as everything else.
      */
     fun keepOnPhone(song: SongUiModel, pageAlbum: AlbumUiModel?) {
-        if (song.sourceType == "YOUTUBE" && app.online.copyOf(song, onlineDownloads) != null) {
+        if (song.sourceType == "ONLINE_SEARCH" && app.online.copyOf(song, onlineDownloads) != null) {
             libraryScope.launch {
                 snackbarHostState.showSnackbar(
                     message = context.getString(R.string.main_song_on_phone_already, song.title),
@@ -1071,7 +1071,7 @@ fun CalmMusic(
                 downloadQueue.enqueueServer(song)
                 true
             }
-            song.sourceType == "YOUTUBE" && app.online.available -> {
+            song.sourceType == "ONLINE_SEARCH" && app.online.available -> {
                 downloadQueue.enqueueOnline(song, albumArtistFor(song, pageAlbum))
                 true
             }
@@ -1152,7 +1152,7 @@ fun CalmMusic(
     val onDelete: (SongUiModel) -> Unit = { song ->
         libraryScope.launch {
             when (song.sourceType) {
-                "YOUTUBE" -> {
+                "ONLINE_SEARCH" -> {
                     if (downloadQueue.isUnderway(song.id)) {
                         downloadQueue.cancelSong(song.id)
                         snackbarHostState.showSnackbar(
@@ -1172,13 +1172,13 @@ fun CalmMusic(
                     )
                 }
 
-                "LOCAL_FILE", "YOUTUBE_DOWNLOAD" -> {
+                "LOCAL_FILE", "ONLINE_SEARCH_DOWNLOAD" -> {
                     val success = try {
                         viewModel.deleteLocalMediaSong(song)
                     } catch (_: Exception) {
                         false
                     }
-                    val isDownload = song.sourceType == "YOUTUBE_DOWNLOAD"
+                    val isDownload = song.sourceType == "ONLINE_SEARCH_DOWNLOAD"
 
                     snackbarHostState.showSnackbar(
                         message = when {
@@ -2545,7 +2545,7 @@ fun CalmMusic(
                 else -> 0L
             }
 
-            val isLocalVideo = if (song.sourceType == "LOCAL_FILE" || song.sourceType == "YOUTUBE_DOWNLOAD") {
+            val isLocalVideo = if (song.sourceType == "LOCAL_FILE" || song.sourceType == "ONLINE_SEARCH_DOWNLOAD") {
                 val uriString = song.audioUri ?: song.id
                 try {
                     val lastSegment = uriString.toUri().lastPathSegment ?: ""
@@ -2565,7 +2565,7 @@ fun CalmMusic(
 
             NowPlayingScreen(
                 title = names?.songTitle(song.id) ?: song.title,
-                artist = song.artist.ifBlank { if (song.sourceType == "LOCAL_FILE" || song.sourceType == "YOUTUBE_DOWNLOAD") localFileLabel else "" },
+                artist = song.artist.ifBlank { if (song.sourceType == "LOCAL_FILE" || song.sourceType == "ONLINE_SEARCH_DOWNLOAD") localFileLabel else "" },
                 album = song.album,
                 isPlaying = playbackState.isPlaybackPlaying,
                 isLoading = playbackState.isBuffering,
@@ -2675,7 +2675,7 @@ fun CalmMusic(
                 player = if (isLocalVideo) localMediaController else null,
                 // Not for a YouTube song already downloaded from somewhere else - a search,
                 // an album page - and playing here from YouTube's listing.
-                canDownload = app.online.available && song.sourceType == "YOUTUBE" &&
+                canDownload = app.online.available && song.sourceType == "ONLINE_SEARCH" &&
                     !isDownloaded(song),
                 isDownloadInProgress = downloadStatuses.any { it.songId == song.id && it.state.isActive },
                 onDownloadClick = {
@@ -2710,7 +2710,7 @@ fun CalmMusic(
                 // A completed download replaces the streamed song in the queue with the
                 // local one, so the source type is the durable answer to "is this on the
                 // phone" - Downloads forgets what it finished after a week.
-                isDownloaded = song.sourceType == "YOUTUBE_DOWNLOAD",
+                isDownloaded = song.sourceType == "ONLINE_SEARCH_DOWNLOAD",
                 // Undoing a download deletes the file and the library row, which is to say
                 // it deletes the song this screen is about: the row it came from is gone
                 // from the library, and leaving the screen up would leave a crossed-out
@@ -2722,7 +2722,7 @@ fun CalmMusic(
                     showNowPlaying = false
                 },
                 sourceType = song.sourceType,
-                streamResolverLabel = if (song.sourceType == "YOUTUBE") overlayState.streamResolverLabel else null,
+                streamResolverLabel = if (song.sourceType == "ONLINE_SEARCH") overlayState.streamResolverLabel else null,
             )
 
             if (showUpNext) {

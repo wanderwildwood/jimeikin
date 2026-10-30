@@ -16,15 +16,15 @@ import org.junit.Test
  */
 class NoOnlineMusicTest {
 
-    private val streamed = SongUiModel(id = "vid00000001", title = "Lantern Road", artist = "Mara Quill", sourceType = "YOUTUBE", audioUri = "vid00000001")
-    private val download = SongUiModel(id = "file:///music/a.m4a", title = "Lantern Road", artist = "Mara Quill", sourceType = "YOUTUBE_DOWNLOAD")
+    private val streamed = SongUiModel(id = "vid00000001", title = "Lantern Road", artist = "Mara Quill", sourceType = "ONLINE_SEARCH", audioUri = "vid00000001")
+    private val download = SongUiModel(id = "file:///music/a.m4a", title = "Lantern Road", artist = "Mara Quill", sourceType = "ONLINE_SEARCH_DOWNLOAD")
 
     @Test
     fun nothingIsOffered() = runBlocking {
         val online = NoOnlineMusic
         assertFalse(online.available)
         assertTrue(online.search("lantern").let { it.songs.isEmpty() && it.albums.isEmpty() && it.artists.isEmpty() })
-        assertTrue(online.albumSongs(AlbumUiModel(id = "MPREb_x", title = "Lantern Road", artist = "Mara Quill", sourceType = "YOUTUBE")).isEmpty())
+        assertTrue(online.albumSongs(AlbumUiModel(id = "MPREb_x", title = "Lantern Road", artist = "Mara Quill", sourceType = "ONLINE_SEARCH")).isEmpty())
         assertNull(online.findArtist("Mara Quill"))
         assertTrue(online.leftToDownload(listOf(streamed), listOf(download)) { false }.isEmpty())
         assertTrue(online.upgradeCandidates { emptySet() }.isEmpty())

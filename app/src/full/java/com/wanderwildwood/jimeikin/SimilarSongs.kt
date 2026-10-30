@@ -17,8 +17,8 @@ object SimilarSongs {
      * music server, the radio - is not YouTube's to follow.
      */
     fun seedVideoId(seed: SongUiModel, recorded: Map<String, String>): String? = when (seed.sourceType) {
-        "YOUTUBE" -> (seed.audioUri ?: seed.id).takeIf { it.isNotBlank() }
-        "YOUTUBE_DOWNLOAD" -> recorded.entries.firstOrNull { it.value == seed.id }?.key
+        "ONLINE_SEARCH" -> (seed.audioUri ?: seed.id).takeIf { it.isNotBlank() }
+        "ONLINE_SEARCH_DOWNLOAD" -> recorded.entries.firstOrNull { it.value == seed.id }?.key
         else -> null
     }
 

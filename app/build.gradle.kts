@@ -193,3 +193,32 @@ dependencies {
     implementation("net.jthink:jaudiotagger:3.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 }
+
+// Music Box K holds no YouTube, NewPipe or schabi anywhere: not a class, not a string in its dex,
+// its resources or its assets, in any letter case. Run after every K release build, and the
+// build fails if one is found.
+val checkStoreApk = tasks.register("checkStoreApk") {
+    doLast {
+        val words = listOf("youtube", "newpipe", "schabi")
+        val apks = layout.buildDirectory.dir("outputs/apk/store/release").get().asFile
+            .listFiles { f -> f.name.endsWith(".apk") }.orEmpty()
+        check(apks.isNotEmpty()) { "no store release APK to scan" }
+        val found = mutableListOf<String>()
+        for (apk in apks) java.util.zip.ZipFile(apk).use { zip ->
+            for (entry in zip.entries().asSequence().filter { !it.isDirectory }) {
+                for (w in words) if (entry.name.contains(w, ignoreCase = true)) found += "${apk.name}: file name ${entry.name}"
+                val n = entry.name
+                if (n.endsWith(".dex") || n == "resources.arsc" || n == "AndroidManifest.xml" || n.startsWith("assets/") || n.startsWith("res/")) {
+                    val bytes = zip.getInputStream(entry).readBytes()
+                    // dex and utf-8 string pools hold the word as bytes; a UTF-16 pool holds it with a zero between letters.
+                    val latin = String(bytes, Charsets.ISO_8859_1).lowercase()
+                    val wide = latin.replace("\u0000", "")
+                    for (w in words) if (latin.contains(w) || wide.contains(w)) found += "${apk.name}: ${entry.name} contains \"$w\""
+                }
+            }
+        }
+        check(found.isEmpty()) { "Music Box K must not contain YouTube words:\n" + found.joinToString("\n") }
+        println("checkStoreApk: ${apks.joinToString { it.name }} clean")
+    }
+}
+tasks.matching { it.name == "assembleStoreRelease" }.configureEach { finalizedBy(checkStoreApk) }

@@ -9,7 +9,7 @@ class NameOverridesTest {
         Names(rows.associateBy { it.kind to it.targetId }) { recorded }
 
     private fun song(id: String, title: String, artist: String, artistId: String?, album: String? = null, albumId: String? = null) =
-        SongEntity(id, title, artist, album, albumId, null, null, null, "YOUTUBE", id, artistId)
+        SongEntity(id, title, artist, album, albumId, null, null, null, "ONLINE_SEARCH", id, artistId)
 
     @Test
     fun aSongTitleFollowsTheSongFromStreamToDownload() {
@@ -26,15 +26,15 @@ class NameOverridesTest {
         val n = names(NameOverrideEntity(NameOverrides.ARTIST, "a1", "Mara Q.", null, "Mara Quill"))
         assertEquals("Mara Q.", n.song(song("s1", "One", "Mara Quill", "a1")).artist)
         assertEquals("Mara Quill & Dov Ash", n.song(song("s2", "Two", "Mara Quill & Dov Ash", "a1")).artist)
-        assertEquals("Mara Q.", n.artist(ArtistEntity("a1", "Mara Quill", "YOUTUBE")).name)
+        assertEquals("Mara Q.", n.artist(ArtistEntity("a1", "Mara Quill", "ONLINE_SEARCH")).name)
     }
 
     @Test
     fun aFiledCreditKeepsItsSongsButFilesItsAlbum() {
         val n = names(NameOverrideEntity(NameOverrides.ARTIST_UNDER, "a2", "Mara Quill", null, "Mara Quill & Dov Ash"))
-        assertEquals("Mara Quill", n.artist(ArtistEntity("a2", "Mara Quill & Dov Ash", "YOUTUBE")).name)
+        assertEquals("Mara Quill", n.artist(ArtistEntity("a2", "Mara Quill & Dov Ash", "ONLINE_SEARCH")).name)
         assertEquals("Mara Quill & Dov Ash", n.song(song("s2", "Two", "Mara Quill & Dov Ash", "a2")).artist)
-        val album = AlbumEntity("al2", "Lantern Road", "Mara Quill & Dov Ash", "YOUTUBE_DOWNLOAD", "a2")
+        val album = AlbumEntity("al2", "Lantern Road", "Mara Quill & Dov Ash", "ONLINE_SEARCH_DOWNLOAD", "a2")
         assertEquals("Mara Quill", n.album(album).artist)
     }
 

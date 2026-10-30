@@ -26,7 +26,7 @@ import java.io.File
 object DownloadMove {
 
     private const val TAG = "DownloadMove"
-    private const val YOUTUBE = "YOUTUBE_DOWNLOAD"
+    private const val ONLINE_SEARCH = "ONLINE_SEARCH_DOWNLOAD"
 
     private fun record(app: CalmMusic) = File(app.filesDir, "downloads-moved.txt")
 
@@ -63,7 +63,7 @@ object DownloadMove {
         val privateDir = app.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: return@withContext 0
         val database = CalmMusicDatabase.getDatabase(app)
         val songDao = database.songDao()
-        val rows = songDao.getSongsBySourceType(YOUTUBE) + songDao.getSongsBySourceType(SubsonicDownloader.SOURCE_TYPE)
+        val rows = songDao.getSongsBySourceType(ONLINE_SEARCH) + songDao.getSongsBySourceType(SubsonicDownloader.SOURCE_TYPE)
         var count = 0
         for (row in rows) {
             val old = PublicDownloads.fileOf(row.audioUri) ?: continue
@@ -88,7 +88,7 @@ object DownloadMove {
 
     private fun moveOne(app: CalmMusic, database: CalmMusicDatabase, row: SongEntity, old: File): Boolean {
         val saved = try {
-            if (row.sourceType == YOUTUBE) {
+            if (row.sourceType == ONLINE_SEARCH) {
                 PublicDownloads.save(app, old, old.name, PublicDownloads.mimeTypeOf(old.name) ?: "audio/mp4")
             } else {
                 SubsonicDownloader.savePublic(app, row, old, null)

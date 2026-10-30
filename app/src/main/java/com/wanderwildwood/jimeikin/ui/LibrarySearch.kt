@@ -103,7 +103,7 @@ private const val KIND_ARTIST_ONLINE = 4
 
 private fun placeOf(origin: Origin?): Int = when (origin) {
     Origin.SERVER -> PLACE_SERVER
-    Origin.YOUTUBE -> PLACE_ONLINE
+    Origin.ONLINE_SEARCH -> PLACE_ONLINE
     // A download is on the phone: it plays with no signal, like a file put there.
     else -> PLACE_PHONE
 }

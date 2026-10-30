@@ -13,7 +13,7 @@ import android.net.Uri
  *
  * It answers Glance alone - any other caller gets nothing - and says nothing at all while this
  * app's own "on the lock screen" setting is off. One row per line: `heading` (first row only,
- * optional), `lead` (a short left column: a time, a temperature), `text`, and `bold`.
+ * optional), `lead` (a short left column: a time, a temperature), `text`, `bold`, and for a player `playing`.
  */
 abstract class GlanceProvider : ContentProvider() {
 
@@ -22,6 +22,8 @@ abstract class GlanceProvider : ContentProvider() {
         val lead: String? = null,
         val bold: Boolean = false,
         val heading: String? = null,
+        /** For a player: whether it is playing now. Lets Glance show the one that is when two answer. */
+        val playing: Boolean? = null,
     )
 
     /** This app's own switch for the lock screen. */
@@ -44,7 +46,7 @@ abstract class GlanceProvider : ContentProvider() {
         val cursor = MatrixCursor(COLUMNS)
         if (enabled(context)) {
             try {
-                lines(context).forEach { cursor.addRow(arrayOf<Any?>(it.heading, it.lead, it.text, if (it.bold) 1 else 0)) }
+                lines(context).forEach { cursor.addRow(arrayOf<Any?>(it.heading, it.lead, it.text, if (it.bold) 1 else 0, it.playing?.let { p -> if (p) 1 else 0 })) }
             } catch (_: Exception) {
                 // A line that could not be made is a line left out, never a broken lock screen.
             }
@@ -61,7 +63,7 @@ abstract class GlanceProvider : ContentProvider() {
 
     companion object {
         const val READER = "com.wanderwildwood.hitome"
-        private val COLUMNS = arrayOf("heading", "lead", "text", "bold")
+        private val COLUMNS = arrayOf("heading", "lead", "text", "bold", "playing")
 
         /** Tells Glance to read again: when a setting changes, or new lines are ready. */
         fun changed(context: Context) {
