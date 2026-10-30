@@ -25,8 +25,8 @@ android {
         applicationId = "com.wanderwildwood.jimeikin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 88
-        versionName = "2.18.14"
+        versionCode = 89
+        versionName = "2.18.15"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -148,7 +148,7 @@ abstract class DropYouTubeTld : AsmClassVisitorFactory<InstrumentationParameters
         }
 }
 
-// jimeikin-full-2.18.14.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
+// jimeikin-full-2.18.15.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
 androidComponents {
     onVariants { variant ->
         val suffix = if (variant.buildType == "release") "" else "-${variant.buildType}"
