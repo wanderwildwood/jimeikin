@@ -135,6 +135,10 @@ abstract class DropYouTubeTld : AsmClassVisitorFactory<InstrumentationParameters
 
     override fun createClassVisitor(classContext: ClassContext, nextClassVisitor: ClassVisitor): ClassVisitor =
         object : ClassVisitor(Opcodes.ASM9, nextClassVisitor) {
+            // The pattern's pieces are compile-time constants: fields with a value, and loads of them.
+            override fun visitField(access: Int, name: String?, descriptor: String?, signature: String?, value: Any?) =
+                super.visitField(access, name, descriptor, signature, if (value is String) value.replace("|youtube|", "|").replace("youtube|", "") else value)
+
             override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor =
                 object : MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                     override fun visitLdcInsn(value: Any?) {
