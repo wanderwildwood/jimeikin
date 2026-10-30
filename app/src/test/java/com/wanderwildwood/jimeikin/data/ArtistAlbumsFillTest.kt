@@ -11,7 +11,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ArtistAlbumsFillTest {
-    private fun album(id: String, title: String, year: Int?, source: String = "YOUTUBE") =
+    private fun album(id: String, title: String, year: Int?, source: String = "ONLINE_SEARCH") =
         AlbumUiModel(id = id, title = title, artist = "Test Band", sourceType = source, releaseYear = year)
 
     @Test

@@ -132,7 +132,7 @@ class PlaybackService : MediaSessionService() {
                     val uri = mediaItem.localConfiguration?.uri
                     val inferredSourceType = when (uri?.scheme) {
                         "content", "file" -> "LOCAL_FILE"
-                        else -> "YOUTUBE"
+                        else -> "ONLINE_SEARCH"
                     }
 
                     (application as? CalmMusic)?.playbackStateManager?.updateState(

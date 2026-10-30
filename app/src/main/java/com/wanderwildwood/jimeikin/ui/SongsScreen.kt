@@ -26,7 +26,7 @@ data class SongUiModel(
     val durationMillis: Long? = null,
     val discNumber: Int? = null,
     val trackNumber: Int? = null,
-    val sourceType: String = "YOUTUBE",
+    val sourceType: String = "ONLINE_SEARCH",
     val audioUri: String? = null,
     val album: String? = null,
 )
@@ -47,7 +47,7 @@ fun List<SongUiModel>.hasSongsToKeep(
     canKeepOnline: Boolean,
     isDownloaded: (SongUiModel) -> Boolean = { false },
 ): Boolean = any {
-    it.sourceType == "SUBSONIC" || (canKeepOnline && it.sourceType == "YOUTUBE" && !isDownloaded(it))
+    it.sourceType == "SUBSONIC" || (canKeepOnline && it.sourceType == "ONLINE_SEARCH" && !isDownloaded(it))
 }
 
 @Composable

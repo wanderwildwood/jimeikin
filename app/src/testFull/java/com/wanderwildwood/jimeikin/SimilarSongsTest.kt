@@ -23,12 +23,12 @@ class SimilarSongsTest {
         durationMillis = 200_000L,
     )
 
-    private val download = song("file:///music/Harbour.m4a", "YOUTUBE_DOWNLOAD")
+    private val download = song("file:///music/Harbour.m4a", "ONLINE_SEARCH_DOWNLOAD")
     private val recorded = mapOf("vidHarbour1" to download.id)
 
     @Test
     fun streamedSongIsItsOwnVideo() {
-        assertEquals("vidStream01", SimilarSongs.seedVideoId(song("vidStream01", "YOUTUBE"), emptyMap()))
+        assertEquals("vidStream01", SimilarSongs.seedVideoId(song("vidStream01", "ONLINE_SEARCH"), emptyMap()))
     }
 
     @Test
@@ -53,8 +53,8 @@ class SimilarSongsTest {
 
     @Test
     fun pickLeavesOutTheSeedWhatIsQueuedAndDownloadsInTheQueue() {
-        val other = song("file:///music/Shingle.m4a", "YOUTUBE_DOWNLOAD")
-        val queue = listOf(song("vidQueued01", "YOUTUBE"), other, download)
+        val other = song("file:///music/Shingle.m4a", "ONLINE_SEARCH_DOWNLOAD")
+        val queue = listOf(song("vidQueued01", "ONLINE_SEARCH"), other, download)
         val record = recorded + ("vidShingle1" to other.id)
         val found = listOf("vidHarbour1", "vidQueued01", "vidShingle1", "vidNew00001", "vidNew00001", "vidNew00002")
             .map(::result)

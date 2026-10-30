@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient
  * its stand-in finds nothing, plays nothing and downloads nothing. The rest of the app reaches
  * it only through here, so the store edition carries none of that code.
  *
- * A song from the catalogue has sourceType "YOUTUBE", and its download "YOUTUBE_DOWNLOAD": those
+ * A song from the catalogue has sourceType "ONLINE_SEARCH", and its download "ONLINE_SEARCH_DOWNLOAD": those
  * names are in the library's rows and stay as they are, so a library carries over between
  * editions. A download is a file on the phone in either one.
  */

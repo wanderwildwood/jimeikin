@@ -257,7 +257,7 @@ fun NowPlayingScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             val isLocal = sourceType == "LOCAL_FILE" ||
-                sourceType == "YOUTUBE_DOWNLOAD" ||
+                sourceType == "ONLINE_SEARCH_DOWNLOAD" ||
                 sourceType == "SUBSONIC_DOWNLOAD"
 
             if (!isLocal) {
@@ -588,7 +588,7 @@ private fun NowPlayingScreenPreview() {
         isDownloadInProgress = false,
         onDownloadClick = {},
         onCancelDownloadClick = {},
-        sourceType = "YOUTUBE",
+        sourceType = "ONLINE_SEARCH",
         streamResolverLabel = null,
     )
 }
@@ -627,7 +627,7 @@ private fun NowPlayingScreenSavedPreview() {
         onCancelDownloadClick = {},
         isDownloaded = true,
         onDeleteDownloadClick = {},
-        sourceType = "YOUTUBE",
+        sourceType = "ONLINE_SEARCH",
         streamResolverLabel = null,
     )
 }

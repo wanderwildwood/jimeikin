@@ -78,7 +78,7 @@ class LibraryRepository(
                             // address in the chosen folder; and a download being replaced is
                             // two files for a moment (DownloadReplace).
                             val downloadDocumentIds = (
-                                songDao.getSongsBySourceType("YOUTUBE_DOWNLOAD") +
+                                songDao.getSongsBySourceType("ONLINE_SEARCH_DOWNLOAD") +
                                     songDao.getSongsBySourceType(SubsonicDownloader.SOURCE_TYPE)
                                 ).mapNotNullTo(HashSet()) { row ->
                                     DownloadRecognition.documentIdOf(row.audioUri)
@@ -383,7 +383,7 @@ class LibraryRepository(
 
             // Every row that names a file, whatever kind: a kept server song is in the public
             // folder too, and must not come back a second time as a YouTube download.
-            val existingDownloads = songDao.getSongsBySourceType("YOUTUBE_DOWNLOAD") +
+            val existingDownloads = songDao.getSongsBySourceType("ONLINE_SEARCH_DOWNLOAD") +
                 songDao.getSongsBySourceType(SubsonicDownloader.SOURCE_TYPE)
             val existingByUri = existingDownloads.associateBy { it.audioUri }
 
@@ -394,7 +394,7 @@ class LibraryRepository(
             suspend fun localDocumentIds(): Set<String> = localDocumentIds
                 ?: (
                     songDao.getSongsBySourceType("LOCAL_FILE") +
-                        songDao.getSongsBySourceType("YOUTUBE_DOWNLOAD")
+                        songDao.getSongsBySourceType("ONLINE_SEARCH_DOWNLOAD")
                     ).mapNotNullTo(HashSet()) { row -> DownloadRecognition.documentIdOf(row.audioUri) }
                     .plus(DownloadReplace.pendingDocumentIds(app))
                     .also { localDocumentIds = it }
@@ -456,29 +456,29 @@ class LibraryRepository(
             trim().replace(Regex("\\s+"), " ").lowercase()
 
         val trackArtist = scanned.song.artist.takeIf { it.isNotBlank() }
-            ?: return DownloadRows(scanned.song.copy(sourceType = "YOUTUBE_DOWNLOAD"), null, null)
+            ?: return DownloadRows(scanned.song.copy(sourceType = "ONLINE_SEARCH_DOWNLOAD"), null, null)
         val albumName = scanned.song.album?.takeIf { it.isNotBlank() }
         val albumArtist = scanned.albumArtist?.takeIf { it.isNotBlank() } ?: trackArtist
         val albumArtistKey = albumArtist.toIdComponent()
-        val albumId = albumName?.let { "YOUTUBE_DOWNLOAD:$albumArtistKey:${it.toIdComponent()}" }
+        val albumId = albumName?.let { "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey:${it.toIdComponent()}" }
         val artistId = if (albumId != null) {
-            "YOUTUBE_DOWNLOAD:$albumArtistKey"
+            "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey"
         } else {
-            "YOUTUBE_DOWNLOAD:${trackArtist.toIdComponent()}"
+            "ONLINE_SEARCH_DOWNLOAD:${trackArtist.toIdComponent()}"
         }
         return DownloadRows(
-            song = scanned.song.copy(sourceType = "YOUTUBE_DOWNLOAD", artistId = artistId, albumId = albumId),
+            song = scanned.song.copy(sourceType = "ONLINE_SEARCH_DOWNLOAD", artistId = artistId, albumId = albumId),
             artist = ArtistEntity(
                 id = artistId,
                 name = if (albumId != null) albumArtist else trackArtist,
-                sourceType = "YOUTUBE_DOWNLOAD",
+                sourceType = "ONLINE_SEARCH_DOWNLOAD",
             ),
             album = if (albumId != null && albumName != null) {
                 AlbumEntity(
                     id = albumId,
                     name = albumName,
                     artist = albumArtist,
-                    sourceType = "YOUTUBE_DOWNLOAD",
+                    sourceType = "ONLINE_SEARCH_DOWNLOAD",
                     artistId = artistId,
                 )
             } else {
