@@ -24,7 +24,7 @@ builds only the full flavour and refuses anything of K.
    fails the build if the APK's dex, resources or assets contain "youtube", "newpipe" or
    "schabi" in any letter case.
 2. `tools/package-k.sh <jimeikin-k-<v>.apk> <jimeikin-full-<v>.apk>` verifies K is signed with the
-   full edition's key and writes `~/Desktop/music-box-k-release/jimeikin-k-<v>.apk`, `.sha256`
+   full edition's key and writes `~/Desktop/dev/apps/music-box-k/release/jimeikin-k-<v>.apk`, `.sha256`
    and `portal-notes.md` (version, what is inside, privacy and terms text, store listing text,
    screenshot list). That is all; it publishes nothing.
 3. Upload to the portal by hand.
