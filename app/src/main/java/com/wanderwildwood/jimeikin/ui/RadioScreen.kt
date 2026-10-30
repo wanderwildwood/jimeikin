@@ -571,6 +571,10 @@ private fun AddByAddress(onKept: (name: String, streamUrl: String) -> Unit) {
             Spacer(Modifier.height(16.dp))
             TextMMD(text = stringResource(it), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
         }
+        if (com.wanderwildwood.jimeikin.data.PlainHttp.onOpenNetwork(address)) {
+            Spacer(Modifier.height(16.dp))
+            TextMMD(text = stringResource(R.string.player_radio_address_plain), style = MaterialTheme.typography.labelSmall)
+        }
         Spacer(Modifier.height(24.dp))
         TextMMD(text = stringResource(R.string.player_radio_address_note), style = MaterialTheme.typography.labelSmall)
     }

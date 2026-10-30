@@ -139,11 +139,16 @@
         <!-- What is playing, for Glance's lock-screen panel; it answers Glance alone. -->
         <provider
             android:name=".glance.PlayingOnLockScreen"
-            android:authorities="com.wanderwildwood.jimeikin.glance"
+            android:authorities="${applicationId}.glance"
             android:exported="true" />
     </application>
 
     <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
         <package android:name="com.android.fmradio" />
         <package android:name="com.mediatek.fmradio" />
         <package android:name="com.caf.fmradio" />

@@ -311,14 +311,18 @@ data class SubsonicConfig(
     val user: String,
     val password: String,
 ) {
-    /** People type "192.168.1.10:4533", and a trailing slash, and sometimes both. */
+    /**
+     * People type "music.example.org", and a trailing slash, and sometimes both. An address
+     * with no scheme is https; plain http is used only when it is typed (a server on a home
+     * network without a certificate, as "http://192.168.1.10:4533").
+     */
     val normalisedBaseUrl: String
         get() {
             val trimmed = baseUrl.trim().trimEnd('/')
             return if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
                 trimmed
             } else {
-                "http://$trimmed"
+                "https://$trimmed"
             }
         }
 

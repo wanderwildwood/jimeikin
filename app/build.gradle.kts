@@ -15,8 +15,8 @@ android {
         applicationId = "com.wanderwildwood.jimeikin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 87
-        versionName = "2.18.13"
+        versionCode = 88
+        versionName = "2.18.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -24,18 +24,27 @@ android {
         }
     }
 
-    // Two editions from one source. "full" is the GitHub edition, with YouTube Music search,
-    // streaming and downloads (src/full). "store" is the one offered to Mudita's store: the same
-    // app without any of that - its code, its library (NewPipeExtractor) and its words are not
-    // in the APK at all; src/store stands in with a part that finds nothing. Same application
-    // id, same key and the same version code for both, so either installs over the other.
+    // Two apps from one source. "full" is Music Box, the GitHub edition, with YouTube Music
+    // search, streaming and downloads (src/full). "store" is Music Box K, the one offered to
+    // Mudita's store: the same app without any of that - its code, its library
+    // (NewPipeExtractor) and its words are not in the APK at all; src/store stands in with a
+    // part that finds nothing. It is a separate app, not an edition of the same one: its own
+    // application id (so the two install side by side, each with its own data, its own
+    // download folder and its own Glance authority), its own name and its own version line
+    // starting at 1.0.0. Same signing key. Everything that must differ derives from the
+    // application id or from the DOWNLOAD_FOLDER build constant below.
     flavorDimensions += "edition"
     productFlavors {
         create("full") {
             dimension = "edition"
+            buildConfigField("String", "DOWNLOAD_FOLDER", "\"Music Box\"")
         }
         create("store") {
             dimension = "edition"
+            applicationIdSuffix = ".k"
+            versionCode = 1
+            versionName = "1.0.0"
+            buildConfigField("String", "DOWNLOAD_FOLDER", "\"Music Box K\"")
         }
     }
 
@@ -107,13 +116,13 @@ android {
     }
 }
 
-// jimeikin-full-2.18.12.apk, jimeikin-store-2.18.12.apk: which edition, and which version, by name.
+// jimeikin-full-2.18.14.apk, jimeikin-k-1.0.0.apk: which app, and which version, by name.
 androidComponents {
     onVariants { variant ->
         val suffix = if (variant.buildType == "release") "" else "-${variant.buildType}"
         variant.outputs.forEach { output ->
             (output as com.android.build.api.variant.impl.VariantOutputImpl).outputFileName.set(
-                output.versionName.map { "jimeikin-${variant.flavorName}-$it$suffix.apk" },
+                output.versionName.map { "jimeikin-${if (variant.flavorName == "store") "k" else variant.flavorName}-$it$suffix.apk" },
             )
         }
     }

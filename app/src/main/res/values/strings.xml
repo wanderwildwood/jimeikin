@@ -394,6 +394,7 @@
     <string name="player_radio_address_label">Stream address</string>
     <string name="player_radio_address_name_label">Name</string>
     <string name="player_radio_address_note">The address of the stream itself, or of a .m3u or .pls playlist that names it. MP3, AAC, Ogg, Opus, FLAC and HLS (.m3u8) streams play. It is played once, silently, before it is kept.</string>
+    <string name="player_radio_address_plain">This stream is plain http, so others on the network can see what is playing. Many stations offer nothing else.</string>
     <string name="player_radio_address_check">Check and keep</string>
     <string name="player_radio_address_checking">Listening for it…</string>
     <string name="player_radio_address_not_an_address">That is not a web address. A stream address starts with http:// or https://.</string>
@@ -497,6 +498,7 @@
     <string name="about_feed_the_llamas">feed the llamas</string>
     <!-- Toast when the donation link cannot be opened -->
     <string name="about_no_browser">There is no browser on this phone to open that with.</string>
+    <string name="about_no_browser_address">No browser is installed. The address is %1$s.</string>
     <!-- Button that closes the About dialog -->
     <string name="about_close">Close</string>
 
@@ -576,6 +578,8 @@
     <string name="library_server_password_note">The password is kept on this phone. It is not sent to the server: each request carries a one-time signature made from it instead. Anyone who can read your network can still replay a request, so a server reachable from outside the house wants https.</string>
     <!-- In place of the note above, once the server has turned out not to take the signature -->
     <string name="library_server_password_note_sent">The password is kept on this phone. This server does not take a one-time signature, so the password itself is sent with each request. Anyone who can read your network can read it, so a server reachable from outside the house wants https.</string>
+    <string name="library_server_address_note">A server at home without a certificate: type http:// in front of its address.</string>
+    <string name="library_server_plain_http">This is plain http, and the address is not on a home network: anyone between this phone and the server can read what is sent. Use https if the server has it.</string>
     <!-- Settings row under Music server. Tapping it steps through the values below. -->
     <string name="library_server_quality">Streaming quality</string>
     <string name="library_server_quality_original">As the server keeps it</string>

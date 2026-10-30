@@ -102,7 +102,13 @@ class CalmMusicSettingsManager(context: Context) {
     private fun authKey(config: SubsonicConfig) = config.normalisedBaseUrl + "\n" + config.user.trim()
 
     private fun getSubsonicConfigSync(): SubsonicConfig? {
-        val url = prefs.getString(KEY_SUBSONIC_URL, null) ?: return null
+        var url = prefs.getString(KEY_SUBSONIC_URL, null) ?: return null
+        // Before 2.18.14 an address typed without a scheme was used as http://. Keep the server
+        // a reader already connected to where it is: write that scheme in, once.
+        if (!PlainHttp.hasScheme(url) && url.isNotBlank()) {
+            url = "http://" + url.trim()
+            prefs.edit { putString(KEY_SUBSONIC_URL, url) }
+        }
         val user = prefs.getString(KEY_SUBSONIC_USER, null) ?: return null
         val stored = prefs.getString(KEY_SUBSONIC_PASSWORD, null) ?: return null
         val password = Secrets.open(stored) ?: return null

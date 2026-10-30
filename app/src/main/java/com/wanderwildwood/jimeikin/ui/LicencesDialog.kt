@@ -121,11 +121,7 @@ internal fun LicenceRow(text: String, onClick: () -> Unit) {
     }
 }
 
-/** The Kompakt may have nothing that opens a web address; it says so rather than doing nothing. */
+/** Opens a web address in a real browser (never the system's WebView shell); says so, with the address, when there is none. */
 internal fun openWeb(context: Context, url: String) {
-    runCatching {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }.onFailure {
-        Toast.makeText(context, context.getString(R.string.about_no_browser), Toast.LENGTH_SHORT).show()
-    }
+    openLink(context, url, context.getString(R.string.about_no_browser_address, url))
 }

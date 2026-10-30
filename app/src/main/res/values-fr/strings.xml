@@ -365,6 +365,7 @@
     <string name="player_radio_address_label">Adresse du flux</string>
     <string name="player_radio_address_name_label">Nom</string>
     <string name="player_radio_address_note">L\'adresse du flux lui-même, ou d\'une playlist.m3u ou.pls qui le nomme. Il est lu une fois, silencieusement, avant d\'être conservé.</string>
+    <string name="player_radio_address_plain">Ce flux est en http simple : d\'autres sur le réseau peuvent voir ce qui est écouté. Beaucoup de stations n\'offrent rien d\'autre.</string>
     <string name="player_radio_address_check">Vérifier et conserver</string>
     <string name="player_radio_address_checking">En écoute…</string>
     <string name="player_radio_address_not_an_address">Pas une adresse web : elle doit commencer par http:// ou https://.</string>
@@ -449,6 +450,7 @@
     <string name="about_feed_the_llamas">nourrir les lamas</string>
     <!-- Toast when the donation link cannot be opened -->
     <string name="about_no_browser">Il n\'y a pas de navigateur sur ce téléphone pour ouvrir ce lien.</string>
+    <string name="about_no_browser_address">Aucun navigateur n\'est installé. L\'adresse est %1$s.</string>
     <!-- Button that closes the About dialog -->
     <string name="about_close">Fermer</string>
     <!-- The music controls drawn on the lock screen -->
@@ -522,6 +524,8 @@
     <string name="library_server_password_note">Le mot de passe est conservé sur ce téléphone. Il n\'est pas envoyé au serveur : chaque requête porte une signature unique faite à partir de celui-ci. Quiconque peut lire votre réseau peut toujours rejouer une requête, donc un serveur accessible de l\'extérieur exige du HTTPS.</string>
     <!-- In place of the note above, once the server has turned out not to take the signature -->
     <string name="library_server_password_note_sent">Le mot de passe est conservé sur ce téléphone. Ce serveur n\'accepte pas de signature unique, donc le mot de passe est envoyé à chaque requête. Il est donc accessible à quiconque peut lire votre réseau, donc un serveur accessible de l\'extérieur exige du HTTPS.</string>
+    <string name="library_server_address_note">Un serveur à la maison sans certificat : écrivez http:// devant son adresse.</string>
+    <string name="library_server_plain_http">C\'est du http simple, et l\'adresse n\'est pas sur un réseau domestique : quiconque se trouve entre ce téléphone et le serveur peut lire ce qui est envoyé. Utilisez https si le serveur le propose.</string>
     <!-- Settings row under Music server. Tapping it steps through the values below. -->
     <string name="library_server_quality">Débit de diffusion</string>
     <string name="library_server_quality_original">Débit original du serveur</string>

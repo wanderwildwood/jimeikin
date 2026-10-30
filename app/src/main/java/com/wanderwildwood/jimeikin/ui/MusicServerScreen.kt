@@ -83,9 +83,18 @@ fun MusicServerScreen(
                 value = address,
                 onValueChange = { address = it },
                 label = { TextMMD(text = stringResource(R.string.library_server_address)) },
-                placeholder = { TextMMD(text = "192.168.1.10:4533") },
+                placeholder = { TextMMD(text = "music.example.org") },
                 singleLine = true,
                 readOnly = isBusy,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            TextMMD(
+                text = stringResource(
+                    if (com.wanderwildwood.jimeikin.data.PlainHttp.onOpenNetwork(address)) R.string.library_server_plain_http
+                    else R.string.library_server_address_note,
+                ),
+                style = MaterialTheme.typography.labelSmall,
             )
 
             Spacer(modifier = Modifier.height(12.dp))

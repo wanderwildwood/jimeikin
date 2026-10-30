@@ -1,6 +1,6 @@
 # Music Box — Privacy Policy
 
-Version 2.18.13. Last reviewed 27 October 2026.
+Version 2.18.14. Last reviewed 30 October 2026.
 
 ## The short version
 
@@ -41,11 +41,11 @@ From `app/src/main/AndroidManifest.xml`, plus one that the libraries add when th
 - `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`: so the system does not stop playback.
 - `READ_MEDIA_AUDIO`, and `READ_EXTERNAL_STORAGE` on Android 12 and older (which is what the Kompakt runs): asked for only when another app hands over a music file by its path rather than sharing it, so the app can play it. A file shared from another app comes with that app's permission to read that one file. You can refuse.
 
-The store also lists `com.wanderwildwood.jimeikin.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` because it reads the APK. AndroidX declares it for its own internal receivers; it is signature-level and namespaced to this app, so nothing else can hold it and it grants no access to anything on the phone.
+The app's listing also shows `com.wanderwildwood.jimeikin.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` because it reads the APK. AndroidX declares it for its own internal receivers; it is signature-level and namespaced to this app, so nothing else can hold it and it grants no access to anything on the phone.
 
 The manifest also names the FM radio apps that may be on the phone (`com.android.fmradio`, `com.mediatek.fmradio`, `com.caf.fmradio`), so the app can offer to open one; it reads nothing from them.
 
-Cleartext http is permitted (network security config), because a music server on a home network is usually served over plain http. Anything fetched over http can be read by others on that network. In practice that is only a server you typed in yourself: YouTube and the other services listed below use https.
+Cleartext http is permitted (network security config), because a music server on a home network is usually served over plain http and many radio stations stream over nothing else. An address you type without a scheme is taken as https; plain http is used only when you type `http://` yourself, and for a server or station that is not on a home network the screen says that what is sent can be read on the way. Anything fetched over http can be read by others on that network.
 
 Nothing a permission grants access to is sent anywhere, except as described in the next section.
 
