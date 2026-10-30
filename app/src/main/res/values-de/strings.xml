@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Music Box</string>
 
     <!-- ============================================================ -->
     <!-- Main screen, navigation and the actions around it -->
@@ -22,24 +23,24 @@
     <string name="main_title_radio">Radio</string>
     <string name="main_title_downloads">Downloads</string>
     <string name="main_title_settings">Einstellungen</string>
-    <string name="main_title_music_server">Musik-Server</string>
+    <string name="main_title_music_server">Musikserver</string>
     <!-- Top bar title when renaming an existing playlist -->
     <string name="main_title_rename_playlist">Wiedergabeliste umbenennen</string>
     <!-- Top bar title when making a new playlist; also the button in the add-to-playlist sheet -->
     <string name="main_title_new_playlist">Neue Wiedergabeliste</string>
 
     <!-- Top bar: icon descriptions read aloud by a screen reader -->
-    <string name="main_cd_cancel_playlist_edits">Bearbeitungen der Wiedergabeliste abbrechen</string>
-    <string name="main_cd_cancel_playlist_edit">Bearbeitung der Wiedergabeliste abbrechen</string>
+    <string name="main_cd_cancel_playlist_edits">Änderungen an der Wiedergabeliste verwerfen</string>
+    <string name="main_cd_cancel_playlist_edit">Änderung an der Wiedergabeliste verwerfen</string>
     <string name="main_cd_back">Zurück</string>
     <string name="main_cd_clear_search">Suche löschen</string>
     <!-- The magnifying-glass button (verb or noun, whichever reads naturally as a button) -->
     <string name="main_cd_search">Suchen</string>
-    <string name="main_cd_edit_playlists">Wiedergabeliste bearbeiten</string>
+    <string name="main_cd_edit_playlists">Wiedergabelisten bearbeiten</string>
     <string name="main_cd_settings">Einstellungen</string>
     <string name="main_cd_about">Über</string>
     <string name="main_cd_playlist_options">Optionen der Wiedergabeliste</string>
-    <string name="main_cd_now_playing">Wird jetzt wiedergegeben</string>
+    <string name="main_cd_now_playing">Wird gerade wiedergegeben</string>
 
     <!-- Top bar: the search field -->
     <!-- Placeholder shown inside the empty search field -->
@@ -56,8 +57,8 @@
     <string name="main_menu_delete">Löschen</string>
 
     <!-- Top bar: buttons in edit modes. %1$d is how many rows are ticked. -->
-    <string name="main_button_remove_count">Entferne %1$d</string>
-    <string name="main_button_delete_count">Lösche %1$d</string>
+    <string name="main_button_remove_count">%1$d entfernen</string>
+    <string name="main_button_delete_count">%1$d löschen</string>
     <!-- Button (finished picking songs to add to a playlist) -->
     <string name="main_button_done">Fertig</string>
 
@@ -68,7 +69,7 @@
     <string name="main_no_album_page">Keine Seite für dieses Album</string>
     <string name="main_download_started">Download gestartet</string>
     <!-- %1$s is a song title -->
-    <string name="main_plays_next">„%1$s“ spielt als Nächstes</string>
+    <string name="main_plays_next">„%1$s“ wird als Nächstes gespielt</string>
     <!-- %1$s is a song title -->
     <string name="main_added_to_queue">„%1$s“ zur Warteschlange hinzugefügt</string>
 
@@ -81,21 +82,21 @@
     <string name="main_song_already_in_playlist">Dieser Titel ist bereits in „%1$s“</string>
     <string name="main_song_not_added">Dieser Titel wurde nicht zur Wiedergabeliste hinzugefügt</string>
     <!-- %1$s is a playlist name -->
-    <string name="main_all_already_in_playlist">Diese Titel sind bereits in „%1$s“</string>
+    <string name="main_all_already_in_playlist">Diese Titel sind alle bereits in „%1$s“</string>
     <!-- A whole album or artist added to a playlist. %1$d is the count, %2$s the playlist name. -->
     <plurals name="main_added_songs_to_playlist">
-        <item quantity="one">Ein Titel wurde zu „%2$s“ hinzugefügt</item>
-        <item quantity="other">%1$d Titel wurden zu „%2$s“ hinzugefügt</item>
+        <item quantity="one">Ein Titel zu „%2$s“ hinzugefügt</item>
+        <item quantity="other">%1$d Titel zu „%2$s“ hinzugefügt</item>
     </plurals>
     <string name="main_songs_not_added">Diese Titel wurden nicht zur Wiedergabeliste hinzugefügt</string>
     <!-- Songs picked on the Add songs screen. %1$d is the count, %2$s the playlist name. -->
     <plurals name="main_added_picked_songs_to_playlist">
-        <item quantity="one">%1$d Titel wurde zu „%2$s“ hinzugefügt</item>
-        <item quantity="other">%1$d Titel wurden zu „%2$s“ hinzugefügt</item>
+        <item quantity="one">%1$d Titel zu „%2$s“ hinzugefügt</item>
+        <item quantity="other">%1$d Titel zu „%2$s“ hinzugefügt</item>
     </plurals>
     <!-- %1$s is a playlist name -->
     <string name="main_all_selected_already_in_playlist">Alle ausgewählten Titel sind bereits in „%1$s“</string>
-    <string name="main_could_not_add_songs">Konnte Titel nicht zur Wiedergabeliste hinzufügen</string>
+    <string name="main_could_not_add_songs">Titel konnten nicht zur Wiedergabeliste hinzugefügt werden</string>
 
     <!-- The add-to-playlist sheet -->
     <!-- Sheet title when one song is being added -->
@@ -105,8 +106,8 @@
         <item quantity="one">%1$d Titel zur Wiedergabeliste hinzufügen</item>
         <item quantity="other">%1$d Titel zur Wiedergabeliste hinzufügen</item>
     </plurals>
-    <string name="main_cd_cancel_add_to_playlist">Breche das Hinzufügen zur Wiedergabeliste ab</string>
-    <string name="main_no_playlists_yet">Bisher keine Wiedergabelisten</string>
+    <string name="main_cd_cancel_add_to_playlist">Hinzufügen zur Wiedergabeliste abbrechen</string>
+    <string name="main_no_playlists_yet">Noch keine Wiedergabelisten</string>
 
     <!-- The remove-songs-from-playlist sheet. %1$s is a playlist name. -->
     <plurals name="main_remove_songs_from_playlist_title">
@@ -115,13 +116,13 @@
     </plurals>
     <string name="main_cd_cancel_song_removal">Entfernen der Titel abbrechen</string>
     <plurals name="main_remove_songs_from_playlist_body">
-        <item quantity="one">Dadurch wird der ausgewählte Titel aus deiner Wiedergabeliste entfernt. Er bleibt in deiner Bibliothek.</item>
-        <item quantity="other">Dadurch werden die ausgewählten Titel aus deiner Wiedergabeliste entfernt. Sie bleiben in deiner Bibliothek.</item>
+        <item quantity="one">Dadurch wird der ausgewählte Titel aus dieser Wiedergabeliste entfernt. Der Titel bleibt in deiner Bibliothek.</item>
+        <item quantity="other">Dadurch werden die ausgewählten Titel aus dieser Wiedergabeliste entfernt. Die Titel bleiben in deiner Bibliothek.</item>
     </plurals>
     <!-- %1$d is the count, %2$s the playlist name -->
     <plurals name="main_removed_songs_from_playlist">
-        <item quantity="one">%1$d Titel wurde aus „%2$s“ entfernt</item>
-        <item quantity="other">%1$d Titel wurden aus „%2$s“ entfernt</item>
+        <item quantity="one">%1$d Titel aus „%2$s“ entfernt</item>
+        <item quantity="other">%1$d Titel aus „%2$s“ entfernt</item>
     </plurals>
     <string name="main_could_not_remove_songs">Titel konnten nicht aus der Wiedergabeliste entfernt werden</string>
     <!-- Button (verb) confirming the removal -->
@@ -136,15 +137,15 @@
     </plurals>
     <string name="main_cd_cancel_playlist_deletion">Löschen der Wiedergabelisten abbrechen</string>
     <plurals name="main_delete_playlists_body">
-        <item quantity="one">Dadurch wird die ausgewählte Wiedergabeliste dauerhaft entfernt. Titel in deiner Bibliothek werden nicht entfernt.</item>
-        <item quantity="other">Dadurch werden die ausgewählten Wiedergabelisten dauerhaft entfernt. Titel in deiner Bibliothek werden nicht entfernt.</item>
+        <item quantity="one">Dadurch wird die ausgewählte Wiedergabeliste endgültig entfernt. Titel in deiner Bibliothek werden nicht gelöscht.</item>
+        <item quantity="other">Dadurch werden die ausgewählten Wiedergabelisten endgültig entfernt. Titel in deiner Bibliothek werden nicht gelöscht.</item>
     </plurals>
     <!-- %1$d is the count -->
     <plurals name="main_deleted_playlists">
         <item quantity="one">%1$d Wiedergabeliste gelöscht</item>
         <item quantity="other">%1$d Wiedergabelisten gelöscht</item>
     </plurals>
-    <string name="main_could_not_delete_playlists">Konnte Wiedergabelisten nicht löschen</string>
+    <string name="main_could_not_delete_playlists">Wiedergabelisten konnten nicht gelöscht werden</string>
     <!-- Button (verb) confirming the deletion -->
     <string name="main_button_delete">Löschen</string>
 
@@ -152,29 +153,67 @@
     <string name="main_removed_from_library">Aus der Bibliothek entfernt</string>
     <!-- %1$s is the error's own message, not translated -->
     <string name="main_failed_to_remove">Entfernen fehlgeschlagen: %1$s</string>
-    <string name="main_deleting_download">Lösche Download...</string>
-    <string name="main_deleted_file">Lösche Datei</string>
-    <string name="main_could_not_delete_file">Konnte Datei nicht löschen</string>
-    <string name="main_streamed_nothing_to_delete">Das wird gestreamt, deswegen ist nichts auf dem Telefon, was zu löschen wäre.</string>
+    <string name="main_deleting_download">Download wird gelöscht…</string>
+    <string name="main_deleted_file">Datei gelöscht</string>
+    <string name="main_could_not_delete_file">Datei konnte nicht gelöscht werden</string>
+    <string name="main_removed_download">Download entfernt</string>
+    <string name="main_could_not_remove_download">Download konnte nicht entfernt werden</string>
+    <string name="main_download_file_kept">Der Download ist noch da: Android hat das Löschen der Datei nicht erlaubt</string>
+    <string name="main_streamed_nothing_to_delete">Dieser Titel wird gestreamt, auf dem Telefon gibt es also nichts zu löschen</string>
 
-    <!-- Keeping server songs on the phone (snackbars) -->
-    <string name="main_all_on_phone_already">Diese Titel sind bereits auf dem Telefon</string>
+    <!-- Downloading songs from the music server or YouTube (snackbars, and the line along the bottom) -->
+    <string name="main_all_on_phone_already">Diese Titel sind alle schon auf diesem Telefon</string>
+    <string name="main_song_on_phone_already">„%1$s“ ist schon auf diesem Telefon</string>
     <!-- %1$d is how many songs are being downloaded -->
+    <plurals name="main_keeping_songs">
+        <item quantity="one">Ein Titel wird heruntergeladen</item>
+        <item quantity="other">%1$d Titel werden heruntergeladen</item>
+    </plurals>
     <!-- %1$d is how many songs downloaded -->
-    <!-- %1$d songs downloaded, %2$d failed -->
-    <string name="main_not_on_a_server">Das ist auf keinem Server</string>
+    <plurals name="main_songs_on_phone_now">
+        <item quantity="one">Ein Titel heruntergeladen</item>
+        <item quantity="other">%1$d Titel heruntergeladen</item>
+    </plurals>
+    <string name="main_not_on_a_server">Dieser Titel ist auf keinem Server</string>
     <!-- %1$s is a song title -->
+    <string name="main_keeping_song">„%1$s“ wird heruntergeladen</string>
     <!-- %1$s is a song title -->
+    <string name="main_song_on_phone_now">„%1$s“ heruntergeladen</string>
+    <!-- %1$s is a song title -->
+    <string name="download_line_failed_one">„%1$s“ konnte nicht heruntergeladen werden</string>
+    <!-- %1$d songs did not download -->
+    <plurals name="download_line_failed">
+        <item quantity="one">Ein Titel wurde nicht heruntergeladen</item>
+        <item quantity="other">%1$d Titel wurden nicht heruntergeladen</item>
+    </plurals>
+    <!-- The line along the bottom while songs download: "Downloading 4 of 12", then the song and its percent -->
+    <string name="download_line_underway">%1$d von %2$d werden heruntergeladen</string>
+    <string name="download_line_underway_one">Wird heruntergeladen</string>
+    <!-- Joins the parts of the download line: "Downloading 4 of 12 · Song title · 40%" -->
+    <string name="download_line_join">%1$s · %2$s</string>
+    <!-- The line along the bottom, for screen readers: pressing it opens Downloads -->
+    <string name="download_line_open">Downloads öffnen</string>
+    <!-- Notification button that stops every download (a verb) -->
+    <string name="download_stop">Anhalten</string>
+    <!-- Name of the downloads notification category in Android's settings -->
+    <string name="download_channel">Downloads</string>
 
     <!-- Music server (status line on the Music server screen, and the summary in Settings) -->
     <string name="main_server_connecting">Verbinde</string>
-    <string name="main_server_reading_library">Lese die Bibliothek</string>
+    <string name="main_server_reading_library">Bibliothek wird gelesen</string>
     <!-- %1$d albums read so far, %2$d albums in all -->
-    <string name="main_server_reading_album">Lese die Bibliothek, Album %1$d von %2$d</string>
+    <string name="main_server_reading_album">Bibliothek wird gelesen, Album %1$d von %2$d</string>
+    <!-- %1$d songs read so far, %2$d songs in all -->
+    <string name="main_server_reading_songs">Bibliothek wird gelesen, Titel %1$d von %2$d</string>
+    <!-- %1$d folders read so far; how many there are is not known until the end -->
+    <string name="main_server_reading_folders">Bibliothek wird gelesen, Ordner %1$d</string>
+    <!-- Added after the songs line, only when the server does not take Subsonic's token sign-in: older than Subsonic 1.13, or one such as Nextcloud Music -->
+    <!-- %1$s is the songs line above, e.g. "12 songs from the server are in the library" -->
+    <string name="main_server_sends_password">%1$s. Dieser Server nimmt keine Signatur an, deshalb wird das Passwort selbst mit jeder Anfrage gesendet. Verwende außerhalb des eigenen Netzwerks eine https-Adresse.</string>
     <!-- %1$d is how many songs were read. English uses the same wording for every count. -->
     <plurals name="main_server_songs_in_library">
-        <item quantity="one">Ein Titel vom Server ist jetzt in der Bibliothek</item>
-        <item quantity="other">%1$d Titel vom Server sind jetzt in der Bibliothek</item>
+        <item quantity="one">%1$d Titel vom Server ist in der Bibliothek</item>
+        <item quantity="other">%1$d Titel vom Server sind in der Bibliothek</item>
     </plurals>
     <!-- Status after the server has been forgotten -->
     <string name="main_server_forgotten">Vergessen</string>
@@ -182,23 +221,46 @@
     <string name="main_server_not_connected">Nicht verbunden</string>
 
     <!-- Radio (snackbars) -->
-    <string name="main_station_no_stream">Dieser Sender wollte keinen Stream ausgeben</string>
+    <string name="main_station_no_stream">Dieser Sender gab keinen Stream heraus</string>
     <!-- %1$s is a radio station's name -->
-    <string name="main_station_kept">„%1$s“ wird behalten</string>
+    <string name="main_station_kept">„%1$s“ wurde gespeichert</string>
 
     <!-- ============================================================ -->
     <!-- Now playing, radio, playlists and downloads -->
 
     <!-- Now Playing screen: top bar -->
     <string name="player_back">Zurück</string>
-    <string name="player_now_playing_title">Wird wiedergegeben</string>
+    <string name="player_now_playing_title">Wird gerade wiedergegeben</string>
+    <!-- Now Playing: opens the page listing the songs still to come -->
+    <string name="player_up_next">Als Nächstes</string>
+    <string name="queue_title">Als Nächstes</string>
+    <string name="queue_playing">Läuft</string>
+    <string name="queue_nothing_after">Nach diesem Titel kommt nichts mehr</string>
+    <plurals name="queue_songs_to_come">
+        <item quantity="one">Noch %1$d Titel</item>
+        <item quantity="other">Noch %1$d Titel</item>
+    </plurals>
+    <string name="queue_move_up">Früher spielen</string>
+    <string name="queue_move_down">Später spielen</string>
+    <string name="queue_remove">Aus der Warteschlange nehmen</string>
+    <string name="queue_save_as_playlist">Als Wiedergabeliste speichern</string>
+    <!-- Album page: takes the album's downloads and saved songs out of the library -->
+    <string name="library_album_remove">Aus der Bibliothek entfernen</string>
+    <plurals name="library_album_remove_confirm">
+        <item quantity="one">Erneut drücken, um %1$d Titel zu entfernen</item>
+        <item quantity="other">Erneut drücken, um %1$d Titel zu entfernen</item>
+    </plurals>
+    <plurals name="main_removed_album">
+        <item quantity="one">%1$d Titel entfernt</item>
+        <item quantity="other">%1$d Titel entfernt</item>
+    </plurals>
     <!-- Now Playing: small button that cancels a download in progress (a verb) -->
     <string name="player_download_stop">Anhalten</string>
     <string name="player_delete_download">Download löschen</string>
     <!-- Now Playing: button that downloads the song (a verb) -->
     <string name="player_download">Herunterladen</string>
     <string name="player_add_to_playlist">Zur Wiedergabeliste hinzufügen</string>
-    <string name="player_shuffle_queue">Zufällige Wiedergabe</string>
+    <string name="player_shuffle_queue">Warteschlange mischen</string>
     <string name="player_repeat_off">Wiederholung aus</string>
     <string name="player_repeat_queue">Warteschlange wiederholen</string>
     <string name="player_repeat_current_song">Aktuellen Titel wiederholen</string>
@@ -214,33 +276,37 @@
     <!-- Now Playing: button label, "Pause" is a verb -->
     <string name="player_pause">Pause</string>
     <!-- Now Playing: button label, "Play" is a verb -->
-    <string name="player_play">Wiedergabe</string>
+    <string name="player_play">Abspielen</string>
     <plurals name="player_seek_back_seconds">
-        <item quantity="one">Spule %1$d Sekunde zurück</item>
-        <item quantity="other">Spule %1$d Sekunden zurück</item>
+        <item quantity="one">%1$d Sekunde zurück</item>
+        <item quantity="other">%1$d Sekunden zurück</item>
     </plurals>
     <plurals name="player_seek_on_seconds">
-        <item quantity="one">Spule %1$d Sekunde vor</item>
-        <item quantity="other">Spule %1$d Sekunden vor</item>
+        <item quantity="one">%1$d Sekunde vor</item>
+        <item quantity="other">%1$d Sekunden vor</item>
     </plurals>
     <!-- Now Playing: tiny label under the seek arrows, a number of seconds, e.g. "10s" -->
     <string name="player_seek_seconds_short">%1$ds</string>
     <!-- Now Playing: shown in place of the play button while a radio stream connects -->
     <string name="player_waiting_live">Warte</string>
     <!-- Now Playing: shown in place of the play button while a song loads -->
-    <string name="player_loading">Lade</string>
+    <string name="player_loading">Lädt</string>
 
     <!-- Song and playlist rows -->
     <!-- Song row: shown instead of an artist for a file with no artist tag -->
     <string name="player_song_local_file">Lokale Datei</string>
     <!-- Song row: icon description on the row of the song that is playing -->
-    <string name="player_song_now_playing">Wird wiedergegeben</string>
-    <string name="player_song_close_menu">Schließe Menü</string>
+    <string name="player_song_now_playing">Wird gerade wiedergegeben</string>
+    <string name="player_song_close_menu">Menü schließen</string>
     <string name="player_song_play_next">Als Nächstes spielen</string>
-    <string name="player_song_add_to_queue">Füge zur Warteschlange hinzu</string>
+    <string name="player_song_add_to_queue">Zur Warteschlange hinzufügen</string>
+    <string name="player_song_keep_on_phone">Herunterladen</string>
     <!-- Song row menu: "Delete" is a verb; tapping it once arms it -->
-    <string name="player_song_delete">Entfernen</string>
-    <string name="player_song_delete_file_confirm">Entfernen — das löscht die Datei; tippe erneut</string>
+    <string name="player_song_delete">Löschen</string>
+    <string name="player_song_delete_file_confirm">Löschen — die Datei wird gelöscht; tippe erneut</string>
+    <!-- Song menu, on a song downloaded from the music server or YouTube. Removing it leaves a server song streaming again -->
+    <string name="player_song_remove_download">Download entfernen</string>
+    <string name="player_song_remove_download_confirm">Download entfernen — tippe erneut</string>
     <string name="player_song_remove_from_library_confirm">Aus der Bibliothek entfernen — tippe erneut</string>
     <string name="player_song_remove_from_library">Aus der Bibliothek entfernen</string>
     <!-- Playlist row: how many songs a playlist holds -->
@@ -250,18 +316,22 @@
     </plurals>
 
     <!-- Playlist screen -->
-    <string name="player_playlist_load_failed">Laden der Wiedergabeliste schlug fehl</string>
-    <string name="player_playlist_save_order_failed">Sichern der Reihenfolge schlug fehl</string>
-    <string name="player_playlist_loading">Lade Wiedergabeliste...</string>
+    <string name="player_playlist_load_failed">Wiedergabeliste konnte nicht geladen werden</string>
+    <string name="player_playlist_save_order_failed">Reihenfolge konnte nicht gespeichert werden</string>
+    <string name="player_playlist_loading">Wiedergabeliste wird geladen…</string>
     <string name="player_playlist_empty">Keine Titel in dieser Wiedergabeliste</string>
     <!-- Playlist screen: button and icon description, adds songs to the playlist -->
-    <string name="player_playlist_add_songs">Füge Titel hinzu</string>
-    <string name="player_playlist_shuffle">Zufällige Wiedergabe</string>
-    <string name="player_playlist_move_up">Nach oben verschieben</string>
-    <string name="player_playlist_move_down">Nach unten verschieben</string>
+    <string name="player_playlist_add_songs">Titel hinzufügen</string>
+    <string name="player_playlist_shuffle">Wiedergabeliste mischen</string>
+    <string name="player_playlist_keep_on_phone">Wiedergabeliste herunterladen</string>
+    <string name="player_playlist_move_up">Nach oben</string>
+    <string name="player_playlist_move_down">Nach unten</string>
 
     <!-- Adding songs to a playlist -->
     <string name="player_add_songs_empty">Keine Titel zum Hinzufügen verfügbar</string>
+    <!-- Search field above the list of songs to add to a playlist -->
+    <string name="player_add_songs_find">Titel suchen</string>
+    <string name="player_add_songs_no_match">Keine passenden Titel.</string>
 
     <!-- Naming a playlist -->
     <string name="player_playlist_name">Name der Wiedergabeliste</string>
@@ -272,29 +342,44 @@
     <string name="player_create">Erstellen</string>
 
     <!-- Playlists list -->
-    <string name="player_playlists_empty">Bisher keine Wiedergabelisten</string>
-    <string name="player_playlists_add">Füge Wiedergabeliste hinzu</string>
+    <string name="player_playlists_empty">Noch keine Wiedergabelisten</string>
+    <string name="player_playlists_add">Wiedergabeliste hinzufügen</string>
     <string name="player_playlists_new">Neue Wiedergabeliste</string>
 
     <!-- Downloads screen -->
-    <string name="player_downloads_empty">Keine aktuellen Downloads</string>
+    <string name="player_downloads_empty">Keine neuen Downloads</string>
     <!-- Downloads: icon description, cancels one download (a verb) -->
     <string name="player_downloads_cancel">Abbrechen</string>
     <!-- Downloads: a download queued but not started -->
-    <string name="player_downloads_waiting">Warte</string>
+    <string name="player_downloads_waiting">Wartet</string>
     <!-- Downloads: progress of one download, e.g. "42%" -->
     <string name="player_downloads_percent">%1$d%%</string>
-    <string name="player_downloads_done">heruntergeladen</string>
+    <string name="player_downloads_done">Heruntergeladen</string>
+    <string name="player_downloads_failed">Nicht heruntergeladen</string>
     <string name="player_downloads_canceled">Abgebrochen</string>
+    <!-- Downloads: waiting or underway when the app last closed, and never finished -->
+    <string name="player_downloads_not_finished">Nicht abgeschlossen — die App wurde geschlossen</string>
+    <!-- Downloads: a download underway that cannot say how far along it is -->
+    <string name="player_downloads_underway">Wird heruntergeladen</string>
+    <!-- Downloads: asks again for one that did not download (a verb) -->
+    <string name="player_downloads_retry">Erneut versuchen</string>
+    <!-- Downloads: asks again for every one that did not download -->
+    <string name="player_downloads_retry_all">Alle erneut versuchen</string>
+    <!-- Downloads: forgets the finished ones (a verb) -->
+    <string name="player_downloads_clear">Leeren</string>
+    <!-- Downloads: where a song came from, under its artist -->
+    <string name="player_downloads_from_server">Von deinem Musikserver</string>
+    <!-- Library top bar: icon description, opens Downloads -->
+    <string name="main_cd_downloads">Downloads</string>
 
     <!-- Radio screen -->
-    <string name="player_radio_reading_list">Lese die Liste ein...</string>
-    <string name="player_radio_find_town">Finde eine Stadt</string>
+    <string name="player_radio_reading_list">Liste wird gelesen…</string>
+    <string name="player_radio_find_town">Stadt suchen</string>
     <!-- Radio: heading over the list of every country -->
     <string name="player_radio_everywhere">Überall</string>
-    <string name="player_radio_find_country_or_town">Finde ein Land oder eine Stadt</string>
-    <string name="player_radio_favorite_hold_to_remove">Ein Favorit — halte zum Entfernen</string>
-    <string name="player_radio_hold_to_add">Halte gedrückt, um ihn zu den Favoriten hinzuzufügen</string>
+    <string name="player_radio_find_country_or_town">Land oder Stadt suchen</string>
+    <string name="player_radio_favorite_hold_to_remove">Ein Lieblingssender — halten zum Entfernen</string>
+    <string name="player_radio_hold_to_add">Halten, um zu den Lieblingssendern hinzuzufügen</string>
     <!-- Radio: how many stations a country or town has -->
     <plurals name="player_radio_station_count">
         <item quantity="one">%1$d Sender</item>
@@ -303,14 +388,26 @@
     <string name="player_radio_nothing_by_that_name">Nichts unter diesem Namen</string>
     <string name="player_radio_no_stations_here">Hier gibt es keine Sender</string>
     <string name="player_radio_by_place">Sender nach Ort</string>
-    <string name="player_radio_by_place_subtitle">Woanders, jetzt live on Air</string>
-    <string name="player_radio_fm">FM-Radio</string>
-    <string name="player_radio_fm_subtitle">Öffnet das Radioprogramm des Telefons. Benötigt Kopfhörer.</string>
-    <string name="player_radio_no_favorites">Noch keine favorisierten Radiostationen</string>
-    <string name="player_radio_favorites">Favorisierte Sender</string>
-    <string name="player_radio_favorites_hint">Halte einen Sender irgendwo in dieser App gedrückt, um ihn hier hinzuzufügen.</string>
+    <string name="player_radio_by_place_subtitle">Woanders, gerade auf Sendung</string>
+    <string name="player_radio_by_address">Sender über seine Adresse hinzufügen</string>
+    <string name="player_radio_by_address_subtitle">Für einen, der hier fehlt: Stream einfügen</string>
+    <string name="player_radio_address_label">Stream-Adresse</string>
+    <string name="player_radio_address_name_label">Name</string>
+    <string name="player_radio_address_note">Die Adresse des Streams selbst oder einer .m3u- oder .pls-Playlist, die ihn nennt. MP3-, AAC-, Ogg-, Opus-, FLAC- und HLS-Streams (.m3u8) werden abgespielt. Der Stream wird einmal stumm abgespielt, bevor er gespeichert wird.</string>
+    <string name="player_radio_address_plain">Dieser Stream läuft über einfaches http, andere im Netzwerk können also sehen, was läuft. Viele Sender bieten nichts anderes an.</string>
+    <string name="player_radio_address_check">Prüfen und speichern</string>
+    <string name="player_radio_address_checking">Wird angehört…</string>
+    <string name="player_radio_address_not_an_address">Das ist keine Webadresse. Eine Stream-Adresse beginnt mit http:// oder https://.</string>
+    <string name="player_radio_address_unreachable">Unter dieser Adresse hat niemand geantwortet.</string>
+    <string name="player_radio_address_empty_playlist">Diese Playlist nennt keinen Stream.</string>
+    <string name="player_radio_address_does_not_play">Es hat etwas geantwortet, aber es spielt nicht. Der Stream wurde nicht gespeichert.</string>
+    <string name="player_radio_fm">UKW-Radio</string>
+    <string name="player_radio_fm_subtitle">Öffnet den Tuner des Telefons. Kopfhörer erforderlich.</string>
+    <string name="player_radio_no_favorites">Noch keine Lieblingssender</string>
+    <string name="player_radio_favorites">Lieblingssender</string>
+    <string name="player_radio_favorites_hint">Halte einen Sender irgendwo in dieser App gedrückt, um ihn hier abzulegen.</string>
     <string name="player_radio_search_label">Sender, Stadt oder Postleitzahl</string>
-    <string name="player_radio_searching">Suche...</string>
+    <string name="player_radio_searching">Suche…</string>
     <!-- Radio search: heading over the towns nearest a postcode; %1$s is what was typed -->
     <string name="player_radio_near">In der Nähe von %1$s</string>
     <!-- Radio search: heading over matching stations -->
@@ -320,7 +417,7 @@
     <!-- Radio search: heading over matching towns -->
     <string name="player_radio_places">Orte</string>
     <!-- Radio search: no results; %1$s is what was typed -->
-    <string name="player_radio_nothing_for">Nichts für „%1$s“ gefunden</string>
+    <string name="player_radio_nothing_for">Nichts für „%1$s“</string>
 
     <!-- ============================================================ -->
     <!-- Library, search, settings and About -->
@@ -328,17 +425,17 @@
     <!-- Settings screen: the list of music folders on the phone, and the scan that reads them -->
     <string name="settings_no_folders">Noch keine Ordner</string>
     <!-- Button: choose another folder of music for the app to read -->
-    <string name="settings_add_folder">Füge einen Ordner hinzu</string>
+    <string name="settings_add_folder">Ordner hinzufügen</string>
     <!-- Button: scan the chosen folders again for new or changed songs -->
-    <string name="settings_rescan_folders">Lies sie noch einmal aus</string>
+    <string name="settings_rescan_folders">Erneut einlesen</string>
     <!-- Shown in bold above a folder after one tap; a second tap removes the folder -->
-    <string name="settings_remove_folder_armed">Halte das Auslesen dieses Ordners an — seine Titel verlassen die Bibliothek; tippe erneut</string>
+    <string name="settings_remove_folder_armed">Diesen Ordner nicht mehr einlesen — seine Titel verlassen die Bibliothek; tippe erneut</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
-    <string name="settings_scan_adding">Zur Bibliothek hinzufügen, %1$d%%</string>
+    <string name="settings_scan_adding">Wird zur Bibliothek hinzugefügt, %1$d%%</string>
     <!-- Scan progress, before the number of songs is known -->
-    <string name="settings_scan_looking">Suche in den Ordnern</string>
+    <string name="settings_scan_looking">Ordner werden durchsucht</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
-    <string name="settings_scan_reading">Lese Titel, %1$d%%</string>
+    <string name="settings_scan_reading">Titel werden gelesen, %1$d%%</string>
     <!-- After a scan. %1$d is the number of songs found -->
     <plurals name="settings_scan_found">
         <item quantity="one">%1$d Titel gefunden</item>
@@ -351,80 +448,174 @@
     </plurals>
     <!-- After a scan. %1$d is the number of songs whose files were gone -->
     <plurals name="settings_scan_removed_missing">
-        <item quantity="one">%1$d Titel ist nicht mehr in den Ordnern oder wurde aus der Bibliothek entfernt. Die Dateien wurden nicht angefasst.</item>
-        <item quantity="other">%1$d Titel sind nicht mehr in den Ordnern oder wurden aus der Bibliothek entfernt. Die Dateien wurden nicht angefasst.</item>
+        <item quantity="one">%1$d Titel war nicht mehr in den Ordnern und hat die Bibliothek verlassen. Die Dateien wurden nicht angefasst.</item>
+        <item quantity="other">%1$d Titel waren nicht mehr in den Ordnern und haben die Bibliothek verlassen. Die Dateien wurden nicht angefasst.</item>
     </plurals>
     <!-- After a scan, when exactly one folder could not be read -->
-    <string name="settings_scan_one_folder_unreadable">Ein Ordner konnte nicht gelesen werden. Seine Titel wurden in Ruhe gelassen.</string>
+    <string name="settings_scan_one_folder_unreadable">Ein Ordner konnte nicht gelesen werden. Seine Titel wurden nicht angefasst.</string>
     <!-- After a scan. %1$d is the number of folders that could not be read (never 1: that case has its own line above) -->
     <plurals name="settings_scan_folders_unreadable">
-        <item quantity="one">%1$d Ordner konnte nicht gelesen werden. Ihre Titel wurden in Ruhe gelassen.</item>
-        <item quantity="other">%1$d Ordner konnten nicht gelesen werden. Ihre Titel wurden in Ruhe gelassen.</item>
+        <item quantity="one">%1$d Ordner konnte nicht gelesen werden. Seine Titel wurden nicht angefasst.</item>
+        <item quantity="other">%1$d Ordner konnten nicht gelesen werden. Ihre Titel wurden nicht angefasst.</item>
     </plurals>
 
+    <!-- Settings switch: the song playing is handed to the Glance app for its lock-screen panel -->
+    <string name="settings_playing_on_lock_screen">Zeigen, was in Glance läuft</string>
     <!-- Row title: whether the app may keep playing in the background -->
+    <!-- Settings row for the optional lock-screen music controls, which are turned on in Android's Accessibility settings -->
+    <string name="settings_lockscreen_controls">Sperrbildschirm-Steuerung</string>
+    <string name="settings_lockscreen_controls_on">An</string>
+    <string name="settings_lockscreen_controls_off">Aus — in den Bedienungshilfen einschalten</string>
     <string name="settings_background_playback">Wiedergabe im Hintergrund</string>
     <!-- Value under "Background playback" when the battery exemption is granted -->
     <string name="settings_background_playback_allowed">Erlaubt</string>
     <!-- Value under "Background playback" when it is not granted; tapping the row asks for it -->
-    <string name="settings_background_playback_not_allowed">Das Betriebssystem könnte es stoppen — tippe, um es zu erlauben</string>
+    <string name="settings_background_playback_not_allowed">Das System kann sie stoppen — tippen zum Erlauben</string>
     <!-- Row that opens the Downloads screen -->
     <string name="settings_downloads">Downloads</string>
     <!-- Row that opens the music server (Navidrome/Subsonic) screen -->
-    <string name="settings_music_server">Musik-Server</string>
+    <string name="settings_music_server">Musikserver</string>
 
     <!-- About dialog. Keep the names of the app, people, projects and licences as they are -->
     <!-- Heading. %1$s is the version number, e.g. 2.8.14 -->
     <string name="about_title">Music Box %1$s</string>
+    <string name="about_privacy_heading">Datenschutz</string>
+    <string name="about_privacy_close">Es gibt keine Werbung, keine Analysen und kein Tracking. Heruntergeladene Titel werden in Music/Music Box gespeichert, wo andere Apps auf dem Telefon sie sehen können. Die Sperrbildschirm-Steuerung ist, wenn du sie einschaltest, ein Bedienungshilfen-Dienst, der die Schaltflächen dieser App über den Sperrbildschirm legt und sonst nichts liest. „Zeigen, was in Glance läuft“ übergibt, wenn du es einschaltest, den Namen des Titels an Glance auf diesem Telefon.</string>
+    <string name="about_terms_heading">Bedingungen</string>
+    <string name="about_open_source_heading">Open Source</string>
+    <string name="about_licences_row">Lizenzen</string>
+    <string name="licences_title">Lizenzen</string>
+    <string name="licences_source_heading">Quellcode</string>
+    <string name="licences_source_link">github.com/wanderwildwood/jimeikin</string>
+    <string name="licences_licence_heading">Lizenz</string>
+    <string name="licences_licence_body">Music Box ist freie Software unter der GNU General Public License, ausschließlich Version 3. Copyright wander wildwood. Es kommt ohne Gewährleistung. Baut auf CalmMusic von David Ray Wilson auf, ebenfalls GPL-3.0.</string>
+    <string name="licences_built_with_heading">Baut auf</string>
+    <string name="licences_texts_heading">Vollständige Lizenztexte</string>
+    <string name="about_built_on">Baut auf CalmMusic von David Ray Wilson auf, GPL-3.0.</string>
+    <!-- A link that opens the app's source code in a browser -->
+    <string name="about_source">Quellcode: github.com/wanderwildwood/jimeikin</string>
     <!-- The donation link label, beside a drawing of a llama. A fixed phrase: a verb and an object, so the reader knows what pressing it does -->
-    <string name="about_feed_the_llamas">Füttere die Llamas</string>
+    <string name="about_feed_the_llamas">Füttere die Lamas</string>
     <!-- Toast when the donation link cannot be opened -->
-    <string name="about_no_browser">Es gibt keinen Browser auf diesem Telefon, um den Link zu öffnen.</string>
+    <string name="about_no_browser">Auf diesem Telefon gibt es keinen Browser, um das zu öffnen.</string>
     <string name="about_no_browser_address">Es ist kein Browser installiert. Die Adresse lautet %1$s.</string>
     <!-- Button that closes the About dialog -->
     <string name="about_close">Schließen</string>
+
+    <!-- The music controls drawn on the lock screen -->
+    <string name="lockscreen_nothing_named">Music Box</string>
+    <string name="lockscreen_open_app">Music Box öffnen</string>
+    <string name="lockscreen_previous">Zurück</string>
+    <string name="lockscreen_play_pause">Abspielen oder pausieren</string>
+    <string name="lockscreen_next">Weiter</string>
+    <string name="lockscreen_stop">Anhalten</string>
+    <!-- Shown in Android's Accessibility settings under this service -->
+    <string name="lockscreen_service_label">Music Box Sperrbildschirm-Steuerung</string>
+    <string name="lockscreen_service_description">Zeigt die Steuerung von Music Box auf dem Sperrbildschirm, während sie spielt. Nur ein Bedienungshilfen-Dienst darf über dem Sperrbildschirm zeichnen, deshalb ist dies einer. Er hört nur auf den System-Sperrbildschirm und liest dort eine Sache: ob das PIN-Feld angezeigt wird, damit die Steuerung Platz macht. Er liest keine andere App, und nichts verlässt das Telefon.</string>
+
+    <!-- Read aloud for the small mark on a row that came from the music server or YouTube -->
+    <string name="origin_server">Streams von deinem Musikserver</string>
+    <string name="origin_server_download">Von deinem Musikserver heruntergeladen</string>
+
+    <!-- Editing a song's or an album's tags -->
+    <string name="main_title_edit_details">Details bearbeiten</string>
+    <!-- Song long-press menu item -->
+    <string name="player_song_edit_details">Details bearbeiten</string>
+    <string name="library_album_edit">Album bearbeiten</string>
+    <string name="edit_details_title">Titel</string>
+    <string name="edit_details_artist">Künstler</string>
+    <string name="edit_details_album">Album</string>
+    <string name="edit_details_album_artist">Album-Künstler</string>
+    <string name="edit_details_track">Titelnummer</string>
+    <!-- %1$d is how many songs on the phone the change is written to -->
+    <string name="edit_details_album_note">Wird in alle %1$d Titel dieses Albums auf dem Telefon geschrieben.</string>
+    <string name="edit_details_reading">Datei wird gelesen…</string>
+    <!-- Shown while saving. %1$d is the song being written, %2$d how many there are -->
+    <string name="edit_details_progress">%1$d von %2$d wird gespeichert…</string>
+    <string name="edit_details_unsupported">Das Format dieser Datei kann nicht bearbeitet werden. Sie bleibt unverändert.</string>
+    <string name="edit_details_failed">Speichern nicht möglich. Die Datei bleibt unverändert.</string>
+    <!-- %1$d songs could not be saved, of %2$d -->
+    <string name="edit_details_some_failed">%1$d von %2$d Titeln konnten nicht gespeichert werden und bleiben unverändert.</string>
+    <string name="main_title_file_under">Einsortieren unter</string>
+    <string name="library_artist_file_under">Einsortieren unter…</string>
+    <string name="file_under_lead">%1$s unter einem anderen Künstler einsortieren. Jeder Titel behält seine eigene Angabe.</string>
+    <string name="file_under_counting">Titel werden gezählt…</string>
+    <string name="file_under_in_app_note">Titel, die keine Dateien auf dem Telefon sind, werden nur in der App hier einsortiert.</string>
+    <plurals name="file_under_confirm">
+        <item quantity="one">Erneut tippen, um %1$d Titel unter %2$s einzusortieren</item>
+        <item quantity="other">Erneut tippen, um %1$d Titel unter %2$s einzusortieren</item>
+    </plurals>
+
+    <!-- Edit name: a name shown in this app only, for a song, an album or an artist -->
+    <string name="edit_name_menu">Namen bearbeiten</string>
+    <string name="edit_name_title">Namen bearbeiten</string>
+    <!-- Text field label -->
+    <string name="edit_name_name">Name</string>
+    <string name="edit_name_note">Wird nur in dieser App angezeigt. Leer lassen, um den ursprünglichen Namen zu behalten.</string>
+
+    <!-- Hearted songs -->
+    <!-- Song long-press menu items -->
+    <string name="player_song_heart">Herz hinzufügen</string>
+    <string name="player_song_unheart">Herz entfernen</string>
+    <!-- Read aloud for the small heart on a hearted song's row -->
+    <string name="hearted_mark">Mit Herz</string>
+    <!-- The list of hearted songs, among the playlists, and its screen's title -->
+    <string name="hearted_title">Mit Herz</string>
+    <string name="hearted_shuffle">Titel mit Herz mischen</string>
+    <string name="hearted_empty">Keine Titel mit Herz. Halte einen Titel gedrückt und wähle „Herz hinzufügen“.</string>
 
     <!-- Music server screen: where a Navidrome or other Subsonic server is entered -->
     <!-- Text field label: the server's address -->
     <string name="library_server_address">Adresse</string>
     <!-- Text field label -->
-    <string name="library_server_username">Nutzername</string>
+    <string name="library_server_username">Benutzername</string>
     <!-- Text field label -->
     <string name="library_server_password">Passwort</string>
     <!-- Button, when no server is set up yet -->
     <string name="library_server_connect">Verbinden</string>
     <!-- Button, when a server is already set up -->
     <string name="library_server_connect_again">Erneut verbinden</string>
-    <string name="library_server_password_note_sent">Das Passwort bleibt auf diesem Telefon. Dieser Server nimmt keine einmalige Signatur an, deshalb wird das Passwort selbst mit jeder Anfrage gesendet. Jeder, der dein Netzwerk mitlesen kann, kann es lesen. Somit sollte jeder Server, der außerhalb des eigenen Netzwerks erreichbar ist, HTTPS verwenden.</string>
-    <string name="library_server_address_note">Ein Server zu Hause ohne Zertifikat: http:// vor die Adresse schreiben.</string>
-    <string name="library_server_plain_http">Das ist einfaches http, und die Adresse liegt nicht in einem Heimnetz: Jeder zwischen diesem Telefon und dem Server kann mitlesen. Nimm https, wenn der Server es hat.</string>
-    <string name="library_server_password_note">Das Passwort bleibt auf diesem Telefon. Es wird nicht an den Server gesendet: Jede Anfrage trägt eine einmalige Signatur, die darauf basiert. Jeder, der dein Netzwerk mitlesen kann, kann diese Anfrage speichern und wiederholen. Somit sollte jeder Server, der außerhalb des eigenen Netzwerks erreichbar ist, HTTPS verwenden.</string>
+    <string name="library_server_password_note">Das Passwort bleibt auf diesem Telefon. Es wird nicht an den Server gesendet: Jede Anfrage trägt stattdessen eine einmalige, daraus erzeugte Signatur. Wer dein Netzwerk mitlesen kann, kann eine Anfrage trotzdem erneut senden. Ein Server, der von außerhalb des Hauses erreichbar ist, sollte deshalb https verwenden.</string>
+    <!-- In place of the note above, once the server has turned out not to take the signature -->
+    <string name="library_server_password_note_sent">Das Passwort bleibt auf diesem Telefon. Dieser Server nimmt keine einmalige Signatur an, deshalb wird das Passwort selbst mit jeder Anfrage gesendet. Wer dein Netzwerk mitlesen kann, kann es lesen. Ein Server, der von außerhalb des Hauses erreichbar ist, sollte deshalb https verwenden.</string>
+    <string name="library_server_address_note">Ein Server zu Hause ohne Zertifikat: http:// vor die Adresse setzen.</string>
+    <string name="library_server_plain_http">Das ist einfaches http, und die Adresse liegt nicht in einem Heimnetz: Wer zwischen diesem Telefon und dem Server sitzt, kann mitlesen. Verwende https, wenn der Server es anbietet.</string>
+    <!-- Settings row under Music server. Tapping it steps through the values below. -->
+    <string name="library_server_quality">Streaming-Qualität</string>
+    <string name="library_server_quality_original">Wie der Server sie speichert</string>
+    <!-- %1$d is a bitrate in kilobits per second, e.g. 192. Only songs above it are re-encoded. -->
+    <string name="library_server_quality_capped">Höchstens %1$d kbps</string>
     <!-- Row at the foot of the screen; the second label is shown in bold after one tap -->
-    <string name="library_server_forget">Vergiss diesen Server</string>
-    <string name="library_server_forget_armed">Vergiss diesen Server — seine Titel verlassen die Bibliothek; tippe erneut</string>
+    <string name="library_server_forget">Diesen Server vergessen</string>
+    <string name="library_server_forget_armed">Diesen Server vergessen — seine Titel verlassen die Bibliothek; tippe erneut</string>
 
 
+    <string name="library_search_nothing">Nichts gefunden. Versuche eine andere Suche.</string>
+    <!-- Before an album's artist in the search results, where albums sit among songs and artists -->
+    <string name="library_search_kind_album">Album</string>
     <!-- Second line under an artist's name in the search results, saying the result is an artist -->
     <string name="library_search_result_artist">Künstler</string>
 
     <!-- Library lists (Songs, Albums, Artists), shared -->
-    <string name="library_sync_in_progress">Musik-Abgleich läuft gerade...</string>
+    <string name="library_sync_in_progress">Musikabgleich läuft…</string>
     <!-- Empty library: button that opens the folder settings -->
-    <string name="library_empty_choose_folder">Wähle einen Ordner</string>
+    <string name="library_empty_choose_folder">Ordner auswählen</string>
+    <!-- Empty library: button that opens the music server screen (Navidrome and the like) -->
+    <string name="library_empty_music_server">Musikserver verbinden</string>
 
     <!-- Albums list -->
-    <string name="library_albums_loading">Lade Alben...</string>
-    <string name="library_albums_error">Die Alben konnten nicht gelesen werden.</string>
+    <string name="library_albums_loading">Alben werden geladen…</string>
+    <string name="library_albums_error">Die Alben konnten nicht gelesen werden</string>
     <string name="library_albums_empty_title">Noch keine Alben</string>
-    <string name="library_albums_no_album_info">Kann noch keine Alben anzeigen. Sobald deine Titel Album-Informationen haben, erscheinen sie hier.</string>
+    <string name="library_albums_no_album_info">Noch keine Alben anzuzeigen. Sobald deine Titel Albuminformationen haben, erscheinen sie hier.</string>
     <!-- Second line of an album row. %1$s is the artist, %2$d the release year -->
     <string name="library_album_artist_and_year">%1$s • %2$d</string>
 
     <!-- Artists list -->
-    <string name="library_artists_loading">Lade Künstler...</string>
+    <string name="library_artists_loading">Künstler werden geladen…</string>
     <string name="library_artists_error">Die Künstler konnten nicht gelesen werden</string>
     <string name="library_artists_empty_title">Noch keine Künstler</string>
-    <string name="library_artists_no_artist_info">Kann noch keine Künstler anzeigen. Sobald deine Titel Künstler-Informationen haben, erscheinen sie hier.</string>
+    <string name="library_artists_no_artist_info">Noch keine Künstler anzuzeigen. Sobald deine Titel Künstlerinformationen haben, erscheinen sie hier.</string>
     <!-- Part of the second line of an artist row -->
     <plurals name="library_artist_song_count">
         <item quantity="one">%1$d Titel</item>
@@ -439,31 +630,32 @@
     <string name="library_artist_songs_and_albums">%1$s • %2$s</string>
 
     <!-- Songs list -->
-    <string name="library_songs_loading">Lade Titel...</string>
-    <string name="library_songs_error">Die Titel konnten nicht gelesen werden.</string>
+    <string name="library_songs_loading">Titel werden geladen…</string>
+    <string name="library_songs_error">Die Titel konnten nicht gelesen werden</string>
     <string name="library_songs_empty_title">Noch keine Titel</string>
     <!-- Screen-reader label for the shuffle button -->
-    <string name="library_songs_shuffle">Zufällige Wiedergabe der Titel</string>
+    <string name="library_songs_shuffle">Titel mischen</string>
 
     <!-- Album page -->
-    <string name="library_album_loading">Lade Album...</string>
+    <string name="library_album_loading">Album wird geladen…</string>
     <!-- Shown when the album's songs fail to load and the error carries no message of its own -->
-    <string name="library_album_load_failed">Laden der Albumtitel schlug fehl</string>
+    <string name="library_album_load_failed">Albumtitel konnten nicht geladen werden</string>
     <string name="library_album_no_songs">Keine Titel in diesem Album</string>
     <!-- Tab over a multi-disc album. %1$d is the disc number -->
     <string name="library_album_disc">Disc %1$d</string>
     <!-- Screen-reader labels for the album page's buttons -->
-    <string name="library_album_shuffle">Zufällige Wiedergabe des Albums</string>
-    <string name="library_album_add_to_playlist">Füge das Album einer Wiedergabeliste hinzu</string>
+    <string name="library_album_shuffle">Album mischen</string>
+    <string name="library_album_add_to_playlist">Album zu einer Wiedergabeliste hinzufügen</string>
+    <string name="library_album_keep_on_phone">Album herunterladen</string>
 
     <!-- Artist page (the library's, and YouTube's) -->
-    <string name="library_artist_loading">Lade Künstler...</string>
+    <string name="library_artist_loading">Künstler wird geladen…</string>
     <!-- Shown when the artist fails to load and the error carries no message of its own -->
-    <string name="library_artist_load_failed">Laden des Künstlers schlug fehl</string>
+    <string name="library_artist_load_failed">Künstler konnte nicht geladen werden</string>
     <!-- YouTube artist page opened without an artist id -->
     <string name="library_artist_unknown">Unbekannter Künstler</string>
     <string name="library_artist_error">Dieser Künstler konnte nicht gelesen werden</string>
-    <string name="library_artist_no_content">Noch kein Inhalt für diesen Künstler</string>
+    <string name="library_artist_no_content">Noch keine Inhalte für diesen Künstler</string>
     <!-- Tab on an artist page -->
     <string name="library_artist_tab_albums">Alben</string>
     <!-- Tab on an artist page -->
@@ -472,57 +664,72 @@
     <string name="library_artist_tab_singles">Singles</string>
     <string name="library_artist_no_albums">Keine Alben für diesen Künstler</string>
     <string name="library_artist_no_songs">Keine Titel für diesen Künstler</string>
-    <string name="library_artist_no_singles">Keine Singles oder neuen Releases</string>
+    <string name="library_artist_no_singles">Keine Singles oder Neuerscheinungen</string>
     <!-- Screen-reader labels for the artist page's buttons -->
-    <string name="library_artist_shuffle">Titel des Künstlers zufällig wiedergeben</string>
-    <string name="library_artist_add_to_playlist">Füge diese einer Wiedergabeliste hinzu</string>
+    <string name="library_artist_shuffle">Titel des Künstlers mischen</string>
+    <string name="library_artist_add_to_playlist">Diese zu einer Wiedergabeliste hinzufügen</string>
+    <string name="library_artist_keep_on_phone">Diese herunterladen</string>
 
     <!-- Settings: a music folder's location, shown before its path ("Phone > Music") -->
     <string name="settings_folder_phone">Telefon</string>
-    <string name="settings_folder_card">Karte</string>
+    <string name="settings_folder_card">Speicherkarte</string>
 
     <!-- ============================================================ -->
     <!-- Notifications and music-server messages -->
     <!-- Playback notification channel (PlaybackService) -->
-    <string name="service_playback_channel_name">Music Box-Wiedergabe</string>
+    <string name="service_playback_channel_name">Music Box Wiedergabe</string>
     <string name="service_playback_channel_description">Steuerung der Musikwiedergabe</string>
 
-    <!-- Keeping a song from a music server on the phone (SubsonicDownloader) -->
-    <string name="service_subsonic_download_no_storage">Das kann nirgendwo auf diesem Telefon abgelegt werden.</string>
+    <!-- Downloading a song from a music server (SubsonicDownloader) -->
+    <string name="service_subsonic_download_no_storage">Auf diesem Telefon ist kein Platz dafür.</string>
     <string name="service_subsonic_download_server_answered">Der Server antwortete mit %1$d.</string>
     <string name="service_subsonic_download_empty">Der Server hat nichts gesendet.</string>
-    <string name="service_subsonic_download_not_saved">Der Download konnte nicht gesichert werden.</string>
+    <string name="service_subsonic_download_not_saved">Der Download konnte nicht gespeichert werden.</string>
     <string name="service_subsonic_download_unfinished">Dieser Titel wurde nicht fertig heruntergeladen.</string>
     <!-- Connecting to a music server (Subsonic/Navidrome), shown under the server row in settings -->
-    <string name="service_subsonic_not_a_music_server">Diese Adresse hat geantwortet, aber nicht wie erwartet.</string>
+    <string name="service_subsonic_not_a_music_server">Diese Adresse hat geantwortet, aber nicht wie ein Musikserver.</string>
     <string name="service_subsonic_login_refused">Benutzername und Passwort wurden nicht akzeptiert.</string>
+    <!-- Subsonic error 41, when sending the password itself was refused as well -->
     <string name="service_subsonic_no_tokens">Dieser Server nimmt keine Anmeldung per Token an und hat auch das Passwort abgelehnt.</string>
-    <string name="service_subsonic_not_allowed">Diesem Account wurde nicht erlaubt, die Bibliothek auszulesen.</string>
-    <string name="service_subsonic_refused">Der Server hat die Anfrage verweigert.</string>
+    <string name="service_subsonic_not_allowed">Dieses Konto darf die Bibliothek nicht lesen.</string>
+    <string name="service_subsonic_refused">Der Server hat die Anfrage abgelehnt.</string>
     <string name="service_subsonic_unreachable">Der Server konnte nicht erreicht werden.</string>
+
+    <!-- On Glance's lock-screen panel, beside "Song — Artist" -->
+    <string name="glance_playing">Läuft</string>
+    <string name="glance_paused">Pausiert</string>
+
+    <!-- A file opened from another app, such as a file manager -->
+    <string name="opened_file_unreadable">Diese Datei konnte nicht geöffnet werden</string>
+    <string name="opened_file_needs_access">Music Box braucht Zugriff auf Musikdateien, um diese abzuspielen</string>
+
+    <!-- Android 13+ keeps an app installed from a file out of Accessibility, notification access
+         and the default phone/texting roles until App info, then ⋮, then Allow restricted settings. -->
+    <string name="restricted_hint">Android blockiert das für Apps, die aus einer Datei installiert wurden. Öffne App-Info, tippe auf ⋮, dann auf „Eingeschränkte Einstellungen zulassen“, und versuche es erneut.</string>
+    <string name="restricted_app_info">App-Info</string>
     <!-- One line above a library list after a swipe down on its first page -->
-    <string name="main_pull_checking_server">Frage den Server…</string>
-    <string name="main_pull_reading_folders">Lese die Musik auf dem Telefon…</string>
+    <string name="main_pull_checking_server">Server wird geprüft…</string>
+    <string name="main_pull_reading_folders">Musik auf dem Telefon wird gelesen…</string>
     <string name="main_pull_up_to_date">Auf dem neuesten Stand</string>
 
-    <!-- Warum ein Titel nicht spielt: ein Dialog statt Stille -->
-    <string name="trouble_signed_out_title">Nicht bei deinem Musik-Server angemeldet</string>
-    <string name="trouble_signed_out">Dieser Titel liegt auf deinem Musik-Server, und Music Box hat keine Anmeldedaten dafür. Nach einer Neuinstallation lässt sich das gespeicherte Passwort nicht mehr lesen. Gib es unter Musik-Server erneut ein.</string>
-    <string name="trouble_unreachable_title">Musik-Server nicht erreichbar</string>
-    <string name="trouble_unreachable">Das Telefon ist online, aber der Server antwortet nicht. Er ist vielleicht aus, oder seine Adresse hat sich geändert.</string>
-    <string name="trouble_refused_title">Dein Musik-Server hat abgelehnt</string>
-    <string name="trouble_refused">Der Server hat geantwortet, den Titel aber nicht geschickt. Die Anmeldung ist vielleicht falsch oder veraltet. Prüfe sie unter Musik-Server.</string>
+    <!-- Why a song is not playing: a dialog in place of silence. Idea by heavencanthandle. -->
+    <string name="trouble_signed_out_title">Nicht bei deinem Musikserver angemeldet</string>
+    <string name="trouble_signed_out">Dieser Titel liegt auf deinem Musikserver, und Music Box hat keine Anmeldung dafür. Nach einer Neuinstallation lässt sich das gespeicherte Passwort nicht mehr lesen. Gib es unter „Musikserver“ erneut ein.</string>
+    <string name="trouble_unreachable_title">Musikserver nicht erreichbar</string>
+    <string name="trouble_unreachable">Das Telefon ist online, aber der Server antwortet nicht. Vielleicht ist er aus, oder seine Adresse hat sich geändert.</string>
+    <string name="trouble_refused_title">Dein Musikserver hat abgelehnt</string>
+    <string name="trouble_refused">Der Server hat geantwortet, den Titel aber nicht geschickt. Die Anmeldung ist vielleicht falsch oder veraltet. Prüfe sie unter „Musikserver“.</string>
     <string name="trouble_no_internet_title">Kein Internet</string>
     <string name="trouble_no_internet">Dieser Titel wird gestreamt, und das Telefon ist nicht verbunden. Auf dem Telefon gespeicherte Titel spielen weiterhin.</string>
     <string name="trouble_file_missing_title">Titeldatei fehlt</string>
-    <string name="trouble_file_missing">Die Datei dieses Titels liegt nicht dort, wo die Bibliothek sie vermutet. Sie wurde vielleicht verschoben oder gelöscht.</string>
+    <string name="trouble_file_missing">Die Datei dieses Titels liegt nicht dort, wo die Bibliothek sie vermutet. Vielleicht wurde sie verschoben oder gelöscht.</string>
     <string name="trouble_no_access_title">Music Box kann deine Musik nicht lesen</string>
     <string name="trouble_no_access">Android erlaubt Music Box nicht, die Titel auf dem Telefon zu lesen. Erlaube Musik und Audio in den Berechtigungen von Music Box.</string>
     <string name="trouble_still_loading_title">Wartet noch auf den Start</string>
     <string name="trouble_still_loading">Dieser Titel lädt schon eine Weile, ohne zu starten.</string>
-    <string name="trouble_cant_play_title">Titel kann nicht gespielt werden</string>
+    <string name="trouble_cant_play_title">Dieser Titel kann nicht abgespielt werden</string>
     <string name="trouble_cant_play">Beim Abspielen ist etwas schiefgegangen. Versuche einen anderen Titel oder diesen später noch einmal.</string>
-    <string name="trouble_fix_server">Musik-Server</string>
+    <string name="trouble_fix_server">Musikserver</string>
     <string name="trouble_fix_internet">Interneteinstellungen</string>
     <string name="trouble_fix_access">Berechtigungen</string>
     <string name="trouble_close">OK</string>
