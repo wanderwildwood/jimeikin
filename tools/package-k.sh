@@ -2,7 +2,7 @@
 # usage: tools/package-k.sh <signed jimeikin-k-<version>.apk> <signed jimeikin-full-<version>.apk>
 # Music Box K goes to the InkApps portal only: nothing here publishes, tags or pushes.
 # Checks the K APK is signed with the full edition's key, then writes
-# ~/Desktop/music-box-k-release/{jimeikin-k-<version>.apk, .sha256, portal-notes.md}.
+# ~/Desktop/dev/apps/music-box-k/release/{jimeikin-k-<version>.apk, .sha256, portal-notes.md}.
 set -eu
 k=${1:?K apk}; full=${2:?full apk}
 here=$(cd "$(dirname "$0")/.." && pwd)
@@ -12,7 +12,7 @@ cert() { "$bt/apksigner" verify --print-certs "$1" | grep -m1 'SHA-256 digest' |
 badging=$("$bt/aapt2" dump badging "$k" | head -1)
 case "$badging" in *"name='com.wanderwildwood.jimeikin.k'"*) ;; *) echo "not the K app"; exit 1;; esac
 v=$(echo "$badging" | grep -o "versionName='[^']*'" | cut -d"'" -f2)
-out=~/Desktop/music-box-k-release; mkdir -p "$out"
+out=~/Desktop/dev/apps/music-box-k/release; mkdir -p "$out"
 cp "$k" "$out/jimeikin-k-$v.apk"; (cd "$out" && sha256sum "jimeikin-k-$v.apk" > "jimeikin-k-$v.apk.sha256")
 {
   echo "# Music Box K $v - notes for the InkApps portal"; echo

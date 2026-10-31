@@ -9,6 +9,6 @@ class MusicBoxIdentityTest {
     fun itKeepsItsIdentity() {
         assertEquals("com.wanderwildwood.jimeikin", BuildConfig.APPLICATION_ID)
         assertEquals("Music Box", BuildConfig.DOWNLOAD_FOLDER)
-        assertEquals("2.18.15", BuildConfig.VERSION_NAME)
+        assertEquals("2.18.16", BuildConfig.VERSION_NAME)
     }
 }
