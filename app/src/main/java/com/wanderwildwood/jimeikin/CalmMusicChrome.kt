@@ -471,7 +471,7 @@ private fun CalmMusicTopAppBarActions(
 }
 
 /**
- * A label on the bottom bar, always on one line and centred under its icon. The chosen tab's
+ * A label on the bottom bar, always on one line and centered under its icon. The chosen tab's
  * label is bold, and bold is wider: "Playlists" fits its cell in regular type and did not in
  * bold, so choosing the tab broke the word and left its "s" on a line of its own. A label
  * wider than its cell is drawn at its own width and narrowed to fit, which costs a few percent
