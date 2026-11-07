@@ -58,14 +58,12 @@ fun CalmMusicTopAppBar(
     playlistEditSelectionCount: Int,
     playlistDetailsSelectionCount: Int,
     isPlaylistDetailsMenuExpanded: Boolean,
-    hasLibraryPlaylists: Boolean,
     hasNowPlaying: Boolean,
     isQueueRestored: Boolean,
     onBackClick: () -> Unit,
     onCancelPlaylistsEditClick: () -> Unit,
     onCancelPlaylistDetailsEditClick: () -> Unit,
     onRemoveSelectedFromPlaylistClick: () -> Unit,
-    onEnterPlaylistsEditClick: () -> Unit,
     onNavigateToSearchClick: () -> Unit,
     onPlaylistDetailsMenuToggle: () -> Unit,
     onPlaylistDetailsEditClick: () -> Unit,
@@ -224,10 +222,8 @@ fun CalmMusicTopAppBar(
                 isPlaylistDetailsEditMode = isPlaylistDetailsEditMode,
                 onRemoveSelectedFromPlaylistClick = onRemoveSelectedFromPlaylistClick,
                 isPlaylistDetailsMenuExpanded = isPlaylistDetailsMenuExpanded,
-                hasLibraryPlaylists = hasLibraryPlaylists,
                 hasNowPlaying = hasNowPlaying,
                 isQueueRestored = isQueueRestored,
-                onEnterPlaylistsEditClick = onEnterPlaylistsEditClick,
                 onNavigateToSearchClick = onNavigateToSearchClick,
                 onPlaylistDetailsMenuToggle = onPlaylistDetailsMenuToggle,
                 onPlaylistDetailsEditClick = onPlaylistDetailsEditClick,
@@ -257,10 +253,8 @@ private fun CalmMusicTopAppBarActions(
     isPlaylistDetailsEditMode: Boolean,
     onRemoveSelectedFromPlaylistClick: () -> Unit,
     isPlaylistDetailsMenuExpanded: Boolean,
-    hasLibraryPlaylists: Boolean,
     hasNowPlaying: Boolean,
     isQueueRestored: Boolean,
-    onEnterPlaylistsEditClick: () -> Unit,
     onNavigateToSearchClick: () -> Unit,
     onPlaylistDetailsMenuToggle: () -> Unit,
     onPlaylistDetailsEditClick: () -> Unit,
@@ -291,15 +285,6 @@ private fun CalmMusicTopAppBarActions(
                 Icon(
                     imageVector = Icons.Download,
                     contentDescription = stringResource(R.string.main_cd_downloads),
-                )
-            }
-        }
-
-        if (currentDestination?.route == Screen.Playlists.route && hasLibraryPlaylists && !isPlaylistsEditMode) {
-            IconButton(onClick = onEnterPlaylistsEditClick) {
-                Icon(
-                    imageVector = Icons.Edit,
-                    contentDescription = stringResource(R.string.main_cd_edit_playlists),
                 )
             }
         }

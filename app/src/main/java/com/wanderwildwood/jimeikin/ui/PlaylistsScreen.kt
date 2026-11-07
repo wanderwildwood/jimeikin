@@ -1,6 +1,8 @@
 package com.wanderwildwood.jimeikin.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +45,8 @@ fun PlaylistsScreen(
     onHeartedClick: () -> Unit = {},
     /** Reads the library again from where it comes from; a swipe down on the list's first page. */
     onPullAtTop: (() -> Unit)? = null,
+    /** Turns edit mode on: from the last row of the list, or a hold on a playlist (that one ticked). */
+    onEditClick: () -> Unit = {},
 ) {
     val selectedState = remember { mutableStateMapOf<String, Boolean>() }
 
@@ -130,6 +134,28 @@ fun PlaylistsScreen(
                             playlist = playlist,
                             onClick = { onPlaylistClick(playlist) },
                             showDivider = playlist.id != lastPlaylistId,
+                            onLongClick = {
+                                selectedState.clear()
+                                selectedState[playlist.id] = true
+                                onSelectionChanged(setOf(playlist.id))
+                                onEditClick()
+                            },
+                        )
+                    }
+                }
+                // Edit was a pencil on the top bar, and beside Downloads, Search and Settings it
+                // left the bar no room for its own title. The list's foot is where its
+                // housekeeping goes.
+                if (playlists.isNotEmpty() && !isInEditMode) {
+                    item(key = "edit") {
+                        TextMMD(
+                            text = stringResource(R.string.player_playlists_edit),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = onEditClick)
+                                .padding(top = 12.dp, bottom = 20.dp),
                         )
                     }
                 }

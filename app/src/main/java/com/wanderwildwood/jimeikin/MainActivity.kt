@@ -1729,6 +1729,7 @@ fun CalmMusic(
                     navController.navigate(Screen.Hearted.route) { launchSingleTop = true }
                 },
                 onPullAtTop = libraryPull,
+                onEditClick = { isPlaylistsEditMode = true },
             )
         }
 
@@ -2008,7 +2009,6 @@ fun CalmMusic(
                         playlistEditSelectionCount = playlistEditSelectionCount,
                         playlistDetailsSelectionCount = playlistDetailsSelectionCount,
                         isPlaylistDetailsMenuExpanded = isPlaylistDetailsMenuExpanded,
-                        hasLibraryPlaylists = libraryPlaylists.isNotEmpty(),
                         hasNowPlaying = nowPlayingSong != null,
                         isQueueRestored = isQueueRestored,
                         onBackClick = { navController.navigateUp() },
@@ -2040,7 +2040,6 @@ fun CalmMusic(
                                 }
                             }
                         },
-                        onEnterPlaylistsEditClick = { isPlaylistsEditMode = true },
                         onNavigateToSearchClick = {
                             if (currentDestination?.route == Screen.Radio.route) {
                                 radioSearchOpen = true

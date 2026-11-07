@@ -33,7 +33,7 @@
     <string name="main_cd_clear_search">Effacer la recherche</string>
     <!-- The magnifying-glass button (verb or noun, whichever reads naturally as a button) -->
     <string name="main_cd_search">Recherche</string>
-    <string name="main_cd_edit_playlists">Modifier les playlists</string>
+    <string name="player_playlists_edit">Modifier les playlists</string>
     <string name="main_cd_settings">Paramètres</string>
     <string name="main_cd_about">À propos</string>
     <string name="main_cd_playlist_options">Options de la playlist</string>
