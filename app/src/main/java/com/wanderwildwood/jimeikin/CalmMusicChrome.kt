@@ -272,7 +272,10 @@ private fun CalmMusicTopAppBarActions(
 ) {
     val navRoutes = remember { navItems.map { it.route } }
 
-    if (currentDestination?.route != Screen.Search.route && currentDestination?.route in navRoutes) {
+    // Editing playlists, the bar holds only the edit's own buttons: beside Cancel and Delete N,
+    // Downloads, Search and Settings left the title no room.
+    val editingPlaylists = currentDestination?.route == Screen.Playlists.route && isPlaylistsEditMode
+    if (currentDestination?.route != Screen.Search.route && currentDestination?.route in navRoutes && !editingPlaylists) {
         // Downloads, once there is anything in it: it was only ever reached through Settings,
         // which is not where anyone looks for what the app is fetching.
         //
