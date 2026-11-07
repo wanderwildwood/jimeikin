@@ -1,8 +1,6 @@
 package com.wanderwildwood.jimeikin.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,21 +9,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.mudita.mmd.components.divider.HorizontalDividerMMD
+import com.mudita.mmd.components.buttons.ButtonMMD
+import com.mudita.mmd.components.checkbox.CheckboxMMD
+import com.mudita.mmd.components.menus.DropdownMenuItemMMD
+import com.mudita.mmd.components.menus.DropdownMenuMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.jimeikin.R
 
@@ -38,8 +43,8 @@ data class OnlineArtistUiModel(
 /**
  * One list: songs, albums and artists together, the phone's first, then the server's, then
  * YouTube's - see [buildSearchResults]. The library's part is there as soon as the search is
- * made, and with no signal; YouTube's joins it when it comes. The toggles above it choose which
- * of the three are looked in; with YouTube off it is not asked at all.
+ * made, and with no signal; YouTube's joins it when it comes. The ⋮ on the search bar chooses
+ * which of the three are looked in; with YouTube off it is not asked at all.
  */
 @Composable
 fun SearchScreen(
@@ -66,10 +71,11 @@ fun SearchScreen(
     onToggleSource: (SearchSource) -> Unit = {},
 ) {
     val albumKind = stringResource(R.string.library_search_kind_album)
+    // With one source there is nothing to choose, and no ⋮.
+    if (sourcesOffered.size > 1) {
+        TopBarActions { SearchSourcesMenu(sourcesOffered, sourcesOn, onToggleSource) }
+    }
     Column(modifier = Modifier.fillMaxSize()) {
-        if (sourcesOffered.size > 1) {
-            SearchSourceToggles(sourcesOffered, sourcesOn, onToggleSource)
-        }
         PagedColumnMMD(contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp)) {
             if (isSearching) {
                 item {
@@ -140,33 +146,59 @@ fun SearchScreen(
 }
 
 /**
- * Which sources a search looks in, drawn as [StoneTabs] draws its tabs: on is a black stone with
- * its label in white, off a plain label. Unlike a tab, any number can be on, so each is a
- * checkbox to a screen reader.
+ * The ⋮ on the search bar and what it opens. The Kompakt has no menu key, so the app brings its
+ * own. One item, "Search in…", and behind it a short checklist of the sources there are; each
+ * change takes effect at once, and Done only closes it. A row of toggles above the results did
+ * this before; it cost a band of the screen on every search for a choice made once.
  */
 @Composable
-private fun SearchSourceToggles(
+private fun SearchSourcesMenu(
     offered: List<SearchSource>,
     on: Set<SearchSource>,
     onToggle: (SearchSource) -> Unit,
 ) {
-    val style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    var menuOpen by remember { mutableStateOf(false) }
+    var dialogOpen by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { menuOpen = true }) {
+            Icon(
+                imageVector = Icons.More,
+                contentDescription = stringResource(R.string.search_cd_options),
+            )
+        }
+        DropdownMenuMMD(
+            expanded = menuOpen,
+            onDismissRequest = { menuOpen = false },
         ) {
+            DropdownMenuItemMMD(
+                text = { TextMMD(stringResource(R.string.search_sources_menu)) },
+                onClick = {
+                    menuOpen = false
+                    dialogOpen = true
+                },
+            )
+        }
+    }
+    if (dialogOpen) {
+        EInkDialog(onDismiss = { dialogOpen = false }) {
+            TextMMD(
+                text = stringResource(R.string.search_sources_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(Modifier.height(8.dp))
             offered.forEach { source ->
                 val isOn = source in on
-                Box(
+                Row(
                     modifier = Modifier
-                        .heightIn(min = 40.dp)
-                        .then(if (isOn) Modifier.background(Color.Black, RoundedCornerShape(4.dp)) else Modifier)
+                        .fillMaxWidth()
                         .toggleable(value = isOn, role = Role.Checkbox, onValueChange = { onToggle(source) })
-                        .padding(horizontal = 14.dp),
-                    contentAlignment = Alignment.Center,
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    // The row takes the press; the box only shows the state.
+                    CheckboxMMD(checked = isOn, onCheckedChange = null)
+                    Spacer(Modifier.width(12.dp))
                     TextMMD(
                         text = stringResource(
                             when (source) {
@@ -175,14 +207,15 @@ private fun SearchSourceToggles(
                                 SearchSource.ONLINE -> R.string.search_source_online
                             },
                         ),
-                        style = style,
-                        color = if (isOn) Color.White else Color.Black,
-                        maxLines = 1,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
             }
+            Spacer(Modifier.height(18.dp))
+            ButtonMMD(onClick = { dialogOpen = false }, modifier = Modifier.fillMaxWidth()) {
+                TextMMD(text = stringResource(R.string.main_button_done))
+            }
         }
-        HorizontalDividerMMD(thickness = 1.dp)
     }
 }
 
