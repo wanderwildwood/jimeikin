@@ -3,7 +3,7 @@ package com.wanderwildwood.jimeikin
 import com.wanderwildwood.jimeikin.ui.SongUiModel
 
 /**
- * The choices behind "Keep playing similar songs from YouTube", apart from the player, so they
+ * The choices behind "Keep playing similar songs" (Settings, YouTube), apart from the player, so they
  * can be tested on invented songs.
  */
 object SimilarSongs {

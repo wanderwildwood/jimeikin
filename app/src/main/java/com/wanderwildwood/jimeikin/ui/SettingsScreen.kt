@@ -255,9 +255,6 @@ fun SettingsScreen(
         // Album details from MusicBrainz, in the edition that has the lookup (src/full).
         albumDetailsSwitch(onRescan = onRescanLocalMusicClick)
 
-        // The catalogue's own switches, in the edition that has one (src/full).
-        onlineSwitches()
-
         item {
             // Read and written here rather than passed down: nothing else on this screen, or in
             // the app, follows it. Glance asks for it each time it draws.
@@ -404,7 +401,8 @@ fun SettingsScreen(
             )
         }
 
-        onlineAccountRows(onlineConnected, onOpenOnlineAccountClick)
+        // The catalogue's own section, under its heading, in the edition that has one (src/full).
+        onlineSection(onlineConnected, onOpenOnlineAccountClick)
     }
 }
 

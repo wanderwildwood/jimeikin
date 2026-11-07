@@ -153,7 +153,7 @@ Downloads carry on with the screen off or the app in the background: a quiet not
 notification says how the run ended. On Android 13 and later the app asks once, the first time
 something is downloaded, whether it may show notifications; downloads work the same without.
 
-Connecting a YouTube account under Settings → **YouTube account** makes search reflect it.
+Connecting a YouTube account under Settings → YouTube → **Account** makes search reflect it.
 Nothing else in the app needs one.
 
 Respect artists' rights and your local laws when streaming or downloading from YouTube.

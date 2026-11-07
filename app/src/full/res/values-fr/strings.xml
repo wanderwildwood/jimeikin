@@ -19,14 +19,14 @@
     <string name="player_downloads_online">De YouTube</string>
     <!-- Settings screen: the rows below the folders -->
     <!-- Switch: fetch an album's missing tracks from YouTube -->
-    <string name="settings_fill_album_gaps">Ajouter les pistes manquantes des albums depuis YouTube</string>
+    <string name="settings_fill_album_gaps">Ajouter les pistes manquantes des albums</string>
     <!-- Switch row: when the last song in the queue is a YouTube song, add the songs YouTube Music would play after it -->
-    <string name="settings_keep_playing_similar">Continuer à jouer des pistes similaires depuis YouTube</string>
+    <string name="settings_keep_playing_similar">Continuer avec des pistes similaires</string>
     <!-- Row title for the signed-in YouTube account -->
-    <string name="settings_youtube_account">Compte YouTube</string>
-    <!-- Value under "YouTube account" -->
+    <string name="settings_youtube_account">Compte</string>
+    <!-- Value under "Account", in the YouTube section -->
     <string name="settings_youtube_connected">Connecté</string>
-    <!-- Value under "YouTube account" -->
+    <!-- Value under "Account", in the YouTube section -->
     <string name="settings_youtube_not_connected">Non connecté</string>
     <!-- Row that signs the YouTube account out; the second label is shown after one tap -->
     <string name="settings_disconnect_account">Déconnecter le compte</string>
@@ -44,7 +44,7 @@
     <!-- Empty library: button that opens the YouTube settings -->
     <string name="library_empty_set_up_youtube">Configurer YouTube</string>
     <!-- Settings: whether YouTube links tapped in other apps may open here (Android 12+) -->
-    <string name="settings_youtube_links">Ouvrir les liens YouTube dans Music Box</string>
+    <string name="settings_youtube_links">Ouvrir les liens YouTube ici</string>
     <string name="settings_youtube_links_on">Activé</string>
     <string name="settings_youtube_links_some">Certaines adresses seulement</string>
     <string name="settings_youtube_links_off">Désactivé</string>
