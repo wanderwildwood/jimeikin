@@ -376,6 +376,8 @@ fun PlaylistItem(
     playlist: PlaylistUiModel,
     onClick: () -> Unit,
     showDivider: Boolean = true,
+    /** A hold; null leaves the row to a tap alone. */
+    onLongClick: (() -> Unit)? = null,
 ) {
     val songCountText = playlist.songCount?.let { count ->
         pluralStringResource(R.plurals.player_song_count, count, count)
@@ -398,7 +400,7 @@ fun PlaylistItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .padding(bottom = 8.dp),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
