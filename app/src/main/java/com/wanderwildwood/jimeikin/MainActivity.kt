@@ -2966,6 +2966,7 @@ fun CalmMusic(
                                 .fillMaxWidth()
                                 .heightIn(max = screenHeight * 0.6f),
                             contentPadding = PaddingValues(vertical = 4.dp),
+                            showCutRow = true,
                         ) {
                             items(
                                 items = libraryPlaylists,

@@ -36,5 +36,6 @@ fun PagedColumnMMD(
         horizontalAlignment = horizontalAlignment,
         onPullAtTop = onPullAtTop,
         content = content,
+        showCutRow = true,
     )
 }
