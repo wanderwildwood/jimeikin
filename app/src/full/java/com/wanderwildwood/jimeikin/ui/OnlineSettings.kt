@@ -23,12 +23,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.wanderwildwood.jimeikin.CalmMusic
 import com.wanderwildwood.jimeikin.R
 import com.wanderwildwood.jimeikin.youTubeAccount
 
-/** Settings rows for YouTube Music, which only the full edition has; see [SettingsScreen]. */
-internal fun LazyListScope.onlineSwitches() {
+/**
+ * The YouTube section of Settings, which only the full edition has; see [SettingsScreen]. One
+ * heading and then the rows, so no row has to say "YouTube" again: the account (and its
+ * disconnect), the two switches, and whether YouTube links open here.
+ */
+internal fun LazyListScope.onlineSection(connected: Boolean, onConnectClick: () -> Unit) {
+    accountRows(connected, onConnectClick)
+
     item {
         val online = (LocalContext.current.applicationContext as CalmMusic).online
         val completeAlbums by online.completeAlbums.collectAsState()
@@ -88,19 +95,23 @@ internal fun LazyListScope.onlineSwitches() {
     }
 }
 
-/** Whether a YouTube account is signed in, for [onlineAccountRows]. */
+/** Whether a YouTube account is signed in, for [onlineSection]. */
 @Composable
 internal fun onlineAccountConnected(): Boolean =
     (LocalContext.current.applicationContext as CalmMusic).youTubeAccount.cookie.collectAsState().value != null
 
-internal fun LazyListScope.onlineAccountRows(connected: Boolean, onConnectClick: () -> Unit) {
+private fun LazyListScope.accountRows(connected: Boolean, onConnectClick: () -> Unit) {
+    // The heading shares the account row's item, so a page never ends on a heading alone.
     item {
-        ValueRow(
-            label = stringResource(R.string.settings_youtube_account),
-            value = if (connected) stringResource(R.string.settings_youtube_connected) else stringResource(R.string.settings_youtube_not_connected),
-            onClick = if (connected) null else onConnectClick,
-            enabled = !connected,
-        )
+        Column {
+            SettingsHeading(stringResource(R.string.settings_youtube_heading))
+            ValueRow(
+                label = stringResource(R.string.settings_youtube_account),
+                value = if (connected) stringResource(R.string.settings_youtube_connected) else stringResource(R.string.settings_youtube_not_connected),
+                onClick = if (connected) null else onConnectClick,
+                enabled = !connected,
+            )
+        }
     }
 
     if (connected) {
@@ -113,6 +124,20 @@ internal fun LazyListScope.onlineAccountRows(connected: Boolean, onConnectClick:
             )
         }
     }
+}
+
+/**
+ * A group's title on a settings page: bold, set apart by space above it, and no rule (house
+ * style: a settings page draws no separator lines).
+ */
+@Composable
+private fun SettingsHeading(text: String) {
+    TextMMD(
+        text = text,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 4.dp),
+    )
 }
 
 /** The empty library's third way in: YouTube's settings; see [LibraryOnboardingEmptyState]. */

@@ -5,9 +5,6 @@ import androidx.compose.runtime.Composable
 
 // The store edition has no online catalogue, and so no settings for one; see [SettingsScreen].
 
-@Suppress("UnusedReceiverParameter")
-internal fun LazyListScope.onlineSwitches() = Unit
-
 @Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER")
 internal fun LazyListScope.albumDetailsSwitch(onRescan: () -> Unit) = Unit
 
@@ -15,7 +12,7 @@ internal fun LazyListScope.albumDetailsSwitch(onRescan: () -> Unit) = Unit
 internal fun onlineAccountConnected(): Boolean = false
 
 @Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER")
-internal fun LazyListScope.onlineAccountRows(connected: Boolean, onConnectClick: () -> Unit) = Unit
+internal fun LazyListScope.onlineSection(connected: Boolean, onConnectClick: () -> Unit) = Unit
 
 @Suppress("UNUSED_PARAMETER")
 @Composable
