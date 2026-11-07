@@ -602,7 +602,11 @@
     <string name="library_server_forget_armed">Forget this server — its songs leave the library; tap again</string>
 
 
-    <!-- Toggles above the search results: where a search looks -->
+    <!-- The search bar's ⋮ menu: one item opening a checklist of where a search looks -->
+    <string name="search_cd_options">Search options</string>
+    <string name="search_sources_menu">Search in…</string>
+    <string name="search_sources_title">Search in</string>
+    <!-- In that checklist -->
     <string name="search_source_phone">Phone</string>
     <string name="search_source_server">Server</string>
     <string name="library_search_nothing">Nothing found. Try a different search.</string>

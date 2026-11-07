@@ -588,6 +588,9 @@
     <string name="library_server_forget_armed">Diesen Server vergessen — seine Titel verlassen die Bibliothek; tippe erneut</string>
 
 
+    <string name="search_cd_options">Suchoptionen</string>
+    <string name="search_sources_menu">Suchen in…</string>
+    <string name="search_sources_title">Suchen in</string>
     <string name="search_source_phone">Telefon</string>
     <string name="search_source_server">Server</string>
     <string name="library_search_nothing">Nichts gefunden. Versuche eine andere Suche.</string>
