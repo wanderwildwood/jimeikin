@@ -20,7 +20,7 @@ On the phone, in the app's own private storage: the library index, playlists, th
 
 **Downloaded songs.** Songs you download from your music server are saved as ordinary music files in Music/Music Box K, on the memory card if there is one (on Android 9 and 10, in the app's own storage instead). They stay there if the app is uninstalled, and other apps on the phone can see them. Music files you put on the phone yourself are left alone.
 
-**Backups.** The app allows Android's backup (`allowBackup="true"`). Android may therefore copy the library database and the preferences into your Google backup, or to a new phone when you transfer, as your phone's backup settings decide; the app's own files folder is included in a device-to-device transfer and, on Android 11 and older, in a full backup (songs saved in Music/Music Box are not in that folder, except on Android 9 and 10). The settings file, which holds the server password or Jellyfin sign-in, is excluded from all of these. The developer holds no backup of any of it.
+**Backups.** Nothing of the app goes into Android's backup or a phone-to-phone transfer (`allowBackup="false"`, and data-extraction rules that leave out everything). Its library, playlists and settings stay on the phone; to move playlists and kept stations to another phone, use **Save a backup** in Settings. The developer holds no backup of any of it.
 
 Uninstalling the app deletes everything in its private storage. There is no cloud copy and no copy held by the developer.
 
