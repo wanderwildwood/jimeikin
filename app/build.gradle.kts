@@ -85,7 +85,9 @@ android {
             if (realSigningConfig != null) signingConfig = realSigningConfig
         }
         release {
-            isMinifyEnabled = false
+            // Shrunk: unshrunk, the code alone was 35 MB of a 37 MB APK. Resources are left
+            // alone. What must survive by name is in proguard-rules.pro.
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // No fallback: without the real key a release is unsigned and will not install,
             // which fails loudly instead of producing something signed with the wrong key.
