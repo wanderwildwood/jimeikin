@@ -7,7 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import android.provider.Settings
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import com.wanderwildwood.jimeikin.FilesCreateDocument
@@ -15,7 +14,10 @@ import com.wanderwildwood.jimeikin.FilesOpenDocument
 import androidx.compose.runtime.rememberCoroutineScope
 import com.wanderwildwood.jimeikin.data.LibraryBackup
 import com.wanderwildwood.jimeikin.data.LibraryBackupFiles
+import com.wanderwildwood.jimeikin.data.MusicFolderName
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -140,11 +143,7 @@ fun SettingsScreen(
             } else {
                 items(localFolders) { folder ->
                     FolderRow(
-                        path = formatDirectoryPath(
-                            folder,
-                            stringResource(R.string.settings_folder_phone),
-                            stringResource(R.string.settings_folder_card),
-                        ),
+                        path = musicFolderName(folder),
                         onRemove = { onRemoveFolderClick(folder) },
                     )
                 }
@@ -539,22 +538,18 @@ private fun FolderRow(path: String, onRemove: () -> Unit) {
     }
 }
 
-private fun formatDirectoryPath(uriString: String, phone: String, card: String): String {
-    try {
-        val decoded = Uri.decode(uriString)
-        // A card is "<uuid>:Music", the built-in storage is "primary:Music". Both used to
-        // fall through to the raw content:// uri, which told the reader nothing.
-        val treeMarker = decoded.substringAfterLast("/tree/", "")
-        val body = if (treeMarker.isNotEmpty()) treeMarker else decoded
-        val volume = body.substringBefore(':', "")
-        val path = body.substringAfter(':', "").replace("/", " > ")
-        val volumeLabel = when {
-            volume.equals("primary", ignoreCase = true) -> phone
-            volume.isNotEmpty() -> card
-            else -> return uriString
-        }
-        return if (path.isEmpty()) volumeLabel else "$volumeLabel > $path"
-    } catch (e: Exception) {
-        return uriString
+/**
+ * What a music folder is called here: see [MusicFolderName]. A folder from another file
+ * manager is asked for its name off the main thread; until it answers, and if it never does,
+ * the row shows the last part of the folder's id, never its address.
+ */
+@Composable
+private fun musicFolderName(folder: String): String {
+    val context = LocalContext.current
+    val phone = stringResource(R.string.settings_folder_phone)
+    val card = stringResource(R.string.settings_folder_card)
+    val name by produceState(MusicFolderName.quick(folder, phone, card), folder, phone, card) {
+        value = withContext(Dispatchers.IO) { MusicFolderName.read(context, folder, phone, card) }
     }
+    return name
 }
