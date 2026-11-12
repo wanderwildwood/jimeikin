@@ -99,6 +99,7 @@ import com.wanderwildwood.jimeikin.ui.SearchResult
 import com.wanderwildwood.jimeikin.ui.UpNextScreen
 import com.wanderwildwood.jimeikin.ui.AboutDialog
 import com.wanderwildwood.jimeikin.ui.EditDetailsScreen
+import com.wanderwildwood.jimeikin.ui.editFailureText
 import com.wanderwildwood.jimeikin.ui.FileUnderScreen
 import com.wanderwildwood.jimeikin.ui.houseTypography
 import com.wanderwildwood.jimeikin.ui.isEditable
@@ -2262,14 +2263,7 @@ fun CalmMusic(
                                     while (isRescanningLocal) delay(200L)
                                     resyncLocalLibrary(localMusicFolders)
                                 }
-                                fileUnderErrorText = when {
-                                    failure == null -> null
-                                    songs.size > 1 ->
-                                        context.getString(R.string.edit_details_some_failed, songs.size - written, songs.size)
-                                    failure == TagEditor.Result.Unsupported ->
-                                        context.getString(R.string.edit_details_unsupported)
-                                    else -> context.getString(R.string.edit_details_failed)
-                                }
+                                fileUnderErrorText = failure?.let { editFailureText(context, it, songs.size, written) }
                                 if (failure == null) navController.navigateUp()
                             }
                         },
@@ -2669,14 +2663,7 @@ fun CalmMusic(
                                     while (isRescanningLocal) delay(200L)
                                     resyncLocalLibrary(localMusicFolders)
                                 }
-                                editErrorText = when {
-                                    failure == null -> null
-                                    songs.size > 1 ->
-                                        context.getString(R.string.edit_details_some_failed, songs.size - written, songs.size)
-                                    failure == TagEditor.Result.Unsupported ->
-                                        context.getString(R.string.edit_details_unsupported)
-                                    else -> context.getString(R.string.edit_details_failed)
-                                }
+                                editErrorText = failure?.let { editFailureText(context, it, songs.size, written) }
                                 if (failure == null) {
                                     // An album renamed, or given who it is by, is a different
                                     // album to the library, and the page it was edited from

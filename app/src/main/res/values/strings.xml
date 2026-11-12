@@ -542,6 +542,13 @@
     <string name="edit_details_failed">Could not save. The file is unchanged.</string>
     <!-- %1$d songs could not be saved, of %2$d -->
     <string name="edit_details_some_failed">%1$d of %2$d songs could not be saved and are unchanged.</string>
+    <!-- Why a save failed, shown after "Could not save. The file is unchanged." (or after the count, for an album). Plain words; something the reader can act on where there is something. -->
+    <string name="edit_details_why_missing">The file was not found. It may have been moved or removed.</string>
+    <string name="edit_details_why_unreadable">The file could not be read, or the phone is too full to work on it.</string>
+    <string name="edit_details_why_not_kept">The file did not keep the new details.</string>
+    <string name="edit_details_why_folder">The app could not write in the file\'s folder. Choosing the folder again in Settings may help.</string>
+    <string name="edit_details_why_no_room">The changed file could not be written beside the old one. The phone or card may be full.</string>
+    <string name="edit_details_why_in_the_way">The old file could not be replaced. It may be protected or in use.</string>
     <string name="main_title_file_under">File under</string>
     <string name="library_artist_file_under">File under…</string>
     <string name="file_under_lead">Put %1$s under another artist. Each song keeps its own credit.</string>

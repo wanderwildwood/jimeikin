@@ -1,5 +1,6 @@
 package com.wanderwildwood.jimeikin.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -151,4 +152,28 @@ private fun Field(
         keyboardOptions = if (numeric) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
     )
     Spacer(Modifier.height(12.dp))
+}
+
+/**
+ * What to tell the reader when a save did not go through: that the files are as they were,
+ * and why, in words they can act on. For several songs the reason is the first failure's.
+ */
+fun editFailureText(context: Context, failure: TagEditor.Result, total: Int, written: Int): String {
+    val what = if (total > 1) {
+        context.getString(R.string.edit_details_some_failed, total - written, total)
+    } else if (failure == TagEditor.Result.Unsupported) {
+        return context.getString(R.string.edit_details_unsupported)
+    } else {
+        context.getString(R.string.edit_details_failed)
+    }
+    val why = when ((failure as? TagEditor.Result.Failed)?.step) {
+        null -> return what
+        TagEditor.Step.FIND_FILE -> R.string.edit_details_why_missing
+        TagEditor.Step.COPY_OUT -> R.string.edit_details_why_unreadable
+        TagEditor.Step.READ_BACK, TagEditor.Step.FIELDS_DIFFER -> R.string.edit_details_why_not_kept
+        TagEditor.Step.FIND_FOLDER, TagEditor.Step.CREATE_COPY -> R.string.edit_details_why_folder
+        TagEditor.Step.WRITE_COPY -> R.string.edit_details_why_no_room
+        TagEditor.Step.REMOVE_ORIGINAL -> R.string.edit_details_why_in_the_way
+    }
+    return what + " " + context.getString(why)
 }
