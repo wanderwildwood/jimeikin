@@ -26,7 +26,8 @@ import java.util.concurrent.TimeUnit
  * Off until the reader turns it on in Settings. Then, after a library scan, each album that
  * lacks one of those is looked up once: its title and artist are searched for, and a release
  * is taken only when its title is the album's and most of the album's song titles are on it
- * (with lengths that agree, where both are known). What it gives fills gaps only: a tag the
+ * (with lengths that agree, where both are known; a title read from a numbered file name is
+ * compared without its number). What it gives fills gaps only: a tag the
  * file has always wins, and the files themselves are never written to. An album with no match
  * stays exactly as tagged. Results are kept in the app's own storage, so an album is asked
  * about once, and again only when its songs change.
@@ -225,11 +226,19 @@ object MusicBrainzMatcher {
         /** Who most of it is by, when one artist is; null for a mix such as a compilation. */
         val artist: String?,
         val tracks: List<LocalTrack>,
+        /** Some titles are file names with their track numbers taken off; see [FilenameTracks]. */
+        val titlesFromNames: Boolean = false,
     ) {
-        /** Changes when the album's songs do, which is when it is worth asking again. */
+        /**
+         * Changes when the album's songs do, which is when it is worth asking again. An album
+         * whose titles are read from numbered file names is marked, so one that was asked about
+         * as "01 Lantern" and not found is asked once more as "Lantern".
+         */
         val signature: String
-            get() = (ArtistNames.key(title) + "|" + tracks.map { it.songId }.sorted().joinToString("|"))
-                .hashCode().toUInt().toString(16)
+            get() = (
+                ArtistNames.key(title) + "|" + tracks.map { it.songId }.sorted().joinToString("|") +
+                    (if (titlesFromNames) "|names" else "")
+                ).hashCode().toUInt().toString(16)
     }
 
     /** What a match gives: who the album is by, its year, and each song's disc and track. */
@@ -258,7 +267,17 @@ object MusicBrainzMatcher {
                 val artist = albumRows[albumId]?.artist?.takeIf { !untagged && it.isNotBlank() }
                     ?: top?.takeIf { it.size * 2 > own.size }?.let { ArtistNames.preferred(it) }
                 if (artist == null && own.size < 3) return@mapNotNull null
-                LocalAlbum(albumId, title, artist, own.map { LocalTrack(it.id, it.title, it.durationMillis) })
+                // A song with no title tag is titled by its file name. On an album whose file
+                // names are numbered, "01 Lantern" is compared as "Lantern", which is how
+                // MusicBrainz has it. A title from a tag is compared as it is.
+                val names = FilenameTracks.inAlbums(own)
+                LocalAlbum(
+                    albumId,
+                    title,
+                    artist,
+                    own.map { LocalTrack(it.id, names[it.id]?.title ?: it.title, it.durationMillis) },
+                    titlesFromNames = names.isNotEmpty(),
+                )
             }
 
     private fun phrase(s: String) = "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
