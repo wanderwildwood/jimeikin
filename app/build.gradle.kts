@@ -85,6 +85,8 @@ android {
             if (realSigningConfig != null) signingConfig = realSigningConfig
         }
         release {
+            // Release APKs carry arm64-v8a only: every device this app is for is arm64. Debug builds keep the emulator's.
+            ndk { abiFilters += listOf("arm64-v8a") }
             // Shrunk: unshrunk, the code alone was 35 MB of a 37 MB APK. Resources are left
             // alone. What must survive by name is in proguard-rules.pro.
             isMinifyEnabled = true
