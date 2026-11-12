@@ -486,6 +486,12 @@
     <string name="edit_details_failed">Impossible d\'enregistrer. Le fichier est inchangé.</string>
     <!-- %1$d songs could not be saved, of %2$d -->
     <string name="edit_details_some_failed">%1$d de %2$d pistes n\'ont pas pu être enregistrées et ne sont pas modifiées.</string>
+    <string name="edit_details_why_missing">Le fichier est introuvable. Il a peut-être été déplacé ou supprimé.</string>
+    <string name="edit_details_why_unreadable">Le fichier n\'a pas pu être lu, ou le téléphone est trop plein pour le modifier.</string>
+    <string name="edit_details_why_not_kept">Le fichier n\'a pas gardé les nouvelles informations.</string>
+    <string name="edit_details_why_folder">L\'application n\'a pas pu écrire dans le dossier du fichier. Choisir de nouveau le dossier dans les paramètres peut aider.</string>
+    <string name="edit_details_why_no_room">Le fichier modifié n\'a pas pu être écrit à côté de l\'ancien. Le téléphone ou la carte est peut-être plein.</string>
+    <string name="edit_details_why_in_the_way">L\'ancien fichier n\'a pas pu être remplacé. Il est peut-être protégé ou en cours d\'utilisation.</string>
     <string name="main_title_file_under">Associer à</string>
     <string name="library_artist_file_under">Associer à…</string>
     <string name="file_under_lead">Associer %1$s à un autre artiste. Chaque piste conserve ses propres crédits.</string>

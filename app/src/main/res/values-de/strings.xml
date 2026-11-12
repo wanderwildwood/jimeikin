@@ -534,6 +534,12 @@
     <string name="edit_details_failed">Speichern nicht möglich. Die Datei bleibt unverändert.</string>
     <!-- %1$d songs could not be saved, of %2$d -->
     <string name="edit_details_some_failed">%1$d von %2$d Titeln konnten nicht gespeichert werden und bleiben unverändert.</string>
+    <string name="edit_details_why_missing">Die Datei wurde nicht gefunden. Vielleicht wurde sie verschoben oder gelöscht.</string>
+    <string name="edit_details_why_unreadable">Die Datei konnte nicht gelesen werden, oder das Telefon ist zu voll, um sie zu bearbeiten.</string>
+    <string name="edit_details_why_not_kept">Die Datei hat die neuen Angaben nicht behalten.</string>
+    <string name="edit_details_why_folder">Die App konnte im Ordner der Datei nicht schreiben. Den Ordner in den Einstellungen neu auszuwählen kann helfen.</string>
+    <string name="edit_details_why_no_room">Die geänderte Datei konnte nicht neben die alte geschrieben werden. Vielleicht ist das Telefon oder die Karte voll.</string>
+    <string name="edit_details_why_in_the_way">Die alte Datei konnte nicht ersetzt werden. Vielleicht ist sie geschützt oder in Gebrauch.</string>
     <string name="main_title_file_under">Einsortieren unter</string>
     <string name="library_artist_file_under">Einsortieren unter…</string>
     <string name="file_under_lead">%1$s unter einem anderen Künstler einsortieren. Jeder Titel behält seine eigene Angabe.</string>

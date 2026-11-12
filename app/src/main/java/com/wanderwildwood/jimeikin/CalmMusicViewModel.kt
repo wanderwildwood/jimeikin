@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
@@ -1999,7 +2000,12 @@ class CalmMusicViewModel(
                 // The edited copy is whole under its pending name, and the rescan that
                 // follows gives it the file's name back.
                 TagEditor.Result.LeftPending -> written++
-                else -> if (firstFailure == null) firstFailure = result
+                else -> {
+                    if (result is TagEditor.Result.Failed) {
+                        Log.w("TagEditor", "not saved at ${result.step}", result.cause)
+                    }
+                    if (firstFailure == null) firstFailure = result
+                }
             }
         }
         written to firstFailure
