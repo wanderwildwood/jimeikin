@@ -138,7 +138,12 @@ class LibraryRepository(
                         } else {
                             NoAlbumGaps
                         }
-                        val normalizedLocalEntities = scannedAudio.audio.map { albumGaps.fill(it.song) }
+                        // A track number in a file's name ("01 Lantern") stands in where the
+                        // tags have none, on albums whose file names are numbered.
+                        val fileNumbers = FilenameTracks.inAlbums(scannedAudio.audio.map { it.song })
+                        val normalizedLocalEntities = scannedAudio.audio.map {
+                            albumGaps.fill(FilenameTracks.numbered(it.song, fileNumbers[it.song.id]))
+                        }
 
                         withContext(Dispatchers.IO) {
                             // Rows of their own, keyed as the download itself keys them; the

@@ -156,6 +156,44 @@ class MusicBrainzTest {
         assertEquals(2001, ownTags.releaseYear)
     }
 
+    private val folder = "content://com.android.externalstorage.documents/tree/primary%3AMusic/document/primary%3AMusic%2FGlass%20Orchard%2F"
+
+    /** A song with no tags of its own: titled by its file name, as the scanner does. */
+    private fun file(name: String) = song(folder + name.replace(" ", "%20"), name.substringBeforeLast('.'))
+
+    @Test
+    fun anAlbumTitledByNumberedFileNamesIsMatchedWithoutTheNumbers() {
+        val songs = listOf(file("01 Lantern.mp3"), file("02 - Tide Clock.mp3"), file("2-01 Orchard Song.mp3"))
+        val todo = MusicBrainzMatcher.albumsToLookUp(songs, emptyMap()).single()
+        assertEquals(listOf("Lantern", "Tide Clock", "Orchard Song"), todo.tracks.map { it.title })
+        assertTrue(todo.titlesFromNames)
+        val match = MusicBrainzMatcher.fit(todo, MusicBrainzParse.release(releaseJson)!!)!!
+        assertEquals(3, match.tracks.size)
+        assertEquals(1 to 2, match.tracks[songs[1].id])
+    }
+
+    @Test
+    fun titlesThatBeginWithANumberOfTheirOwnAreComparedWhole() {
+        val songs = listOf(file("99 Luftballons.mp3"), file("7 Years.mp3"), file("Lantern.mp3"))
+        val todo = MusicBrainzMatcher.albumsToLookUp(songs, emptyMap()).single()
+        assertEquals(listOf("99 Luftballons", "7 Years", "Lantern"), todo.tracks.map { it.title })
+        assertTrue(!todo.titlesFromNames)
+    }
+
+    @Test
+    fun aTitleFromATagIsNeverStripped() {
+        // The files are numbered, but these titles are tags: the ids here are not file addresses.
+        val songs = listOf(song("u1", "01 Lantern"), song("u2", "02 Tide Clock"), song("u3", "03 Orchard Song"))
+        val todo = MusicBrainzMatcher.albumsToLookUp(songs, emptyMap()).single()
+        assertEquals(listOf("01 Lantern", "02 Tide Clock", "03 Orchard Song"), todo.tracks.map { it.title })
+    }
+
+    @Test
+    fun anAlbumNotFoundUnderItsNumberedNamesIsAskedAgain() {
+        val before = album.copy(tracks = album.tracks)
+        assertTrue(before.signature != before.copy(titlesFromNames = true).signature)
+    }
+
     @Test
     fun theSignatureChangesWithTheSongs() {
         val more = album.copy(tracks = album.tracks + MusicBrainzMatcher.LocalTrack("s4", "Cold Frame", null))
