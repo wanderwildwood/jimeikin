@@ -54,8 +54,17 @@ object MusicBrainz {
     private val requestLock = Mutex()
     private var lastRequestAt = 0L
 
-    /** Where a pass is, for the Settings row. */
-    data class Status(val running: Boolean = false, val done: Int = 0, val total: Int = 0, val matched: Int = 0)
+    /**
+     * Where a pass is, for the Settings row: [matched] albums have been filled in and
+     * [notFound] were asked about and have no match, over every pass so far.
+     */
+    data class Status(
+        val running: Boolean = false,
+        val done: Int = 0,
+        val total: Int = 0,
+        val matched: Int = 0,
+        val notFound: Int = 0,
+    )
 
     private val _status = MutableStateFlow(Status())
     val status: StateFlow<Status> = _status.asStateFlow()
@@ -123,7 +132,7 @@ object MusicBrainz {
             var kept = withContext(Dispatchers.IO) { MusicBrainzMatches.read(file) }
             val todo = albums.filter { kept.entry(it.albumId)?.signature != it.signature }
             var matched = 0
-            _status.value = Status(running = true, done = 0, total = todo.size, matched = kept.matchedCount())
+            _status.value = Status(running = true, done = 0, total = todo.size, matched = kept.matchedCount(), notFound = kept.notFoundCount())
             for ((i, album) in todo.withIndex()) {
                 if (!isStillOn()) break
                 val match = try {
@@ -135,7 +144,7 @@ object MusicBrainz {
                 kept = kept.with(album.albumId, MusicBrainzMatches.Entry(album.signature, match))
                 if (match != null) matched++
                 withContext(Dispatchers.IO) { kept.write(file) }
-                _status.value = Status(running = true, done = i + 1, total = todo.size, matched = kept.matchedCount())
+                _status.value = Status(running = true, done = i + 1, total = todo.size, matched = kept.matchedCount(), notFound = kept.notFoundCount())
             }
             _status.value = _status.value.copy(running = false)
             return matched
@@ -322,6 +331,9 @@ class MusicBrainzMatches private constructor(private val entries: Map<String, En
     fun with(albumId: String, entry: Entry) = MusicBrainzMatches(entries + (albumId to entry))
 
     fun matchedCount(): Int = entries.values.count { it.match != null }
+
+    /** Albums asked about that MusicBrainz has no match for. */
+    fun notFoundCount(): Int = entries.values.count { it.match == null }
 
     fun isEmpty(): Boolean = entries.values.none { it.match != null }
 

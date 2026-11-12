@@ -46,7 +46,18 @@ internal fun LazyListScope.albumDetailsSwitch(onRescan: () -> Unit) {
             val line = when {
                 !lookUp -> null
                 status.running -> stringResource(R.string.settings_musicbrainz_running, status.done, status.total)
-                status.matched > 0 -> pluralStringResource(R.plurals.settings_musicbrainz_matched, status.matched, status.matched)
+                status.matched > 0 || status.notFound > 0 -> {
+                    val filled = pluralStringResource(R.plurals.settings_musicbrainz_matched, status.matched, status.matched)
+                    if (status.notFound == 0) {
+                        filled
+                    } else {
+                        stringResource(
+                            R.string.settings_musicbrainz_filled_and_not_found,
+                            filled,
+                            pluralStringResource(R.plurals.settings_musicbrainz_not_found, status.notFound, status.notFound),
+                        )
+                    }
+                }
                 else -> null
             }
             if (line != null) {
