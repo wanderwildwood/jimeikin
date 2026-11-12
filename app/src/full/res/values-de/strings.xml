@@ -63,4 +63,15 @@
     <string name="settings_youtube_links_some">Nur einige Adressen</string>
     <string name="settings_youtube_links_off">Aus</string>
     <string name="settings_youtube_links_hint">Android schickt Weblinks an den Browser, bis du sagst, welche eine App öffnen darf. Tippe hier, dann auf „Link hinzufügen“, und hake die YouTube-Adressen an.</string>
+    <string name="settings_musicbrainz">Albumdetails von MusicBrainz ergänzen</string>
+    <string name="settings_musicbrainz_running">Alben werden nachgeschlagen: %1$d von %2$d</string>
+    <plurals name="settings_musicbrainz_matched">
+        <item quantity="one">%1$d Album ergänzt</item>
+        <item quantity="other">%1$d Alben ergänzt</item>
+    </plurals>
+    <plurals name="settings_musicbrainz_not_found">
+        <item quantity="one">%1$d nicht gefunden</item>
+        <item quantity="other">%1$d nicht gefunden</item>
+    </plurals>
+    <string name="settings_musicbrainz_filled_and_not_found">%1$s, %2$s</string>
 </resources>

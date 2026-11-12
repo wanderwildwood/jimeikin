@@ -137,6 +137,11 @@ class MusicBrainzTest {
         )
         assertNotNull(kept.entry(id))
         assertEquals("Mara Quill", kept.albumArtist(id))
+        // An album asked about and not found is counted as that, and stays so when read back.
+        val withMiss = MusicBrainzMatches.parse(kept.with("other", MusicBrainzMatches.Entry("sig2", null)).toJson())
+        assertEquals(1, withMiss.matchedCount())
+        assertEquals(1, withMiss.notFoundCount())
+        assertEquals(0, kept.notFoundCount())
         // A tagged album keeps its own album artist.
         assertNull(kept.albumArtist("LOCAL_FILE:maraquill:glassorchard"))
 

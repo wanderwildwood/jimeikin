@@ -60,10 +60,18 @@
     <string name="library_artist_online_failed">The rest of their albums could not be fetched from YouTube.</string>
     <string name="settings_musicbrainz">Fill in album details from MusicBrainz</string>
     <string name="settings_musicbrainz_running">Looking up albums: %1$d of %2$d</string>
+    <!-- Under the switch, after a lookup. Alone when every album asked about was found; otherwise the first half of "3 albums filled in, 2 not found" -->
     <plurals name="settings_musicbrainz_matched">
         <item quantity="one">%1$d album filled in</item>
         <item quantity="other">%1$d albums filled in</item>
     </plurals>
+    <!-- The second half: %1$d albums that MusicBrainz has no match for -->
+    <plurals name="settings_musicbrainz_not_found">
+        <item quantity="one">%1$d not found</item>
+        <item quantity="other">%1$d not found</item>
+    </plurals>
+    <!-- The two halves in one short line: %1$s is "3 albums filled in", %2$s is "2 not found" -->
+    <string name="settings_musicbrainz_filled_and_not_found">%1$s, %2$s</string>
     <!-- The shared privacy sections (shared-about) name what the app talks to. Music Box K (the
          main strings) has no YouTube Music and no MusicBrainz; this edition has both. -->
     <string name="privacy_who">This app is made by wander wildwood, an independent developer: one person, not a company. That makes wander wildwood the data controller for anything the app itself handles, and that is very little: what you put in stays on this phone unless you send it somewhere yourself. The only things that go out are the requests described above: your searches, plays, downloads and sign-in to YouTube Music; requests for stations and their streams to radio.garden; the words of a radio search to Radio Browser; a ZIP or postal code to Zippopotam.us; requests to your own music server, if you add one; and, only if you turn it on, an album\'s title and artist to MusicBrainz. Nothing comes to the developer.</string>
