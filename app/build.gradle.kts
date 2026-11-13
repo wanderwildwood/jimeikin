@@ -215,7 +215,7 @@ dependencies {
     implementation("androidx.media3:media3-session:1.10.1")
     implementation("androidx.media3:media3-ui:1.10.1")
 
-    "fullImplementation"("com.github.TeamNewPipe:NewPipeExtractor:v0.27.0") {
+    "fullImplementation"("com.github.TeamNewPipe:NewPipeExtractor:v0.27.1") {
         exclude(group = "com.google.protobuf")
     }
 
