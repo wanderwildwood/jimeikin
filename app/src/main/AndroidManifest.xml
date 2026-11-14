@@ -61,6 +61,12 @@
 
 
 
+        <!-- Starts dark mode before the first screen is drawn. Holds no data. -->
+        <provider
+            android:name="com.wanderwildwood.jimeikin.ui.DarkModeInit"
+            android:authorities="${applicationId}.darkmodeinit"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -144,6 +150,8 @@
     </application>
 
     <queries>
+        <!-- Home, whose dark mode switch this app follows when Home is installed. -->
+        <package android:name="com.wanderwildwood.iori" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />

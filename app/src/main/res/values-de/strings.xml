@@ -785,4 +785,6 @@
     <string name="about_close_drawer">%1$s schließen</string>
     <string name="about_contact_head">Kontakt</string>
     <string name="about_links_head">Links</string>
+    <string name="settings_dark">Dunkelmodus</string>
+    <string name="settings_dark_note">Weiß auf Schwarz, in dieser App. Home hat einen Schalter für alle Apps.</string>
 </resources>
