@@ -2714,6 +2714,15 @@ fun CalmMusic(
                                 reloadRadioStations()
                             }
                         },
+                        onNotice = { message ->
+                            libraryScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = message,
+                                    withDismissAction = false,
+                                    duration = SnackbarDurationMMD.Short,
+                                )
+                            }
+                        },
                     )
                 }
                 composable(Screen.MusicServer.route) {

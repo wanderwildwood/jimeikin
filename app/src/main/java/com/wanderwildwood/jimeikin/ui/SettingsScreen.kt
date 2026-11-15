@@ -7,7 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import android.provider.Settings
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import com.wanderwildwood.jimeikin.FilesCreateDocument
 import com.wanderwildwood.jimeikin.FilesOpenDocument
@@ -89,6 +88,8 @@ fun SettingsScreen(
     localScanDeletedMissing: Int?,
     localScanUnreadableFolders: Int?,
     onLibraryRestored: () -> Unit,
+    /** Says how a backup or restore went at the foot, where it stays until the next press. */
+    onNotice: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val onlineConnected = onlineAccountConnected()
@@ -100,11 +101,7 @@ fun SettingsScreen(
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
             val ok = LibraryBackupFiles.save(context, uri)
-            Toast.makeText(
-                context,
-                context.getString(if (ok) R.string.backup_saved else R.string.backup_not_saved),
-                if (ok) Toast.LENGTH_SHORT else Toast.LENGTH_LONG,
-            ).show()
+            onNotice(context.getString(if (ok) R.string.backup_saved else R.string.backup_not_saved))
         }
     }
     val restoreBackup = rememberLauncherForActivityResult(FilesOpenDocument(writable = false)) { uri ->
@@ -128,7 +125,7 @@ fun SettingsScreen(
                 )
                 LibraryBackupFiles.Result.Unreadable -> context.getString(R.string.restore_unreadable)
             }
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            onNotice(message)
         }
     }
     PagedColumn(
