@@ -794,4 +794,6 @@
     <string name="about_links_head">Links</string>
     <string name="settings_dark">Dunkelmodus</string>
     <string name="settings_dark_note">Weiß auf Schwarz, in dieser App. Home hat einen Schalter für alle Apps.</string>
+    <string name="page_arrow_previous">Vorherige Seite</string>
+    <string name="page_arrow_next">Nächste Seite</string>
 </resources>
