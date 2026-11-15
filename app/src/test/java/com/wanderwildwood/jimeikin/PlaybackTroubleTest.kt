@@ -79,6 +79,42 @@ class PlaybackTroubleTest {
     }
 
     @Test
+    fun aSongWhoseFolderIsGoneSaysSoWhateverThePlayerMadeOfIt() {
+        // A card swapped for another fails as an unspecified IO error, not "file not found".
+        for (code in listOf(
+            PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
+            PlaybackException.ERROR_CODE_UNSPECIFIED,
+            PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND,
+            PlaybackException.ERROR_CODE_IO_NO_PERMISSION,
+        )) {
+            assertEquals(
+                Trouble.FOLDER_GONE,
+                PlaybackTrouble.fromError(code, null, streamsFromServer = false, online = true, serverSignedIn = true, folderGone = true),
+            )
+        }
+    }
+
+    @Test
+    fun otherFailuresKeepTheirOwnMessageWhenTheFolderIsThere() {
+        assertEquals(
+            Trouble.CANT_PLAY,
+            PlaybackTrouble.fromError(PlaybackException.ERROR_CODE_IO_UNSPECIFIED, null, false, true, true, folderGone = false),
+        )
+        assertEquals(
+            Trouble.FILE_MISSING,
+            PlaybackTrouble.fromError(PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND, null, false, true, true, folderGone = false),
+        )
+    }
+
+    @Test
+    fun aServerSongIsNeverSaidToHaveLostItsFolder() {
+        assertEquals(
+            Trouble.SERVER_SIGNED_OUT,
+            PlaybackTrouble.fromError(PlaybackException.ERROR_CODE_IO_UNSPECIFIED, null, true, true, false, folderGone = true),
+        )
+    }
+
+    @Test
     fun aStallIsNamedByWhatIsMissing() {
         assertEquals(Trouble.SERVER_SIGNED_OUT, PlaybackTrouble.stalled(online = true, serverSignedIn = false))
         assertEquals(Trouble.NO_INTERNET, PlaybackTrouble.stalled(online = false, serverSignedIn = true))

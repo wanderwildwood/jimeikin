@@ -68,6 +68,10 @@ fun SettingsScreen(
     onRequestBatteryOptimizationExemption: () -> Unit,
     onAddFolderClick: () -> Unit,
     onRemoveFolderClick: (String) -> Unit,
+    /** Chosen folders that could not be read when last looked at; see FolderReach. */
+    unreadableFolders: Set<String> = emptySet(),
+    /** Opens the folder picker to choose a folder in place of this one. */
+    onChooseFolderAgainClick: (String) -> Unit = {},
     onRescanLocalMusicClick: () -> Unit,
     onNavigateToDownloadsClick: () -> Unit,
     musicServerSummary: String,
@@ -144,7 +148,9 @@ fun SettingsScreen(
                 items(localFolders) { folder ->
                     FolderRow(
                         path = musicFolderName(folder),
+                        unreadable = folder in unreadableFolders,
                         onRemove = { onRemoveFolderClick(folder) },
+                        onChooseAgain = { onChooseFolderAgainClick(folder) },
                     )
                 }
             }
@@ -518,7 +524,7 @@ internal fun ArmedRow(
  * tap, unasked, and cost a column of width to do it.
  */
 @Composable
-private fun FolderRow(path: String, onRemove: () -> Unit) {
+private fun FolderRow(path: String, unreadable: Boolean, onRemove: () -> Unit, onChooseAgain: () -> Unit) {
     var armed by rememberArmedFlag()
 
     Column(
@@ -544,6 +550,20 @@ private fun FolderRow(path: String, onRemove: () -> Unit) {
             Spacer(modifier = Modifier.height(2.dp))
         }
         TextMMD(text = path, style = MaterialTheme.typography.labelSmall)
+        // A card out, swapped or reformatted: said on the folder it concerns, with the way back.
+        if (unreadable) {
+            Spacer(modifier = Modifier.height(2.dp))
+            TextMMD(
+                text = stringResource(R.string.settings_folder_unreadable),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            OutlinedButtonMMD(
+                onClick = onChooseAgain,
+                modifier = Modifier.fillMaxWidth(),
+            ) { TextMMD(text = stringResource(R.string.settings_folder_choose_again), style = MaterialTheme.typography.titleSmall) }
+        }
     }
 }
 

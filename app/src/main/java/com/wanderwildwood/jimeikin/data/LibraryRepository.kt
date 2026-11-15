@@ -132,6 +132,8 @@ class LibraryRepository(
                         // it is deleted - a card that was slow to mount used to empty the
                         // whole library.
                         val hadUnreadableFolder = scannedAudio.unreadableTreeUris.isNotEmpty()
+                        // Their songs stay in the library, hidden, until the folder reads again.
+                        FolderReach.update(folders, scannedAudio.unreadableTreeUris)
                         // Gaps in the tags filled from an online lookup, when the reader asked for that.
                         val albumGaps: AlbumGaps = if (app.settingsManager.getAlbumDetailsLookupSync()) {
                             withContext(Dispatchers.IO) { AlbumDetailsLookup.gaps(app) }
@@ -297,6 +299,18 @@ class LibraryRepository(
                                 onIngestProgress(progress.coerceIn(0f, 1f))
                             }
 
+                            // A folder chosen in place of one that is gone (a card swapped or
+                            // reformatted): a song found again at the same place in it keeps
+                            // its hearts, playlist places and given name. See MusicFolderSongs.
+                            val carried = MusicFolderSongs.carryOver(
+                                leaving = songsToDelete,
+                                arriving = scannedById.keys - existingById.keys,
+                            )
+                            if (carried.isNotEmpty()) {
+                                carryOver(carried)
+                                android.util.Log.i("LibraryRepository", "${carried.size} songs found again in a new folder")
+                            }
+
                             if (songsToDelete.isNotEmpty()) {
                                 songDao.deleteByIds(songsToDelete.toList())
                                 writtenItems += songsToDelete.size
@@ -351,6 +365,7 @@ class LibraryRepository(
                         error = e.message ?: "Failed to scan local music"
                     }
                 } else {
+                    FolderReach.update(emptySet(), emptySet())
                     withContext(Dispatchers.IO) {
                         songDao.deleteBySourceType("LOCAL_FILE")
                         albumDao.deleteBySourceType("LOCAL_FILE")
@@ -456,6 +471,32 @@ class LibraryRepository(
 
             toInsert.size
         }
+    }
+
+    /**
+     * Hands what names each leaving song by its id - its playlist places, its heart, a title the
+     * reader gave it - to the song that replaces it, in one transaction, as [DownloadMove.repoint]
+     * does for a download that moves. Where the new song already has its own (a heart given to
+     * it since, or a place in the same playlist), that one stays and the old one goes.
+     */
+    private suspend fun carryOver(newIdByOld: Map<String, String>) {
+        database.runInTransaction {
+            val db = database.openHelper.writableDatabase
+            newIdByOld.forEach { (old, new) ->
+                db.execSQL("UPDATE OR IGNORE playlist_tracks SET songId = ? WHERE songId = ?", arrayOf(new, old))
+                db.execSQL("UPDATE OR IGNORE hearted_songs SET songId = ?, audioUri = ? WHERE songId = ?", arrayOf(new, new, old))
+                db.execSQL(
+                    "UPDATE OR IGNORE name_overrides SET targetId = ? WHERE kind = ? AND targetId = ?",
+                    arrayOf(new, NameOverrides.SONG, old),
+                )
+                // What is left under the old id is what the new song already had.
+                db.execSQL("DELETE FROM playlist_tracks WHERE songId = ?", arrayOf(old))
+                db.execSQL("DELETE FROM hearted_songs WHERE songId = ?", arrayOf(old))
+                db.execSQL("DELETE FROM name_overrides WHERE kind = ? AND targetId = ?", arrayOf(NameOverrides.SONG, old))
+            }
+        }
+        app.hearts.refresh()
+        app.nameOverrides.refresh()
     }
 
     private class DownloadRows(val song: SongEntity, val artist: ArtistEntity?, val album: AlbumEntity?)

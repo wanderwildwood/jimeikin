@@ -399,6 +399,8 @@
     <string name="settings_rescan_folders">Rescanner</string>
     <!-- Shown in bold above a folder after one tap; a second tap removes the folder -->
     <string name="settings_remove_folder_armed">Retirer ce dossier — ses pistes quittent la bibliothèque; appuyez à nouveau</string>
+    <string name="settings_folder_unreadable">Illisible pour l\'instant : la carte mémoire ou le dossier est absent. Ses pistes sont masquées jusqu\'à son retour.</string>
+    <string name="settings_folder_choose_again">Le choisir à nouveau</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
     <string name="settings_scan_adding">Ajout à la bibliothèque, %1$d%%</string>
     <!-- Scan progress, before the number of songs is known -->
@@ -563,6 +565,8 @@
     <string name="library_sync_in_progress">Synchronisation de la musique en cours…</string>
     <!-- Empty library: button that opens the folder settings -->
     <string name="library_empty_choose_folder">Choisir un dossier</string>
+    <string name="library_empty_folder_gone_title">Votre dossier de musique est illisible</string>
+    <string name="library_empty_folder_gone">Le dossier ou la carte mémoire de votre musique n\'est pas sur le téléphone pour l\'instant. Si la carte est retirée, remettez-la. Si elle a été changée ou formatée, choisissez à nouveau le dossier : les pistes trouvées au même endroit gardent leurs cœurs et leurs playlists.</string>
     <!-- Empty library: button that opens the music server screen (Navidrome and the like) -->
     <string name="library_empty_music_server">Se connecter à un serveur de musique</string>
     <!-- Albums list -->
@@ -675,6 +679,9 @@
     <string name="trouble_no_internet">Cette piste est lue en continu, et le téléphone n\'est pas connecté. Les pistes enregistrées sur le téléphone se lisent toujours.</string>
     <string name="trouble_file_missing_title">Fichier de la piste introuvable</string>
     <string name="trouble_file_missing">Le fichier de cette piste n\'est pas là où la bibliothèque l\'indique. Il a peut-être été déplacé ou supprimé.</string>
+    <string name="trouble_folder_gone_title">Le dossier de cette piste n\'est pas sur le téléphone</string>
+    <string name="trouble_folder_gone">Le dossier ou la carte mémoire de cette piste n\'est plus sur le téléphone. Si la carte est retirée, remettez-la. Si elle a été changée ou formatée, choisissez à nouveau le dossier de musique : les pistes trouvées au même endroit gardent leurs cœurs et leurs playlists.</string>
+    <string name="trouble_fix_folder">Choisir le dossier à nouveau</string>
     <string name="trouble_no_access_title">Music Box ne peut pas lire votre musique</string>
     <string name="trouble_no_access">Android n\'autorise pas Music Box à lire les pistes du téléphone. Autorisez la musique et l\'audio dans les permissions de Music Box.</string>
     <string name="trouble_still_loading_title">Toujours en attente de lecture</string>

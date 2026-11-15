@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +22,7 @@ import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.jimeikin.R
+import com.wanderwildwood.jimeikin.data.FolderReach
 
 @Composable
 fun LibraryOnboardingEmptyState(
@@ -29,6 +32,10 @@ fun LibraryOnboardingEmptyState(
     onOpenLocalSettingsClick: () -> Unit,
     onOpenMusicServerClick: () -> Unit,
 ) {
+    // Empty because the folder holding the music cannot be read (a memory card out or swapped),
+    // not because nothing was ever added: said so, and the first button chooses it again.
+    val unreadable by FolderReach.unreadable.collectAsState()
+    val folderGone = unreadable.isNotEmpty()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -36,7 +43,7 @@ fun LibraryOnboardingEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TextMMD(
-            text = title,
+            text = if (folderGone) stringResource(R.string.library_empty_folder_gone_title) else title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -46,7 +53,7 @@ fun LibraryOnboardingEmptyState(
         Spacer(modifier = Modifier.height(8.dp))
 
         TextMMD(
-            text = body,
+            text = if (folderGone) stringResource(R.string.library_empty_folder_gone) else body,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
@@ -62,7 +69,7 @@ fun LibraryOnboardingEmptyState(
             onClick = onOpenLocalSettingsClick,
         ) {
             TextMMD(
-                text = stringResource(R.string.library_empty_choose_folder),
+                text = stringResource(if (folderGone) R.string.trouble_fix_folder else R.string.library_empty_choose_folder),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )

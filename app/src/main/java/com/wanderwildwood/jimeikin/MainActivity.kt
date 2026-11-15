@@ -108,6 +108,8 @@ import com.wanderwildwood.jimeikin.ui.LocalAlbumActions
 import com.wanderwildwood.jimeikin.ui.AlbumActions
 import com.wanderwildwood.jimeikin.ui.LocalEditDetails
 import com.wanderwildwood.jimeikin.data.TagEditor
+import com.wanderwildwood.jimeikin.data.FolderReach
+import com.wanderwildwood.jimeikin.data.MusicFolderSongs
 import com.wanderwildwood.jimeikin.ui.LocalTopBarActions
 import com.wanderwildwood.jimeikin.ui.TopBarActionsSlot
 import com.wanderwildwood.jimeikin.ui.Icons
@@ -282,6 +284,8 @@ fun CalmMusic(
 
     // Why a song is not playing, when it isn't: a dialog rather than silence (PlaybackTrouble).
     var playbackTrouble by remember { mutableStateOf<Trouble?>(null) }
+    /** The chosen folder a song that would not play came from, when that folder is gone. */
+    var troubleFolder by remember { mutableStateOf<String?>(null) }
 
     val viewModel: CalmMusicViewModel = viewModel(factory = CalmMusicViewModel.factory(app))
     val playbackState by viewModel.playbackState.collectAsState()
@@ -533,9 +537,15 @@ fun CalmMusic(
     }
     // Each hearted song as the library has it where it is there - a streamed song that has since
     // been downloaded plays from its file - and as it was kept when hearted where it is not.
-    val heartedSongs = remember(hearted, librarySongs, recordedOnlineCopies, names) {
+    val unreadableFolders by FolderReach.unreadable.collectAsState()
+    val heartedSongs = remember(hearted, librarySongs, recordedOnlineCopies, names, unreadableFolders) {
         val byId = librarySongs.associateBy { it.id }
-        hearted.map { entry ->
+        // A song from a chosen folder that is not in the library now - its folder unreadable
+        // (a card out) or let go - is not offered: it cannot play. Its heart is kept, and it is
+        // back here when its folder is.
+        hearted.filterNot { entry ->
+            MusicFolderSongs.treeOf(entry.songId) != null && entry.songId !in byId
+        }.map { entry ->
             byId[entry.songId]
                 ?: recordedOnlineCopies[entry.songId]?.let { byId[it] }
                 ?: entry.toSongUiModel(::formatDurationMillis).let { song ->
@@ -697,6 +707,8 @@ fun CalmMusic(
                 localScanDeletedMissing = stats.deletedMissing
                 localScanUnreadableFolders = stats.unreadableFolders
             }
+            // A playlist counts only what it can play: a folder gone or back changes that.
+            playlistsViewModel.refreshPlaylists()
         } finally {
             isRescanningLocal = false
             isIngestingLocal = false
@@ -1548,13 +1560,41 @@ fun CalmMusic(
                 val status = generateSequence<Throwable>(error) { it.cause }
                     .filterIsInstance<HttpDataSource.InvalidResponseCodeException>()
                     .firstOrNull()?.responseCode
-                playbackTrouble = PlaybackTrouble.fromError(
-                    errorCode = error.errorCode,
-                    httpStatus = status,
-                    streamsFromServer = streamsFromServer(viewModel, controller.currentMediaItem?.mediaId),
-                    online = isOnline(appContext),
-                    serverSignedIn = settingsManager.subsonicConfig.value != null,
-                )
+                val server = streamsFromServer(viewModel, failedId)
+                val online = isOnline(appContext)
+                val signedIn = settingsManager.subsonicConfig.value != null
+                // A song from a chosen folder: is that folder still there? A card swapped for
+                // another fails deep in Android with an argument error, which on its own would
+                // only have said "something went wrong". Asked off the main thread: it is a
+                // question to the card.
+                val songUri = viewModel.playbackState.value.nowPlayingSong
+                    ?.takeIf { it.id == failedId }?.audioUri ?: failedId
+                val songTree = songUri?.let(MusicFolderSongs::treeOf)
+                launch {
+                    val treeReadable = songTree?.let { withContext(Dispatchers.IO) { FolderReach.isReadable(appContext, it) } }
+                    val gone = MusicFolderSongs.folderGone(songUri, treeReadable)
+                    troubleFolder = if (gone) {
+                        MusicFolderSongs.folderOf(songUri!!, settingsManager.getLocalMusicFoldersSync()) ?: songTree
+                    } else {
+                        null
+                    }
+                    playbackTrouble = PlaybackTrouble.fromError(
+                        errorCode = error.errorCode,
+                        httpStatus = status,
+                        streamsFromServer = server,
+                        online = online,
+                        serverSignedIn = signedIn,
+                        folderGone = gone,
+                    )
+                    // The library hides that folder's songs from now on, until it reads again.
+                    if (gone && songTree != null && songTree !in FolderReach.unreadable.value &&
+                        songTree in settingsManager.getLocalMusicFoldersSync()
+                    ) {
+                        FolderReach.update(settingsManager.getLocalMusicFoldersSync(), FolderReach.unreadable.value + songTree)
+                        viewModel.refreshLibraryFromDatabase()
+                        playlistsViewModel.refreshPlaylists()
+                    }
+                }
             }
         }
 
@@ -1625,7 +1665,15 @@ fun CalmMusic(
     LaunchedEffect(resumeCount) {
         if (resumeCount == 0 || localMusicFolders.isEmpty()) return@LaunchedEffect
         val sinceLastScan = System.currentTimeMillis() - settingsManager.getLastLocalLibraryScanMillis()
-        if (sinceLastScan > 6 * 60 * 60 * 1000L) {
+        // Each folder is looked at on every return - one question to the card each - and the
+        // folders read at once when one has gone (a card taken out or swapped while the app was
+        // away) or come back: its songs leave the lists, or return to them, without waiting
+        // six hours or a trip to Settings.
+        val unreadable = FolderReach.unreadable.value
+        val changed = withContext(Dispatchers.IO) {
+            localMusicFolders.any { folder -> FolderReach.isReadable(appContext, folder) == (folder in unreadable) }
+        }
+        if (changed || sinceLastScan > 6 * 60 * 60 * 1000L) {
             resyncLocalLibrary(localMusicFolders)
         }
     }
@@ -1655,9 +1703,15 @@ fun CalmMusic(
     // The picker itself, from the empty library as from Settings: a "Choose a folder" that only
     // led to Settings left the choosing still to find. The new folder is read at once, by the
     // LaunchedEffect on the folder list.
+    // A folder chosen in place of one that cannot be read any more (a card swapped or
+    // reformatted): the old one is let go when the new one is taken, and the scan that follows
+    // hands its songs' hearts and playlist places to the same songs found in the new one.
+    var replacingFolder by rememberSaveable { mutableStateOf<String?>(null) }
     val folderPickerLauncher = rememberLauncherForActivityResult(
         contract = FilesOpenTree(),
     ) { uri ->
+        val replacing = replacingFolder
+        replacingFolder = null
         if (uri != null) {
             val flags =
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -1665,12 +1719,37 @@ fun CalmMusic(
                 context.contentResolver.takePersistableUriPermission(uri, flags)
             } catch (_: SecurityException) {
             }
-            settingsManager.addLocalMusicFolder(uri.toString())
+            val chosen = uri.toString()
+            if (replacing != null && replacing in settingsManager.getLocalMusicFoldersSync()) {
+                if (replacing == chosen) {
+                    // The same folder, readable again (the card back in): read it now.
+                    libraryScope.launch { resyncLocalLibrary(settingsManager.getLocalMusicFoldersSync()) }
+                } else {
+                    settingsManager.replaceLocalMusicFolder(replacing, chosen)
+                    runCatching {
+                        context.contentResolver.releasePersistableUriPermission(android.net.Uri.parse(replacing), flags)
+                    }
+                }
+            } else {
+                settingsManager.addLocalMusicFolder(chosen)
+            }
         }
     }
     val chooseFolder: () -> Unit = {
         runCatching { folderPickerLauncher.launch(initialFolderPickerUri(context)) }
             .onFailure { openLocalSettings() }
+    }
+    val chooseFolderAgain: (String) -> Unit = { folder ->
+        replacingFolder = folder
+        runCatching { folderPickerLauncher.launch(initialFolderPickerUri(context)) }
+            .onFailure {
+                replacingFolder = null
+                openLocalSettings()
+            }
+    }
+    // An empty library whose only folder cannot be read (the card swapped) chooses one in its place.
+    val chooseFolderForEmptyLibrary: () -> Unit = {
+        FolderReach.unreadable.value.singleOrNull()?.let { chooseFolderAgain(it) } ?: chooseFolder()
     }
 
     val openMusicServer: () -> Unit = {
@@ -1688,6 +1767,7 @@ fun CalmMusic(
                         showNowPlaying = false
                         openMusicServer()
                     }
+                    Trouble.FOLDER_GONE -> troubleFolder?.let(chooseFolderAgain) ?: chooseFolder()
                     Trouble.NO_INTERNET -> openSystemPage(context, Intent(Settings.ACTION_WIRELESS_SETTINGS))
                     Trouble.NO_FILE_ACCESS -> openSystemPage(
                         context,
@@ -2200,7 +2280,7 @@ fun CalmMusic(
                         isSyncInProgress = isLibrarySyncInProgress,
                         hasAnySongs = hasAnySongs,
                         onOpenStreamingSettingsClick = openStreamingSettings,
-                        onOpenLocalSettingsClick = chooseFolder,
+                        onOpenLocalSettingsClick = chooseFolderForEmptyLibrary,
                         onOpenMusicServerClick = openMusicServer,
                         onArtistClick = { artist ->
                             val artistName = artist.name
@@ -2291,7 +2371,7 @@ fun CalmMusic(
                         onDeleteClick = onDelete,
                         onKeepOnPhoneClick = onKeepOnPhone,
                         onOpenStreamingSettingsClick = openStreamingSettings,
-                        onOpenLocalSettingsClick = chooseFolder,
+                        onOpenLocalSettingsClick = chooseFolderForEmptyLibrary,
                         onOpenMusicServerClick = openMusicServer,
                         onPullAtTop = libraryPull,
                     )
@@ -2304,7 +2384,7 @@ fun CalmMusic(
                         isSyncInProgress = isLibrarySyncInProgress,
                         hasAnySongs = hasAnySongs,
                         onOpenStreamingSettingsClick = openStreamingSettings,
-                        onOpenLocalSettingsClick = chooseFolder,
+                        onOpenLocalSettingsClick = chooseFolderForEmptyLibrary,
                         onOpenMusicServerClick = openMusicServer,
                         onAlbumClick = { album ->
                             selectedAlbum = album
@@ -2582,6 +2662,8 @@ fun CalmMusic(
                         onRemoveFolderClick = { uri ->
                             settingsManager.removeLocalMusicFolder(uri)
                         },
+                        unreadableFolders = unreadableFolders,
+                        onChooseFolderAgainClick = chooseFolderAgain,
                         onNavigateToDownloadsClick = {
                             navController.navigate(Screen.Downloads.route) { launchSingleTop = true }
                         },

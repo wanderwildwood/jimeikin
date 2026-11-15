@@ -430,6 +430,8 @@
     <string name="settings_rescan_folders">Erneut einlesen</string>
     <!-- Shown in bold above a folder after one tap; a second tap removes the folder -->
     <string name="settings_remove_folder_armed">Diesen Ordner nicht mehr einlesen — seine Titel verlassen die Bibliothek; tippe erneut</string>
+    <string name="settings_folder_unreadable">Gerade nicht lesbar: Speicherkarte oder Ordner fehlt. Seine Titel sind ausgeblendet, bis er wieder da ist.</string>
+    <string name="settings_folder_choose_again">Neu wählen</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
     <string name="settings_scan_adding">Wird zur Bibliothek hinzugefügt, %1$d%%</string>
     <!-- Scan progress, before the number of songs is known -->
@@ -617,6 +619,8 @@
     <string name="library_sync_in_progress">Musikabgleich läuft…</string>
     <!-- Empty library: button that opens the folder settings -->
     <string name="library_empty_choose_folder">Ordner auswählen</string>
+    <string name="library_empty_folder_gone_title">Dein Musikordner ist nicht lesbar</string>
+    <string name="library_empty_folder_gone">Der Ordner oder die Speicherkarte mit deiner Musik ist gerade nicht auf dem Telefon. Ist die Karte draußen, stecke sie wieder ein. Wurde sie getauscht oder formatiert, wähle den Ordner neu: Titel am selben Ort behalten ihre Herzen und Playlists.</string>
     <!-- Empty library: button that opens the music server screen (Navidrome and the like) -->
     <string name="library_empty_music_server">Musikserver verbinden</string>
 
@@ -740,6 +744,9 @@
     <string name="trouble_no_internet">Dieser Titel wird gestreamt, und das Telefon ist nicht verbunden. Auf dem Telefon gespeicherte Titel spielen weiterhin.</string>
     <string name="trouble_file_missing_title">Titeldatei fehlt</string>
     <string name="trouble_file_missing">Die Datei dieses Titels liegt nicht dort, wo die Bibliothek sie vermutet. Vielleicht wurde sie verschoben oder gelöscht.</string>
+    <string name="trouble_folder_gone_title">Der Ordner dieses Titels ist nicht auf dem Telefon</string>
+    <string name="trouble_folder_gone">Der Ordner oder die Speicherkarte mit diesem Titel ist nicht mehr auf dem Telefon. Ist die Karte draußen, stecke sie wieder ein. Wurde sie getauscht oder formatiert, wähle den Musikordner neu: Titel am selben Ort behalten ihre Herzen und Playlists.</string>
+    <string name="trouble_fix_folder">Ordner neu wählen</string>
     <string name="trouble_no_access_title">Music Box kann deine Musik nicht lesen</string>
     <string name="trouble_no_access">Android erlaubt Music Box nicht, die Titel auf dem Telefon zu lesen. Erlaube Musik und Audio in den Berechtigungen von Music Box.</string>
     <string name="trouble_still_loading_title">Wartet noch auf den Start</string>

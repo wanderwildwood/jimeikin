@@ -431,6 +431,8 @@
     <string name="settings_rescan_folders">Read again</string>
     <!-- Shown in bold above a folder after one tap; a second tap removes the folder -->
     <string name="settings_remove_folder_armed">Stop reading this folder — its songs leave the library; tap again</string>
+    <string name="settings_folder_unreadable">Can\'t be read now: the memory card or folder isn\'t there. Its songs are hidden until it\'s back.</string>
+    <string name="settings_folder_choose_again">Choose it again</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
     <string name="settings_scan_adding">Adding to the library, %1$d%%</string>
     <!-- Scan progress, before the number of songs is known -->
@@ -635,6 +637,8 @@
     <string name="library_sync_in_progress">Music sync is in progress…</string>
     <!-- Empty library: button that opens the folder settings -->
     <string name="library_empty_choose_folder">Choose a folder</string>
+    <string name="library_empty_folder_gone_title">Your music folder can\'t be read</string>
+    <string name="library_empty_folder_gone">The folder or memory card your music is on isn\'t on the phone right now. If the card is out, put it back. If it was swapped or reformatted, choose the folder again: songs found in the same place keep their hearts and playlists.</string>
     <!-- Empty library: button that opens the music server screen (Navidrome and the like) -->
     <string name="library_empty_music_server">Connect a music server</string>
 
@@ -761,6 +765,9 @@
     <string name="trouble_no_internet">This song streams, and the phone isn\'t connected. Songs saved on the phone still play.</string>
     <string name="trouble_file_missing_title">Song file is missing</string>
     <string name="trouble_file_missing">The file for this song isn\'t where the library says it is. It may have been moved or deleted.</string>
+    <string name="trouble_folder_gone_title">This song\'s folder isn\'t on the phone</string>
+    <string name="trouble_folder_gone">The folder or memory card this song was on isn\'t on the phone any more. If the card is out, put it back. If it was swapped or reformatted, choose the music folder again: songs found in the same place keep their hearts and playlists.</string>
+    <string name="trouble_fix_folder">Choose the folder again</string>
     <string name="trouble_no_access_title">Music Box can\'t read your music</string>
     <string name="trouble_no_access">Android isn\'t letting Music Box read the songs on the phone. Allow music and audio in Music Box\'s permissions.</string>
     <string name="trouble_still_loading_title">Still waiting to play</string>

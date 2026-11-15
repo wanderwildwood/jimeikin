@@ -201,6 +201,13 @@ class CalmMusicSettingsManager(context: Context) {
         }
     }
 
+    /** [new] chosen in place of [old], in one change, so the scan that follows sees both at once. */
+    fun replaceLocalMusicFolder(old: String, new: String) {
+        val current = MusicFolderSongs.replace(getLocalMusicFoldersSync(), old, new)
+        prefs.edit { putStringSet(KEY_LOCAL_MUSIC_FOLDERS, current) }
+        _localMusicFolders.value = current
+    }
+
     fun getLocalMusicFoldersSync(): Set<String> {
         return prefs.getStringSet(KEY_LOCAL_MUSIC_FOLDERS, emptySet()) ?: emptySet()
     }

@@ -30,6 +30,12 @@ enum class Trouble {
     /** The song's file is not where the library says it is. */
     FILE_MISSING,
 
+    /**
+     * The song came from a chosen folder that cannot be read now: the memory card it was on is
+     * out, swapped or reformatted, or the folder is gone. Offers to choose the folder again.
+     */
+    FOLDER_GONE,
+
     /** The file is there, and Music Box is not allowed to read the phone's music. */
     NO_FILE_ACCESS,
 
@@ -66,8 +72,15 @@ object PlaybackTrouble {
         streamsFromServer: Boolean,
         online: Boolean,
         serverSignedIn: Boolean,
+        /**
+         * The song is from a chosen folder that cannot be read now; see MusicFolderSongs.folderGone.
+         * Whatever the player made of it - a card swapped for another fails with an argument
+         * error from deep in Android, not "file not found" - that is what the reader is told.
+         */
+        folderGone: Boolean = false,
     ): Trouble {
         if (streamsFromServer && !serverSignedIn) return Trouble.SERVER_SIGNED_OUT
+        if (folderGone && !streamsFromServer) return Trouble.FOLDER_GONE
         return when (errorCode) {
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,

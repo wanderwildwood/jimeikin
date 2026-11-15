@@ -17,6 +17,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import com.wanderwildwood.jimeikin.data.TagEditor
+import com.wanderwildwood.jimeikin.data.FolderReach
+import com.wanderwildwood.jimeikin.data.MusicFolderSongs
 import com.wanderwildwood.jimeikin.data.AlbumEntity
 import com.wanderwildwood.jimeikin.data.ArtistEntity
 import com.wanderwildwood.jimeikin.data.ArtistWithCounts
@@ -272,7 +274,7 @@ class CalmMusicViewModel(
             val partOfSong = mutableMapOf<String, Int>()
             val allEntities = withoutServerDuplicates(
                 idsToFetch.flatMap { id ->
-                    songDao.getSongsByAlbumId(id).onEach { partOfSong.putIfAbsent(it.id, discOfPart[id] ?: 1) }
+                    offered(songDao.getSongsByAlbumId(id)).onEach { partOfSong.putIfAbsent(it.id, discOfPart[id] ?: 1) }
                 }.distinctBy { it.id },
             )
 
@@ -710,9 +712,11 @@ class CalmMusicViewModel(
             // said "12 songs" listed only the ones whose own artist tag matched.
             val filedAlbumIds = relatedArtistIds.flatMap { id -> albumDao.getAlbumsByArtistId(id) }.map { it.id }
             val songEntities = withoutServerDuplicates(
-                (relatedArtistIds.flatMap { id -> songDao.getSongsByArtistId(id) } +
-                    filedAlbumIds.flatMap { id -> songDao.getSongsByAlbumId(id) })
-                    .distinctBy { it.id },
+                offered(
+                    (relatedArtistIds.flatMap { id -> songDao.getSongsByArtistId(id) } +
+                        filedAlbumIds.flatMap { id -> songDao.getSongsByAlbumId(id) })
+                        .distinctBy { it.id },
+                ),
             )
 
             // An album filed under someone else still belongs here if one of these songs is on
@@ -2261,6 +2265,18 @@ class CalmMusicViewModel(
      * Matched on artist, album and title with the same folding used for artist names, so a
      * record tagged a little differently on each side still meets itself.
      */
+    /**
+     * The songs that can be offered: not those of a chosen folder that cannot be read now (a
+     * memory card out or swapped). They stay in the library, hearts and playlists with them,
+     * and are offered again once a scan reads their folder; see MusicFolderSongs.
+     */
+    private fun offered(songs: List<SongEntity>): List<SongEntity> {
+        val unreadable = FolderReach.unreadable.value
+        if (unreadable.isEmpty()) return songs
+        val folders = app.settingsManager.getLocalMusicFoldersSync()
+        return songs.filter { MusicFolderSongs.isOffered(it.id, it.sourceType == "LOCAL_FILE", folders, unreadable) }
+    }
+
     private fun withoutServerDuplicates(songs: List<SongEntity>): List<SongEntity> {
         val onThisPhone = songs
             .asSequence()
@@ -2284,7 +2300,7 @@ class CalmMusicViewModel(
                 // Songs kept from the online catalogue stream from it, and an edition without
                 // one leaves them out rather than list what cannot play. They stay in the
                 // database, so the full edition installed again finds them where they were.
-                val songsFromDb = songDao.getAllSongs().filter { app.online.available || it.sourceType != "ONLINE_SEARCH" }
+                val songsFromDb = offered(songDao.getAllSongs()).filter { app.online.available || it.sourceType != "ONLINE_SEARCH" }
                 val albumsFromDb = albumDao.getAllAlbums()
                 songsFromDb to albumsFromDb
             }
@@ -2344,7 +2360,9 @@ class CalmMusicViewModel(
                 songSourcesByAlbumId,
             )
 
+            // An artist whose every song is on a folder that cannot be read now goes with them.
             val mergedArtists = mergeArtistsByName(allArtistsWithCounts, allSongs, allAlbums)
+                .let { artists -> if (FolderReach.unreadable.value.isEmpty()) artists else artists.filter { it.songCount > 0 } }
             _albumRowIds.value = allAlbums.mapTo(HashSet()) { it.id }
 
             updateLibrary(
@@ -2438,7 +2456,7 @@ class CalmMusicViewModel(
             // held both copies of every record that is on the card and on the server too,
             // for as long as the first refresh took - about fifteen seconds over three
             // thousand songs, which is long enough to look like the library itself is wrong.
-            val allSongs = withContext(Dispatchers.IO) { withoutServerDuplicates(songDao.getAllSongs()) }
+            val allSongs = withContext(Dispatchers.IO) { withoutServerDuplicates(offered(songDao.getAllSongs())) }
             val allAlbums = withContext(Dispatchers.IO) { albumDao.getAllAlbums() }
             val allArtistsWithCounts = withContext(Dispatchers.IO) { artistDao.getAllArtistsWithCounts() }
             val allPlaylistsWithCounts = withContext(Dispatchers.IO) { playlistDao.getAllPlaylistsWithSongCount() }

@@ -22,6 +22,7 @@ private fun Trouble.title(): Int = when (this) {
     Trouble.SERVER_REFUSED -> R.string.trouble_refused_title
     Trouble.NO_INTERNET -> R.string.trouble_no_internet_title
     Trouble.FILE_MISSING -> R.string.trouble_file_missing_title
+    Trouble.FOLDER_GONE -> R.string.trouble_folder_gone_title
     Trouble.NO_FILE_ACCESS -> R.string.trouble_no_access_title
     Trouble.STILL_LOADING -> R.string.trouble_still_loading_title
     Trouble.CANT_PLAY -> R.string.trouble_cant_play_title
@@ -33,6 +34,7 @@ private fun Trouble.body(): Int = when (this) {
     Trouble.SERVER_REFUSED -> R.string.trouble_refused
     Trouble.NO_INTERNET -> R.string.trouble_no_internet
     Trouble.FILE_MISSING -> R.string.trouble_file_missing
+    Trouble.FOLDER_GONE -> R.string.trouble_folder_gone
     Trouble.NO_FILE_ACCESS -> R.string.trouble_no_access
     Trouble.STILL_LOADING -> R.string.trouble_still_loading
     Trouble.CANT_PLAY -> R.string.trouble_cant_play
@@ -43,12 +45,13 @@ private fun Trouble.fix(): Int? = when (this) {
     Trouble.SERVER_SIGNED_OUT, Trouble.SERVER_REFUSED, Trouble.SERVER_UNREACHABLE -> R.string.trouble_fix_server
     Trouble.NO_INTERNET -> R.string.trouble_fix_internet
     Trouble.NO_FILE_ACCESS -> R.string.trouble_fix_access
+    Trouble.FOLDER_GONE -> R.string.trouble_fix_folder
     else -> null
 }
 
 /**
  * Says why a song is not playing, in place of the silence there used to be. [onFix] opens the
- * place that puts it right (the music server, the phone's internet, Music Box's permissions);
+ * place that puts it right (the music server, the phone's internet, Music Box's permissions, the folder picker);
  * a trouble with nowhere to go has only the close button.
  */
 @Composable

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.wanderwildwood.jimeikin.data.CalmMusicDatabase
+import com.wanderwildwood.jimeikin.data.FolderReach
+import com.wanderwildwood.jimeikin.data.MusicFolderSongs
 import com.wanderwildwood.jimeikin.data.PlaylistManager
 import com.wanderwildwood.jimeikin.data.PlaylistTrackEntity
 import com.wanderwildwood.jimeikin.data.SongEntity
@@ -52,12 +54,20 @@ class PlaylistsViewModel(
 
     private suspend fun loadPlaylistsFromDb(): List<PlaylistUiModel> {
         val allPlaylistsWithCounts = playlistDao.getAllPlaylistsWithSongCount()
+        // While a folder cannot be read its songs are not shown in a playlist, and not counted.
+        val unreadable = FolderReach.unreadable.value
+        val folders = if (unreadable.isEmpty()) emptySet() else app.settingsManager.getLocalMusicFoldersSync()
         return allPlaylistsWithCounts.map { playlist ->
             PlaylistUiModel(
                 id = playlist.id,
                 name = playlist.name,
                 description = playlist.description,
-                songCount = playlist.songCount,
+                songCount = if (unreadable.isEmpty()) {
+                    playlist.songCount
+                } else {
+                    playlistDao.getSongsForPlaylist(playlist.id)
+                        .count { MusicFolderSongs.isOffered(it.id, it.sourceType == "LOCAL_FILE", folders, unreadable) }
+                },
             )
         }
     }
@@ -91,7 +101,13 @@ class PlaylistsViewModel(
     suspend fun getPlaylistSongs(playlistId: String): List<SongUiModel> {
         return withContext(Dispatchers.IO) {
             val names = app.nameOverrides.current()
-            val entities = playlistDao.getSongsForPlaylist(playlistId).map(names::song)
+            // A song whose folder cannot be read now (a card out) keeps its place, unshown,
+            // and is back in it when the folder reads again.
+            val unreadable = FolderReach.unreadable.value
+            val folders = app.settingsManager.getLocalMusicFoldersSync()
+            val entities = playlistDao.getSongsForPlaylist(playlistId)
+                .filter { MusicFolderSongs.isOffered(it.id, it.sourceType == "LOCAL_FILE", folders, unreadable) }
+                .map(names::song)
             entities.map { entity ->
                 SongUiModel(
                     id = entity.id,

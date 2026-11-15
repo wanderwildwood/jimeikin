@@ -5,7 +5,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.core.net.toUri
 import android.provider.DocumentsContract
-import androidx.documentfile.provider.DocumentFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagOptionSingleton
@@ -95,12 +94,9 @@ object LocalMusicScanner {
             } catch (_: Exception) {
                 continue
             }
-            val root = DocumentFile.fromTreeUri(context, treeUri)
-            // DocumentFile swallows its own query failures and answers false, so a revoked
-            // grant, an unmounted card or a folder that has gone away all look like this
-            // rather than throwing. Whatever the cause, the folder was not read, and its
-            // songs must not be taken for deleted.
-            if (root == null || !root.exists() || !root.canRead()) {
+            // A revoked grant, an unmounted card or a folder that has gone away. Whatever the
+            // cause, the folder was not read, and its songs must not be taken for deleted.
+            if (!FolderReach.isReadable(context, uriString)) {
                 unreadableTreeUris.add(uriString)
                 continue
             }
