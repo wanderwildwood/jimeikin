@@ -486,7 +486,7 @@
     <string name="about_title">Music Box %1$s</string>
     <string name="hint_hold_song">Halte einen Titel gedrückt für „Als Nächstes spielen“ und „Zur Warteschlange hinzufügen“.</string>
     <string name="about_privacy_heading">Datenschutz</string>
-    <string name="about_privacy_close">Es gibt keine Werbung, keine Analysen und kein Tracking. Heruntergeladene Titel werden in Music/Music Box gespeichert, wo andere Apps auf dem Telefon sie sehen können. Die Sperrbildschirm-Steuerung ist, wenn du sie einschaltest, ein Bedienungshilfen-Dienst, der die Schaltflächen dieser App über den Sperrbildschirm legt und sonst nichts liest. „Zeigen, was in Glance läuft“ übergibt, wenn du es einschaltest, den Namen des Titels an Glance auf diesem Telefon.</string>
+    <string name="about_privacy_close">Es gibt keine Werbung, keine Analysen und kein Tracking. Heruntergeladene Titel werden in Music/Music Box gespeichert, wo andere Apps auf dem Telefon sie sehen können. Die Sperrbildschirm-Steuerung ist, wenn du sie einschaltest, ein Bedienungshilfen-Dienst, der die Schaltflächen dieser App über den Sperrbildschirm legt und sonst nichts liest. „Zeigen, was in Glance läuft“ übergibt, wenn du es einschaltest, den Namen des Titels an Glance auf diesem Telefon. „Füttere die Lamas“ öffnet eine Spendenseite (square.link) in deinem Browser, nur wenn du darauf drückst. Die App sendet nichts dorthin; wenn du spendest, wickelt Square die Zahlung auf dieser Seite ab, nicht diese App.</string>
     <string name="about_terms_heading">Bedingungen</string>
     <string name="about_open_source_heading">Open Source</string>
     <string name="licences_title">Lizenzen</string>
