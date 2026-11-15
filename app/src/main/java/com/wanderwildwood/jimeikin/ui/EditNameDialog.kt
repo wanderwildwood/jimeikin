@@ -23,6 +23,14 @@ import com.mudita.mmd.components.text_field.TextFieldMMD
 import com.wanderwildwood.jimeikin.R
 import com.wanderwildwood.jimeikin.data.HeartedSongEntity
 import com.wanderwildwood.jimeikin.data.Names
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 
 /** What Edit name was asked for on. */
 sealed interface NameTarget {
@@ -95,8 +103,21 @@ fun EditNameDialog(
 ) {
     var nameField by remember(name) { mutableStateOf(name) }
     var artistField by remember(artist) { mutableStateOf(artist.orEmpty()) }
+    // The name takes the focus as the dialog opens; Next goes on to the artist where there is
+    // one, and Done in the last field is Save.
+    val nameFocus = remember { FocusRequester() }
+    val artistFocus = remember { FocusRequester() }
 
     EInkDialog(onDismiss = onDismiss) {
+        // The field is what the dialog is for: it takes the focus as it opens and the keyboard
+        // comes up. Asked from inside the dialog, a frame after it is drawn: the field lives in
+        // the dialog's own window, which a request from the screen beneath does not reach.
+        val keyboardNow = LocalSoftwareKeyboardController.current
+        LaunchedEffect(Unit) {
+            withFrameNanos { }
+            runCatching { nameFocus.requestFocus() }
+            keyboardNow?.show()
+        }
         TextMMD(
             text = stringResource(R.string.edit_name_title),
             style = MaterialTheme.typography.bodyLarge,
@@ -104,20 +125,27 @@ fun EditNameDialog(
         )
         Spacer(Modifier.height(12.dp))
         TextFieldMMD(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().focusRequester(nameFocus),
             value = nameField,
             onValueChange = { nameField = it },
             label = { TextMMD(text = stringResource(R.string.edit_name_name)) },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = if (artist != null) ImeAction.Next else ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onNext = { artistFocus.requestFocus() },
+                onDone = { onSave(nameField, artistField) },
+            ),
         )
         if (artist != null) {
             Spacer(Modifier.height(12.dp))
             TextFieldMMD(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRequester(artistFocus),
                 value = artistField,
                 onValueChange = { artistField = it },
                 label = { TextMMD(text = stringResource(R.string.edit_details_album_artist)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onSave(nameField, artistField) }),
             )
         }
         Spacer(Modifier.height(8.dp))

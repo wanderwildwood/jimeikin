@@ -25,6 +25,9 @@ import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.text_field.TextFieldMMD
 import com.wanderwildwood.jimeikin.R
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 
 @Composable
 fun PlaylistEditScreen(
@@ -46,6 +49,9 @@ fun PlaylistEditScreen(
             onValueChange = { name = it },
             label = { TextMMD(text = stringResource(R.string.player_playlist_name)) },
             singleLine = true,
+            // Done on the keyboard is Create / Save.
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { if (name.isNotBlank()) onConfirm(name.trim()) }),
         )
 
         Spacer(modifier = Modifier.height(24.dp))

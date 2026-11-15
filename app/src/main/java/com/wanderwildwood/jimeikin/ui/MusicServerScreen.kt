@@ -31,6 +31,15 @@ import com.mudita.mmd.components.text_field.TextFieldMMD
 import com.wanderwildwood.jimeikin.data.ServerKind
 import com.wanderwildwood.jimeikin.data.SubsonicConfig
 import com.wanderwildwood.jimeikin.R
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.runtime.remember
 
 /**
  * Where a music server is entered: Navidrome or any other Subsonic server, or Jellyfin.
@@ -71,7 +80,14 @@ fun MusicServerScreen(
     // Forget sits at the foot of the screen when everything fits, and the page scrolls
     // when it does not - a long status line once pushed it off the bottom entirely.
     // The minimum height is what lets the spacer above it still push it down.
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    // The keyboard takes the foot of the screen: imePadding gives the page that room back, so the
+    // field being typed in scrolls into view above it. Next goes from field to field, and Done in
+    // the password is Connect.
+    val addressField = remember { FocusRequester() }
+    val userField = remember { FocusRequester() }
+    val passwordField = remember { FocusRequester() }
+    val focus = LocalFocusManager.current
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().imePadding()) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -104,7 +120,7 @@ fun MusicServerScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             TextFieldMMD(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRequester(addressField),
                 value = address,
                 onValueChange = { address = it },
                 label = { TextMMD(text = stringResource(R.string.library_server_address)) },
@@ -113,6 +129,8 @@ fun MusicServerScreen(
                 },
                 singleLine = true,
                 readOnly = isBusy,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, autoCorrectEnabled = false, imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { userField.requestFocus() }),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -127,27 +145,17 @@ fun MusicServerScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             TextFieldMMD(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRequester(userField),
                 value = user,
                 onValueChange = { user = it },
                 label = { TextMMD(text = stringResource(R.string.library_server_username)) },
                 singleLine = true,
                 readOnly = isBusy,
+                keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { passwordField.requestFocus() }),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-
-            TextFieldMMD(
-                modifier = Modifier.fillMaxWidth(),
-                value = password,
-                onValueChange = { password = it },
-                label = { TextMMD(text = stringResource(R.string.library_server_password)) },
-                singleLine = true,
-                readOnly = isBusy,
-                visualTransformation = PasswordVisualTransformation(),
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
 
             // A Jellyfin login kept from before is used again when the password is left empty
             // and the address and name are the ones it was made for: the password is not kept,
@@ -157,6 +165,24 @@ fun MusicServerScreen(
                     it.baseUrl.trim() == address.trim() && it.user.trim() == user.trim()
             }
             val entered = kept ?: SubsonicConfig(address, user, password, kind)
+            TextFieldMMD(
+                modifier = Modifier.fillMaxWidth().focusRequester(passwordField),
+                value = password,
+                onValueChange = { password = it },
+                label = { TextMMD(text = stringResource(R.string.library_server_password)) },
+                singleLine = true,
+                readOnly = isBusy,
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false, imeAction = ImeAction.Done),
+                // Done is Connect; the keyboard goes, so the answer under the button shows.
+                keyboardActions = KeyboardActions(onDone = {
+                    focus.clearFocus()
+                    if (entered.isComplete && !isBusy) onConnectClick(entered)
+                }),
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             ButtonMMD(
                 onClick = { if (entered.isComplete && !isBusy) onConnectClick(entered) },
                 modifier = Modifier.fillMaxWidth(),

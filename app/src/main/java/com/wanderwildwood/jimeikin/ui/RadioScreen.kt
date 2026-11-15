@@ -50,6 +50,7 @@ import com.wanderwildwood.jimeikin.data.RadioPlace
 import com.wanderwildwood.jimeikin.data.RadioSearchResults
 import com.wanderwildwood.jimeikin.data.RadioStationEntity
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalFocusManager
 
 /**
  * Two radios, which are not the same thing.
@@ -521,6 +522,21 @@ private fun AddByAddress(onKept: (name: String, streamUrl: String) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     var checking by remember { mutableStateOf(false) }
     var problem by remember { mutableStateOf<Int?>(null) }
+    val focus = LocalFocusManager.current
+    val check = {
+        if (address.isNotBlank() && name.isNotBlank() && !checking) scope.launch {
+            checking = true
+            problem = null
+            when (val outcome = RadioAddress.check(context, address)) {
+                is RadioAddress.Outcome.Plays -> onKept(name.trim(), outcome.streamUrl)
+                RadioAddress.Outcome.NotAnAddress -> problem = R.string.player_radio_address_not_an_address
+                RadioAddress.Outcome.Unreachable -> problem = R.string.player_radio_address_unreachable
+                RadioAddress.Outcome.EmptyPlaylist -> problem = R.string.player_radio_address_empty_playlist
+                RadioAddress.Outcome.DoesNotPlay -> problem = R.string.player_radio_address_does_not_play
+            }
+            checking = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -545,23 +561,13 @@ private fun AddByAddress(onKept: (name: String, streamUrl: String) -> Unit) {
             label = { TextMMD(text = stringResource(R.string.player_radio_address_name_label)) },
             singleLine = true,
             readOnly = checking,
+            // Done on the keyboard is the button under it; the keyboard goes so its answer shows.
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { focus.clearFocus(); check() }),
         )
         Spacer(Modifier.height(20.dp))
         ButtonMMD(
-            onClick = {
-                if (address.isNotBlank() && name.isNotBlank() && !checking) scope.launch {
-                    checking = true
-                    problem = null
-                    when (val outcome = RadioAddress.check(context, address)) {
-                        is RadioAddress.Outcome.Plays -> onKept(name.trim(), outcome.streamUrl)
-                        RadioAddress.Outcome.NotAnAddress -> problem = R.string.player_radio_address_not_an_address
-                        RadioAddress.Outcome.Unreachable -> problem = R.string.player_radio_address_unreachable
-                        RadioAddress.Outcome.EmptyPlaylist -> problem = R.string.player_radio_address_empty_playlist
-                        RadioAddress.Outcome.DoesNotPlay -> problem = R.string.player_radio_address_does_not_play
-                    }
-                    checking = false
-                }
-            },
+            onClick = { check() },
             modifier = Modifier.fillMaxWidth(),
         ) {
             TextMMD(
