@@ -137,6 +137,7 @@ import com.wanderwildwood.jimeikin.ui.SongUiModel
 import com.wanderwildwood.jimeikin.ui.SongsScreen
 import com.wanderwildwood.jimeikin.ui.OnlineArtistScreen
 import com.wanderwildwood.jimeikin.ui.OnlineSignInScreen
+import com.wanderwildwood.jimeikin.ui.onEachPress
 import com.wanderwildwood.jimeikin.ui.EditNameDialog
 import com.wanderwildwood.jimeikin.ui.HeartActions
 import com.wanderwildwood.jimeikin.ui.HeartedScreen
@@ -156,8 +157,10 @@ import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.wanderwildwood.jimeikin.ui.PagedColumn
+import com.mudita.mmd.components.snackbar.SnackbarDataMMD
 import com.mudita.mmd.components.snackbar.SnackbarDurationMMD
-import com.mudita.mmd.components.snackbar.SnackbarHostMMD
+import com.mudita.mmd.components.snackbar.SnackbarMMD
+import com.mudita.mmd.components.snackbar.SnackbarVisualsMMD
 import com.mudita.mmd.components.snackbar.SnackbarHostStateMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.jimeikin.ui.monochrome
@@ -279,6 +282,11 @@ fun CalmMusic(
     val libraryScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val snackbarHostState = remember { SnackbarHostStateMMD() }
+    // The message at the foot, kept here until the next press rather than on the host's timer:
+    // on this panel a message that goes by itself could be gone before it was read.
+    var footNotice by remember { mutableStateOf<SnackbarVisualsMMD?>(null) }
+    // Each press on the app, counted, for the lines below that wait for the next one.
+    var presses by remember { mutableIntStateOf(0) }
 
     val settingsManager = app.settingsManager
 
@@ -922,10 +930,9 @@ fun CalmMusic(
     }
 
     // What a swipe down on a library list set going, said in one line above the list: what it is
-    // doing while it does it, then how it went for a few seconds.
+    // doing while it does it, then how it went, until the next press.
     var pullSaid by remember { mutableStateOf<String?>(null) }
-    var pullDone by remember { mutableIntStateOf(0) }
-    LaunchedEffect(pullDone) { if (pullDone > 0) { delay(3000L); pullSaid = null } }
+    var pullOver by remember { mutableStateOf(false) }
 
     /**
      * A swipe down at the top of Artists, Albums, Songs or Playlists: the server's library is read
@@ -938,6 +945,7 @@ fun CalmMusic(
         val folders = localMusicFolders
         if (config == null && folders.isEmpty()) return
         libraryScope.launch {
+            pullOver = false
             var failure: String? = null
             if (config != null) {
                 isServerBusy = true
@@ -967,7 +975,7 @@ fun CalmMusic(
             // The card's .m3u files are read by the walk too.
             if (folders.isNotEmpty()) playlistsViewModel.refreshPlaylists()
             pullSaid = failure ?: context.getString(R.string.main_pull_up_to_date)
-            pullDone++
+            pullOver = true
         }
     }
     val libraryPull: (() -> Unit)? =
@@ -2055,7 +2063,14 @@ fun CalmMusic(
 
     // The download line sits under everything, Now Playing included, so it is wherever the
     // listener is rather than only in Downloads.
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize().onEachPress {
+            footNotice = null
+            if (pullOver) pullSaid = null
+            com.wanderwildwood.jimeikin.ui.MenuHint.pressed()
+            presses++
+        },
+    ) {
     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
         CompositionLocalProvider(
             LocalEditDetails provides openEditor,
@@ -3346,29 +3361,27 @@ fun CalmMusic(
                 }
             }
         }
+    }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            SnackbarHostMMD(
-                snackbarHostState
-            )
+    // Each message is taken from the host as it comes, so whatever said it carries on at once,
+    // and a newer one takes the place of the last.
+    val incoming = snackbarHostState.currentSnackbarData
+    LaunchedEffect(incoming) {
+        if (incoming != null) {
+            footNotice = incoming.visuals
+            incoming.dismiss()
         }
     }
 
     val runItems = downloadStatuses.filter { it.id in downloadRun }
     val line = com.wanderwildwood.jimeikin.Downloads.line(runItems)
-    // How a run ended is said for a few seconds, then the line goes. Longer than a snackbar:
-    // the listener may have looked away for the minutes it took.
-    LaunchedEffect(line is DownloadLine.Finished, downloadRun) {
-        if (line is DownloadLine.Finished) {
-            delay(DOWNLOAD_SUMMARY_MS)
-            downloadQueue.forgetRun()
-        }
+    // How a run ended is said until the next press, then the line goes: the listener may have
+    // looked away for the minutes it took.
+    LaunchedEffect(presses) {
+        if (presses > 0 && line is DownloadLine.Finished) downloadQueue.forgetRun()
     }
+    // Under the page rather than over it: a message that stays must not hide the tabs.
+    footNotice?.let { SnackbarMMD(KeptNotice(it)) }
     if (line != null) {
         val words = DownloadWords(context.resources)
         DownloadLineBar(
@@ -3380,7 +3393,11 @@ fun CalmMusic(
     }
 }
 
-private const val DOWNLOAD_SUMMARY_MS = 8_000L
+/** A message kept on screen after the host has let it go: drawn the way the host drew it. */
+private class KeptNotice(override val visuals: SnackbarVisualsMMD) : SnackbarDataMMD {
+    override fun performAction() {}
+    override fun dismiss() {}
+}
 private const val DOWNLOAD_PREFS = "downloads"
 private const val ASKED_FOR_NOTIFICATIONS = "asked_for_notifications"
 

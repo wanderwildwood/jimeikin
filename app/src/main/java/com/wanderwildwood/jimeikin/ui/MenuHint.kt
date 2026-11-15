@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.jimeikin.R
-import kotlinx.coroutines.delay
 
 /**
  * Whether the one-line tip about holding a song is on show. It belongs to the first time the app
@@ -22,12 +21,10 @@ import kotlinx.coroutines.delay
  */
 fun menuHintVisible(heldBefore: Boolean, hasSongs: Boolean): Boolean = hasSongs && !heldBefore
 
-/** How long the tip stays the one time it is shown. */
-const val MENU_HINT_MS = 6_000L
-
 /**
- * The tip about holding a song shows once, the first time the app is used, and goes away after a
- * moment ([MENU_HINT_MS]) or as soon as a song is held. It never comes back after that.
+ * The tip about holding a song shows once, the first time the app is used, and stays until the
+ * next press (on this panel a tip on a timer could go before it was read) or a song is held. It
+ * never comes back after that.
  */
 object MenuHint {
     private const val PREFS = "menu_hint"
@@ -37,6 +34,8 @@ object MenuHint {
     private var seenBefore = false
     /** This run: the moment is over, or a song was held. */
     private var gone by mutableStateOf(false)
+    /** This run: the tip has been on screen. */
+    private var onShow = false
 
     private fun load(context: Context) {
         if (loaded) return
@@ -55,11 +54,14 @@ object MenuHint {
     }
 
     /** The tip has been put on screen: it will not show on a later run. */
-    fun shown(context: Context) = remember(context)
+    fun shown(context: Context) {
+        onShow = true
+        remember(context)
+    }
 
-    /** Its moment is over for this run. */
-    fun timeUp() {
-        gone = true
+    /** A press anywhere: once the tip has been seen, its moment is over for this run. */
+    fun pressed() {
+        if (onShow) gone = true
     }
 
     fun songHeld(context: Context) {
@@ -69,16 +71,12 @@ object MenuHint {
     }
 }
 
-/** The tip itself, for the top of a list of songs: the first run only, and only for a moment. */
+/** The tip itself, for the top of a list of songs: the first run only, until the next press. */
 @Composable
 fun MenuHintLine(hasSongs: Boolean = true) {
     val context = LocalContext.current
     if (!menuHintVisible(MenuHint.heldBefore(context), hasSongs)) return
-    LaunchedEffect(Unit) {
-        MenuHint.shown(context)
-        delay(MENU_HINT_MS)
-        MenuHint.timeUp()
-    }
+    LaunchedEffect(Unit) { MenuHint.shown(context) }
     TextMMD(
         text = stringResource(R.string.hint_hold_song),
         style = MaterialTheme.typography.labelSmall,
