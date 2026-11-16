@@ -188,6 +188,7 @@ fun ArtistItem(
                         expanded = true,
                         onDismissRequest = { showMenu = false },
                     ) {
+                        DarkWindow()
                         if (nameEditing != null) {
                             DropdownMenuItemMMD(
                                 text = { TextMMD(text = stringResource(R.string.edit_name_menu)) },

@@ -170,6 +170,7 @@ private fun SearchSourcesMenu(
             expanded = menuOpen,
             onDismissRequest = { menuOpen = false },
         ) {
+            DarkWindow()
             DropdownMenuItemMMD(
                 text = { TextMMD(stringResource(R.string.search_sources_menu)) },
                 onClick = {

@@ -208,6 +208,7 @@ fun SongItem(
                         expanded = true,
                         onDismissRequest = { showMenu = false }
                     ) {
+                        DarkWindow()
                         // The menu is a window of its own, so it watches its own touches. Deleting
                         // erases the file, and removing takes the song out of the library: the row
                         // asks in its own face rather than stacking a dialog on the menu, and stays

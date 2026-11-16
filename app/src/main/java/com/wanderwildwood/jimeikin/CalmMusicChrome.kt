@@ -1,5 +1,6 @@
 package com.wanderwildwood.jimeikin
 
+import com.wanderwildwood.jimeikin.ui.DarkWindow
 import com.wanderwildwood.jimeikin.ui.DottedRule
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -335,6 +336,7 @@ private fun CalmMusicTopAppBarActions(
                 expanded = isPlaylistDetailsMenuExpanded,
                 onDismissRequest = onPlaylistDetailsMenuToggle,
             ) {
+                DarkWindow()
                 DropdownMenuItemMMD(
                     text = { TextMMD(stringResource(R.string.main_menu_edit)) },
                     onClick = onPlaylistDetailsEditClick,

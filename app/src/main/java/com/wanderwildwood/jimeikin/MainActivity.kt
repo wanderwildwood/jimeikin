@@ -1,5 +1,6 @@
 package com.wanderwildwood.jimeikin
 
+import com.wanderwildwood.jimeikin.ui.DarkSelection
 import com.wanderwildwood.jimeikin.data.clientFor
 import com.wanderwildwood.jimeikin.data.serverClient
 import androidx.activity.SystemBarStyle
@@ -89,6 +90,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.wanderwildwood.jimeikin.ui.DarkWindow
 import com.wanderwildwood.jimeikin.ui.ArtistUiModel
 import com.wanderwildwood.jimeikin.ui.DarkStatusIconsInSheet
 import com.wanderwildwood.jimeikin.ui.SearchSource
@@ -207,7 +209,7 @@ class MainActivity : ComponentActivity() {
             takeOpenDownloads(intent)
         }
         setContent {
-            ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
+            ThemeMMD(colorScheme = monochrome, typography = houseTypography) { DarkSelection {
                 ArmedScope {
                     // A steady cursor: a blinking one repaints the panel twice a second for as long
                     // as a field has focus. Dialogs and sheets inherit it.
@@ -224,7 +226,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
-            }
+            } }
         }
     }
 
@@ -3043,6 +3045,7 @@ fun CalmMusic(
                 onDismissRequest = { showAddToPlaylistDialog = false },
                 sheetState = addToPlaylistSheetState,
             ) {
+                DarkWindow()
                 DarkStatusIconsInSheet()
                 Column(
                     modifier = Modifier
@@ -3149,6 +3152,7 @@ fun CalmMusic(
                     onDismissRequest = { showDeletePlaylistSongsConfirmation = false },
                     sheetState = removeSongsSheetState,
                 ) {
+                    DarkWindow()
                     DarkStatusIconsInSheet()
                     Column(
                         modifier = Modifier
@@ -3259,6 +3263,7 @@ fun CalmMusic(
                     onDismissRequest = { showDeletePlaylistsConfirmation = false },
                     sheetState = deletePlaylistsSheetState,
                 ) {
+                    DarkWindow()
                     DarkStatusIconsInSheet()
                     Column(
                         modifier = Modifier

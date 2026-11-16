@@ -263,6 +263,7 @@ fun AlbumItem(
                         expanded = true,
                         onDismissRequest = { showMenu = false }
                     ) {
+                        DarkWindow()
                         DropdownMenuItemMMD(
                             text = { TextMMD(text = stringResource(R.string.player_song_play_next)) },
                             onClick = { withSongs { actions.onPlayNext(album, it) } }
