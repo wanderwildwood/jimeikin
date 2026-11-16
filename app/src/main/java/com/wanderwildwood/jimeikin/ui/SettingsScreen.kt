@@ -262,7 +262,6 @@ fun SettingsScreen(
                 label = stringResource(R.string.settings_dark),
                 checked = DarkMode.on,
                 onCheckedChange = { DarkMode.set(context, it) },
-                note = stringResource(R.string.settings_dark_note),
             )
         }
 
