@@ -50,6 +50,8 @@
     <string name="library_youtube_login_failed">The sign-in page did not load</string>
     <!-- Button: try loading the sign-in page again -->
     <string name="library_youtube_login_retry">Retry</string>
+    <!-- YouTube sign-in screen: the page tried to open a site outside Google and YouTube, which is refused -->
+    <string name="library_youtube_login_elsewhere">That page is outside Google and YouTube, so it was not opened here.</string>
     <!-- Search screen -->
     <string name="library_search_searching">Searching YouTube…</string>
     <string name="library_search_failed">The search did not reach YouTube</string>

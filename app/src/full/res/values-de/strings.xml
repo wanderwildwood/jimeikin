@@ -45,6 +45,7 @@
     <string name="library_youtube_login_failed">Die Anmeldeseite konnte nicht geladen werden</string>
     <!-- Button: try loading the sign-in page again -->
     <string name="library_youtube_login_retry">Erneut versuchen</string>
+    <string name="library_youtube_login_elsewhere">Diese Seite liegt außerhalb von Google und YouTube und wurde deshalb hier nicht geöffnet.</string>
     <!-- Search screen -->
     <string name="library_search_searching">YouTube wird durchsucht…</string>
     <string name="library_search_failed">Die Suche hat YouTube nicht erreicht</string>

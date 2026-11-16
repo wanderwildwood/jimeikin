@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -53,6 +54,8 @@ fun YouTubeLoginScreen(
     var isCompletingLogin by remember { mutableStateOf(false) }
     var rendererGone by remember { mutableStateOf(false) }
     var retryKey by remember { mutableStateOf(0) }
+    // Set when the page tried to go somewhere outside Google and YouTube, which is not opened.
+    var refusedElsewhere by remember { mutableStateOf(false) }
     var webView: WebView? = null
 
     fun completeLoginIfSignedIn() {
@@ -92,19 +95,35 @@ fun YouTubeLoginScreen(
             }
         }
     } else {
+        Column(modifier = Modifier.fillMaxSize()) {
+        if (refusedElsewhere) {
+            TextMMD(
+                text = stringResource(R.string.library_youtube_login_elsewhere),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
         key(retryKey) {
             AndroidView(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth().weight(1f),
                 factory = { context ->
                     WebView(context).apply {
                         webViewClient = object : WebViewClient() {
                             // https pages only: nothing in plain http, and no other kind of
                             // address (intent:, file:, content:, javascript:) is opened here.
-                            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
-                                request.url.scheme != "https"
+                            // A whole page is opened only on Google and YouTube (SignInHosts);
+                            // what a page loads inside itself is left alone.
+                            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                                if (request.url.scheme != "https") return true
+                                if (request.isForMainFrame && !SignInHosts.allowed(request.url.host)) {
+                                    refusedElsewhere = true
+                                    return true
+                                }
+                                if (request.isForMainFrame) refusedElsewhere = false
+                                return false
+                            }
 
                             override fun onPageFinished(view: WebView, url: String?) {
-                                if (url?.contains(YOUTUBE_MUSIC_HOST) == true) {
+                                if (url != null && android.net.Uri.parse(url).host == YOUTUBE_MUSIC_HOST) {
                                     completeLoginIfSignedIn()
                                 }
                             }
@@ -135,6 +154,7 @@ fun YouTubeLoginScreen(
                     }
                 },
             )
+        }
         }
     }
 

@@ -37,6 +37,7 @@
     <string name="library_youtube_login_failed">La page de connexion ne s\'est pas chargée</string>
     <!-- Button: try loading the sign-in page again -->
     <string name="library_youtube_login_retry">Réessayer</string>
+    <string name="library_youtube_login_elsewhere">Cette page est hors de Google et YouTube, elle n\'a donc pas été ouverte ici.</string>
     <!-- Search screen -->
     <string name="library_search_searching">Recherche sur YouTube…</string>
     <string name="library_search_failed">La recherche n’a pas atteint YouTube</string>
