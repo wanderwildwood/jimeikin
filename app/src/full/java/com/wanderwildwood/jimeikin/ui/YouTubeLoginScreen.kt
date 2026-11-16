@@ -3,6 +3,8 @@ package com.wanderwildwood.jimeikin.ui
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -27,6 +29,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.jimeikin.R
+import com.wanderwildwood.jimeikin.forgetYouTubeWebSession
 import com.wanderwildwood.jimeikin.youTubeAccount
 
 private const val YOUTUBE_MUSIC_LOGIN_URL =
@@ -63,6 +66,9 @@ fun YouTubeLoginScreen(
             clearHistory()
         }
         onLoginSuccess(cookie)
+        // The cookie is kept sealed from here on (see YouTubeMusic.Account); the WebView's own
+        // cookie store would otherwise keep a second, unsealed copy of the whole Google session.
+        forgetYouTubeWebSession()
     }
 
     if (rendererGone) {
@@ -92,6 +98,11 @@ fun YouTubeLoginScreen(
                 factory = { context ->
                     WebView(context).apply {
                         webViewClient = object : WebViewClient() {
+                            // https pages only: nothing in plain http, and no other kind of
+                            // address (intent:, file:, content:, javascript:) is opened here.
+                            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
+                                request.url.scheme != "https"
+
                             override fun onPageFinished(view: WebView, url: String?) {
                                 if (url?.contains(YOUTUBE_MUSIC_HOST) == true) {
                                     completeLoginIfSignedIn()
@@ -108,7 +119,13 @@ fun YouTubeLoginScreen(
                             }
                         }
                         settings.apply {
+                            // Google's sign-in needs JavaScript; nothing on the page can reach
+                            // the app (no JavaScript interface) or the phone's files.
                             javaScriptEnabled = true
+                            allowFileAccess = false
+                            allowContentAccess = false
+                            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                            setGeolocationEnabled(false)
                             setSupportZoom(true)
                             builtInZoomControls = true
                             displayZoomControls = false

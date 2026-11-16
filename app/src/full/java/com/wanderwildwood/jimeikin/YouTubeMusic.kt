@@ -44,6 +44,11 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
         val cookie: StateFlow<String?> = _cookie.asStateFlow()
 
         private fun load(): String? {
+            // Once: an earlier sign-in left the whole Google session in the WebView's own,
+            // unsealed cookie store. The sealed copy below is the one that is used.
+            if (!prefs.getBoolean(KEY_WEB_SESSION_FORGOTTEN, false)) {
+                forgetYouTubeWebSession { prefs.edit { putBoolean(KEY_WEB_SESSION_FORGOTTEN, true) } }
+            }
             val stored = prefs.getString(KEY_YOUTUBE_ACCOUNT_COOKIE, null) ?: return null
             val cookie = Secrets.open(stored) ?: return null
             if (!Secrets.isSealed(stored)) {
@@ -60,6 +65,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
         fun clear() {
             prefs.edit { remove(KEY_YOUTUBE_ACCOUNT_COOKIE) }
             _cookie.value = null
+            forgetYouTubeWebSession()
         }
     }
 
@@ -530,6 +536,26 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
         const val KEY_COMPLETE_ALBUMS_WITH_YOUTUBE = "complete_albums_with_youtube"
         const val KEY_KEEP_PLAYING_SIMILAR = "keep_playing_similar"
         const val KEY_YOUTUBE_ACCOUNT_COOKIE = "youtube_account_cookie"
+        const val KEY_WEB_SESSION_FORGOTTEN = "youtube_web_session_forgotten_v1"
         const val BYPASS_COOKIES = "SOCS=CAI; VISITOR_INFO1_LIVE=i7Sm6Qgj0lE; CONSENT=YES+cb.20210328-17-p0.en+FX+475"
+    }
+}
+
+/**
+ * Empties the WebView's own cookie store and web storage, where the YouTube sign-in leaves
+ * the Google session. Nothing else in the app uses a WebView. Done on the main thread, which
+ * the WebView wants; [done] is called once it worked, and not when there is no WebView to ask
+ * (being updated, or missing).
+ */
+internal fun forgetYouTubeWebSession(done: () -> Unit = {}) {
+    android.os.Handler(android.os.Looper.getMainLooper()).post {
+        val worked = runCatching {
+            android.webkit.CookieManager.getInstance().apply {
+                removeAllCookies(null)
+                flush()
+            }
+            android.webkit.WebStorage.getInstance().deleteAllData()
+        }.isSuccess
+        if (worked) done()
     }
 }
