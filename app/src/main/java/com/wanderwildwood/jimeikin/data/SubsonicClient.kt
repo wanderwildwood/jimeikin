@@ -43,12 +43,17 @@ class SubsonicClient(
     private val onAuthLearned: (SubsonicAuth) -> Unit = {},
 ) : MusicServerClient {
 
-    private val http = OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        // Not infinite: a server that accepts the connection and then says nothing would
-        // otherwise wedge the sync for good.
-        .readTimeout(30, TimeUnit.SECONDS)
-        .build()
+    // Made when first asked: a client made only to sign a song's address as it is opened
+    // (see [signed]) never needs one.
+    private val http by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            // Not infinite: a server that accepts the connection and then says nothing would
+            // otherwise wedge the sync for good.
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addNetworkInterceptor(ServerLogin.noPlainRedirectWithLogin)
+            .build()
+    }
 
     /** Whether the server is there and the credentials are right. */
     override suspend fun ping(): SubsonicResult<Unit> = request("ping").map { }
@@ -77,7 +82,8 @@ class SubsonicClient(
 
     /**
      * Where the audio actually is. Kept on the song's row when the library is read (see
-     * [SubsonicSync]), so it is signed the way this client has learned the server wants.
+     * [SubsonicSync]) without the login, which [signed] puts on, the way this client has learned
+     * the server wants, each time the song is opened.
      *
      * Anything the phone can decode is asked for untouched, so a FLAC arrives as a FLAC and
      * nothing is spent re-encoding it. For the formats it cannot decode — Windows Media,
@@ -87,11 +93,36 @@ class SubsonicClient(
      */
     override fun streamUrl(songId: String, suffix: String?): String {
         val playable = suffix != null && suffix.lowercase() in PLAYABLE_SUFFIXES
-        return url(
-            "stream",
-            if (playable) mapOf("id" to songId, "format" to "raw")
-            else mapOf("id" to songId, "format" to "mp3"),
+        return ServerLogin.strip(
+            url(
+                "stream",
+                if (playable) mapOf("id" to songId, "format" to "raw")
+                else mapOf("id" to songId, "format" to "mp3"),
+            ),
         )
+    }
+
+    /**
+     * The login put on one of this server's addresses as it is opened: a fresh salt each time,
+     * and the version and form the server has turned out to want, as [url] does.
+     */
+    override fun signed(url: String): String {
+        if (!url.startsWith(config.normalisedBaseUrl + "/rest/")) return url
+        val bare = ServerLogin.without(url, setOf("u", "t", "s", "p", "v"))
+        return ServerLogin.appended(bare, loginQuery())
+    }
+
+    private fun loginQuery(): String {
+        val fields = linkedMapOf("u" to config.user)
+        if (sendsPassword) {
+            fields["p"] = "enc:" + config.password.toByteArray().joinToString("") { "%02x".format(it) }
+        } else {
+            val salt = newSalt()
+            fields["t"] = md5(config.password + salt)
+            fields["s"] = salt
+        }
+        fields["v"] = apiVersion
+        return fields.entries.joinToString("&") { (k, v) -> k + "=" + java.net.URLEncoder.encode(v, "UTF-8").replace("+", "%20") }
     }
 
     /**

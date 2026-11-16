@@ -166,7 +166,8 @@ object LibraryBackup {
         put("track", s.trackNumber ?: JSONObject.NULL)
         put("duration_ms", s.durationMillis ?: JSONObject.NULL)
         put("source", s.sourceType)
-        put("audio", s.audioUri)
+        // A server song's address without its login, whatever an older row still holds.
+        put("audio", if (s.sourceType == SubsonicSync.SOURCE_TYPE) ServerLogin.strip(s.audioUri) else s.audioUri)
         put("artist_id", s.artistId ?: JSONObject.NULL)
         put("year", s.releaseYear ?: JSONObject.NULL)
     }
@@ -181,7 +182,9 @@ object LibraryBackup {
         trackNumber = o.intOrNull("track"),
         durationMillis = o.longOrNull("duration_ms"),
         sourceType = o.getString("source").also { require(it.isNotBlank()) },
-        audioUri = o.getString("audio"),
+        audioUri = o.getString("audio").let { a ->
+            if (o.getString("source") == SubsonicSync.SOURCE_TYPE) ServerLogin.strip(a) else a
+        },
         artistId = o.stringOrNull("artist_id"),
         releaseYear = o.intOrNull("year"),
     )

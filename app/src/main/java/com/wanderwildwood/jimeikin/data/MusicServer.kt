@@ -41,8 +41,17 @@ interface MusicServerClient {
     /** The playlists the server keeps, with the songs on each. */
     suspend fun fetchPlaylists(): SubsonicResult<List<SubsonicPlaylist>>
 
-    /** Where a song's audio is, signed so the player can open it with nothing else. */
+    /**
+     * Where a song's audio is, without the login: this is what the song's row keeps (see
+     * [ServerLogin]). The player and the downloader open it through [signed].
+     */
     fun streamUrl(songId: String, suffix: String?): String
+
+    /**
+     * [url] with the login put on, so it can be opened with nothing else; unchanged when it is
+     * not an address on this server, so no other host is ever sent this server's login.
+     */
+    fun signed(url: String): String
 
     /** True when the password itself goes with each request, which the server page says. */
     val sendsPassword: Boolean

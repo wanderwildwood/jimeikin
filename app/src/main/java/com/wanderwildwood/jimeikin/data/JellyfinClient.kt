@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit
  * and the person is asked to connect again, which is the one time the password goes again.
  *
  * A song's address carries the token too, as `ApiKey`, since the player and the downloader open
- * it as a plain url with no headers of their own. That address is on the song's row in the
- * library, as a Subsonic server's signed address is, and so the same rule holds: over the open
- * internet a server wants https.
+ * it as a plain url with no headers of their own. The song's row in the library keeps the
+ * address without it, and it is put on only as the song is opened ([signed], [ServerLogin]).
+ * Over the open internet a server still wants https.
  */
 class JellyfinClient(
     private val config: SubsonicConfig,
@@ -63,7 +63,12 @@ class JellyfinClient(
     override suspend fun fetchPlaylists(): SubsonicResult<List<SubsonicPlaylist>> = reader.readPlaylists()
 
     override fun streamUrl(songId: String, suffix: String?): String =
-        universalStreamUrl(base, songId, userId, deviceId, token)
+        ServerLogin.strip(universalStreamUrl(base, songId, userId, deviceId, token))
+
+    override fun signed(url: String): String {
+        if (!url.startsWith(base.trimEnd('/') + "/Audio/")) return url
+        return ServerLogin.appended(ServerLogin.strip(url), query(mapOf("ApiKey" to token)))
+    }
 
     /**
      * Ends this sign-in on the server, so the token stops working there too. Asked when the

@@ -39,6 +39,9 @@ import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import android.view.KeyEvent
+import com.wanderwildwood.jimeikin.data.MusicServerClient
+import com.wanderwildwood.jimeikin.data.ServerLogin
+import com.wanderwildwood.jimeikin.data.serverClient
 import com.wanderwildwood.jimeikin.glance.NowPlaying
 import com.wanderwildwood.jimeikin.playback.ButtonAction
 import com.wanderwildwood.jimeikin.playback.QueueSkips
@@ -333,6 +336,14 @@ class PlaybackService : MediaSessionService() {
         return true
     }
 
+    /**
+     * A client for the server set up now, to sign a song's address with. Made afresh each time,
+     * which costs a few preference reads and nothing on the network, so a changed login or what
+     * the server has since turned out to want is always the one used.
+     */
+    private fun serverSigner(): MusicServerClient? =
+        (application as CalmMusic).settingsManager.serverClient(resources)
+
     @OptIn(UnstableApi::class)
     private fun createDataSourceFactory(): DataSource.Factory {
         val app = application as CalmMusic
@@ -341,6 +352,7 @@ class PlaybackService : MediaSessionService() {
             .connectionPool(ConnectionPool(5, 5, TimeUnit.MINUTES))
             .followRedirects(true)
             .followSslRedirects(true)
+            .addNetworkInterceptor(ServerLogin.noPlainRedirectWithLogin)
             .build()
 
         val upstreamFactory = OkHttpDataSource.Factory(okHttpClient)
@@ -368,7 +380,13 @@ class PlaybackService : MediaSessionService() {
                 // stalls it before a note is heard - it sat on "Loading" for ever. This flag
                 // is exactly for that case: cache what has a length, stream what does not. A
                 // song from a music server still has a length and is still cached.
+                //
+                // A song from the music server set up now gets its login here, as it is opened,
+                // and nowhere earlier: the library keeps its address without one (ServerLogin).
+                // The cache sits above this, so it knows the song by that unsigned address.
+                val signed = serverSigner()?.signed(uri.toString())
                 return@Factory dataSpec.buildUpon()
+                    .apply { if (signed != null && signed != uri.toString()) setUri(signed.toUri()) }
                     .setFlags(dataSpec.flags or DataSpec.FLAG_DONT_CACHE_IF_LENGTH_UNKNOWN)
                     .build()
             }

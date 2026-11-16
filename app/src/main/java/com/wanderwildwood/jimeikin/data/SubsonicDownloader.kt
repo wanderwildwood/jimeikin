@@ -2,6 +2,7 @@ package com.wanderwildwood.jimeikin.data
 
 import android.content.Context
 import android.os.Environment
+import com.wanderwildwood.jimeikin.CalmMusic
 import com.wanderwildwood.jimeikin.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
@@ -26,6 +27,7 @@ object SubsonicDownloader {
     private val http = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
+        .addNetworkInterceptor(ServerLogin.noPlainRedirectWithLogin)
         .build()
 
     /**
@@ -60,7 +62,7 @@ object SubsonicDownloader {
         // song back as it was. Keeping rewrites the row to point at the file, and nothing else
         // remembers the address.
         if (song.sourceType == SubsonicSync.SOURCE_TYPE) {
-            runCatching { File(target.path + STREAM_SUFFIX).writeText(song.audioUri) }
+            runCatching { File(target.path + STREAM_SUFFIX).writeText(ServerLogin.strip(song.audioUri)) }
         }
         if (target.exists() && target.length() > 0) return@withContext SubsonicResult.Success(target)
 
@@ -75,7 +77,10 @@ object SubsonicDownloader {
             // The row already carries the url playback would use, which is the file
             // untouched where this phone can decode it and a transcode where it cannot.
             // Fetching that exact url is what makes the kept copy play the same way.
-            val request = Request.Builder().url(song.audioUri).build()
+            // The login goes on here, as it is fetched, and only for the server set up now.
+            val address = (context.applicationContext as? CalmMusic)?.settingsManager
+                ?.serverClient(context.resources)?.signed(song.audioUri) ?: song.audioUri
+            val request = Request.Builder().url(address).build()
             http.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     return@withContext SubsonicResult.Failure(context.getString(R.string.service_subsonic_download_server_answered, response.code))

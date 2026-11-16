@@ -70,5 +70,7 @@ class CalmMusic : Application() {
 
         settingsManager = CalmMusicSettingsManager(this)
         downloadQueue = DownloadQueue(this)
+        // Once: server songs kept their login in their address until now; see ServerLogin.
+        Thread({ com.wanderwildwood.jimeikin.data.ServerLogin.cleanStored(this) }, "server-login-clean").start()
     }
 }
