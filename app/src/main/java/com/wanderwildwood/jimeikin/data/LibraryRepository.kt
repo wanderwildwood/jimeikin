@@ -2,7 +2,9 @@ package com.wanderwildwood.jimeikin.data
 
 import android.net.Uri
 import android.os.Environment
+import androidx.room.withTransaction
 import com.wanderwildwood.jimeikin.CalmMusic
+import com.wanderwildwood.jimeikin.R
 import com.wanderwildwood.jimeikin.ui.AlbumUiModel
 import com.wanderwildwood.jimeikin.ui.ArtistUiModel
 import com.wanderwildwood.jimeikin.ui.SongUiModel
@@ -258,9 +260,11 @@ class LibraryRepository(
                                 normalizedLocalEntities.isEmpty() && albumEntities.isEmpty() && uniqueArtists.isEmpty()
                             ) {
                                 onIngestProgress(1f)
-                                songDao.deleteBySourceType("LOCAL_FILE")
-                                albumDao.deleteBySourceType("LOCAL_FILE")
-                                artistDao.deleteBySourceType("LOCAL_FILE")
+                                database.withTransaction {
+                                    songDao.deleteBySourceType("LOCAL_FILE")
+                                    albumDao.deleteBySourceType("LOCAL_FILE")
+                                    artistDao.deleteBySourceType("LOCAL_FILE")
+                                }
                                 return@withContext
                             }
 
@@ -336,19 +340,22 @@ class LibraryRepository(
                             )
 
                             // Albums and artists are rebuilt from what was found, so they can
-                            // only be cleared when everything was read.
-                            if (!hadUnreadableFolder) {
-                                albumDao.deleteBySourceType("LOCAL_FILE")
-                                artistDao.deleteBySourceType("LOCAL_FILE")
+                            // only be cleared when everything was read. Cleared and written in
+                            // one transaction, so a scan cut off between the two leaves them as
+                            // they were.
+                            database.withTransaction {
+                                if (!hadUnreadableFolder) {
+                                    albumDao.deleteBySourceType("LOCAL_FILE")
+                                    artistDao.deleteBySourceType("LOCAL_FILE")
+                                }
+                                if (albumEntities.isNotEmpty()) albumDao.upsertAll(albumEntities)
+                                if (uniqueArtists.isNotEmpty()) artistDao.upsertAll(uniqueArtists)
                             }
-
                             if (albumEntities.isNotEmpty()) {
-                                albumDao.upsertAll(albumEntities)
                                 writtenItems += albumEntities.size
                                 reportWriteProgress()
                             }
                             if (uniqueArtists.isNotEmpty()) {
-                                artistDao.upsertAll(uniqueArtists)
                                 writtenItems += uniqueArtists.size
                                 reportWriteProgress()
                             }
@@ -362,14 +369,17 @@ class LibraryRepository(
                             onIngestProgress(1f)
                         }
                     } catch (e: Exception) {
-                        error = e.message ?: "Failed to scan local music"
+                        android.util.Log.w("LibraryRepository", "scan failed", e)
+                        error = app.getString(R.string.library_scan_failed)
                     }
                 } else {
                     FolderReach.update(emptySet(), emptySet())
                     withContext(Dispatchers.IO) {
-                        songDao.deleteBySourceType("LOCAL_FILE")
-                        albumDao.deleteBySourceType("LOCAL_FILE")
-                        artistDao.deleteBySourceType("LOCAL_FILE")
+                        database.withTransaction {
+                            songDao.deleteBySourceType("LOCAL_FILE")
+                            albumDao.deleteBySourceType("LOCAL_FILE")
+                            artistDao.deleteBySourceType("LOCAL_FILE")
+                        }
                     }
                 }
             }
@@ -383,7 +393,8 @@ class LibraryRepository(
                 stats = stats,
             )
         } catch (e: Exception) {
-            val message = e.message ?: "Failed to scan local music"
+            android.util.Log.w("LibraryRepository", "scan failed", e)
+            val message = app.getString(R.string.library_scan_failed)
             return LocalResyncResult(
                 errorMessage = message,
                 stats = null,

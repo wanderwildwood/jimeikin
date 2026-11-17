@@ -1,5 +1,6 @@
 package com.wanderwildwood.jimeikin.data
 
+import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -38,6 +39,9 @@ object SubsonicSync {
         artistDao: ArtistDao,
         playlistDao: PlaylistDao? = null,
         onProgress: suspend (SubsonicProgress) -> Unit = {},
+        // Given, the rows are replaced in one transaction, so a sync cut off part-way never
+        // leaves the server's songs gone from the library.
+        database: CalmMusicDatabase? = null,
     ): SubsonicResult<Int> {
         val library = when (val r = client.fetchLibrary(onProgress)) {
             is SubsonicResult.Failure -> return r
@@ -69,16 +73,19 @@ object SubsonicSync {
             // Replaced whole rather than merged: the server is the authority on what it has,
             // and anything it no longer lists is gone rather than merely unseen. Nothing on
             // the phone is touched by this - these rows are only ever pointers to the server.
-            songDao.deleteBySourceType(SOURCE_TYPE)
-            albumDao.deleteBySourceType(SOURCE_TYPE)
-            artistDao.deleteBySourceType(SOURCE_TYPE)
+            val replace: suspend () -> Unit = {
+                songDao.deleteBySourceType(SOURCE_TYPE)
+                albumDao.deleteBySourceType(SOURCE_TYPE)
+                artistDao.deleteBySourceType(SOURCE_TYPE)
 
-            val songsToWrite = songs.filterNot { it.id in keptIds }
-            if (songsToWrite.isNotEmpty()) {
-                songsToWrite.chunked(100).forEach { songDao.upsertAll(it) }
+                val songsToWrite = songs.filterNot { it.id in keptIds }
+                if (songsToWrite.isNotEmpty()) {
+                    songsToWrite.chunked(100).forEach { songDao.upsertAll(it) }
+                }
+                if (albums.isNotEmpty()) albumDao.upsertAll(albums)
+                if (artists.isNotEmpty()) artistDao.upsertAll(artists)
             }
-            if (albums.isNotEmpty()) albumDao.upsertAll(albums)
-            if (artists.isNotEmpty()) artistDao.upsertAll(artists)
+            if (database != null) database.withTransaction { replace() } else replace()
         }
 
         if (playlistDao != null) syncPlaylists(client, songDao, playlistDao)

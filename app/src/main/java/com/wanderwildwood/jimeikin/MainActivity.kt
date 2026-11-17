@@ -905,6 +905,7 @@ fun CalmMusic(
                 albumDao = database.albumDao(),
                 artistDao = database.artistDao(),
                 playlistDao = database.playlistDao(),
+                database = database,
                 onProgress = { progress ->
                     serverStatus = when (progress) {
                         is com.wanderwildwood.jimeikin.data.SubsonicProgress.Songs ->
@@ -963,6 +964,7 @@ fun CalmMusic(
                     artistDao = database.artistDao(),
                     playlistDao = database.playlistDao(),
                     onProgress = {},
+                    database = database,
                 )
                 if (result is com.wanderwildwood.jimeikin.data.SubsonicResult.Failure) failure = result.message
                 viewModel.refreshLibraryFromDatabase()

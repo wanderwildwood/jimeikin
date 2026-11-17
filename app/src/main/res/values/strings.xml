@@ -437,6 +437,8 @@
     <string name="settings_scan_adding">Adding to the library, %1$d%%</string>
     <!-- Scan progress, before the number of songs is known -->
     <string name="settings_scan_looking">Looking through the folders</string>
+    <!-- Songs screen, when a scan of the music folders failed -->
+    <string name="library_scan_failed">The music folders could not be read.</string>
     <!-- Scan progress. %1$d is a percentage from 0 to 100, followed by a percent sign -->
     <string name="settings_scan_reading">Reading the songs, %1$d%%</string>
     <!-- After a scan. %1$d is the number of songs found -->
