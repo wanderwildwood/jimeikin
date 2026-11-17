@@ -294,8 +294,8 @@
 
     <!-- Song and playlist rows -->
     <!-- Song row: shown instead of an artist for a file with no artist tag -->
-    <string name="song_row_stopped_at_of">angehalten bei %1$s von %2$s</string>
-    <string name="song_row_stopped_at">angehalten bei %1$s</string>
+    <string name="song_row_stopped_at_of">Angehalten bei %1$s von %2$s</string>
+    <string name="song_row_stopped_at">Angehalten bei %1$s</string>
     <string name="player_song_local_file">Lokale Datei</string>
     <!-- Song row: icon description on the row of the song that is playing -->
     <string name="player_song_now_playing">Wird gerade wiedergegeben</string>

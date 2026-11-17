@@ -65,7 +65,7 @@ Long listening keeps its place. A track of 20 minutes or more (a podcast episode
 mix) starts again where you stopped it. So does a book: put its files in a folder with a
 folder called **Audiobooks** or **Podcasts** (or Audiobook, Podcast, Books) somewhere above
 it, such as Music/Audiobooks/Moby Dick/, and that folder remembers the file you were on and
-where in it. The row of a file with a place says so ("stopped at 12:34 of 45:00"); play it to
+where in it. The row of a file with a place says so ("Stopped at 12:34 of 45:00"); play it to
 pick up there. A place is forgotten once the file plays to its end. Ordinary songs start from
 the beginning as they always have.
 

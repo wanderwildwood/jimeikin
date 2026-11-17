@@ -271,8 +271,8 @@
     <string name="player_loading">Chargement</string>
     <!-- Song and playlist rows -->
     <!-- Song row: shown instead of an artist for a file with no artist tag -->
-    <string name="song_row_stopped_at_of">arrêté à %1$s sur %2$s</string>
-    <string name="song_row_stopped_at">arrêté à %1$s</string>
+    <string name="song_row_stopped_at_of">Arrêté à %1$s sur %2$s</string>
+    <string name="song_row_stopped_at">Arrêté à %1$s</string>
     <string name="player_song_local_file">Fichier local</string>
     <!-- Song row: icon description on the row of the song that is playing -->
     <string name="player_song_now_playing">Lecture en cours</string>

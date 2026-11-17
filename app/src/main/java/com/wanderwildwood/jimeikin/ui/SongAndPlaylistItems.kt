@@ -65,7 +65,7 @@ fun SongItem(
     // length, off the end of a 480px line. A screen that already names the artist or the
     // album says so, and the row leaves that part out.
     val localFileLabel = stringResource(R.string.player_song_local_file)
-    // A long track or a book's file that was stopped partway says where, beside its length.
+    // A long track or a book's file that was stopped partway says where, with its length.
     val stoppedLabel = LocalResumeMarks.current[song.id]?.let { at ->
         val atText = com.wanderwildwood.jimeikin.formatDurationMillis(at) ?: "0:00"
         val length = song.durationText?.takeIf { it.isNotBlank() }
@@ -112,11 +112,14 @@ fun SongItem(
         val album = song.album
             ?.takeIf { it.isNotBlank() }
             ?.takeUnless { sameName(it, knownAlbum) }
-        val durationText = stoppedLabel ?: song.durationText?.takeIf { it.isNotBlank() }
+        // Where it stopped leads the line, so a long artist or album cuts the names, not it.
+        val durationText = if (stoppedLabel != null) null else song.durationText?.takeIf { it.isNotBlank() }
         val prefix = if (mp4) "MP4 • " else ""
 
         val coreSubtitle = buildString {
+            if (stoppedLabel != null) append(stoppedLabel)
             if (baseArtist.isNotBlank()) {
+                if (isNotEmpty()) append(" • ")
                 append(baseArtist)
             }
             if (!album.isNullOrBlank()) {
