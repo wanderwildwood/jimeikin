@@ -19,7 +19,9 @@ import java.net.URLDecoder
  *   Podcasts, Podcast or Books above it (any case, spaces ignored), such as
  *   Music/Audiobooks/Moby Dick/. A book is often many short chapter files, so length cannot
  *   tell it from an album; where it is kept can, and that is something the reader decides and
- *   can see. The folder keeps ONE place: the file last played and where in it.
+ *   can see. The folder keeps ONE place: the file last played and where in it. Another file
+ *   of the folder takes it over after 10 seconds of listening, or at once when it follows a
+ *   file played to its end, so a queue passing through a chapter does not lose the book.
  *
  * A place is forgotten once its file is played to the end (or to its last 15 seconds), and a
  * long track stopped in its first 10 seconds keeps none. Kept apart from Android so it can be
@@ -117,6 +119,10 @@ class ResumePlaces(
             return
         }
         val old = places[key]
+        // Another file of the book takes its place only once it has been listened to: a queue
+        // or a shuffle passing through a chapter for a moment leaves the book where it was.
+        // After a chapter plays through there is no place, and the next one takes it at once.
+        if (inFolder && old != null && old.songId != songId && positionMs < ResumeRules.START_MS) return
         val place = ResumePlace(songId, positionMs, now())
         places[key] = place
         val moved = old == null || old.songId != songId

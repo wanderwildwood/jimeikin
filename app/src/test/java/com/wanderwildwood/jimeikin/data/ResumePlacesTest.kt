@@ -88,11 +88,21 @@ class ResumePlacesTest {
         val p = places()
         p.record(chapter1, 3 * min, 8 * min, settle = true)
         assertEquals(3 * min, p.startAt(chapter1))
-        // Short chapters count too, even right at their start.
-        p.record(chapter2, 2_000L, 6 * min, settle = true)
+        // A chapter listened to for a while takes the book's one place over.
+        p.record(chapter2, 30_000L, 6 * min, settle = true)
         assertEquals(0L, p.startAt(chapter1))
-        assertEquals(2_000L, p.startAt(chapter2))
-        assertEquals(mapOf(chapter2 to 2_000L), p.marks.value)
+        assertEquals(30_000L, p.startAt(chapter2))
+        assertEquals(mapOf(chapter2 to 30_000L), p.marks.value)
+    }
+
+    @Test
+    fun `a queue passing through a chapter for a moment leaves the book where it was`() {
+        val p = places()
+        p.record(chapter2, 4 * min, 6 * min, settle = true)
+        p.record(chapter1, 3_000L, 8 * min, settle = false)
+        p.record(chapter1, 5_000L, 8 * min, settle = true)
+        assertEquals(4 * min, p.startAt(chapter2))
+        assertEquals(0L, p.startAt(chapter1))
     }
 
     @Test

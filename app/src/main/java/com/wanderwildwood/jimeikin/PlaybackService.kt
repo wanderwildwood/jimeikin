@@ -314,8 +314,14 @@ class PlaybackService : MediaSessionService() {
             private fun catchUpIfLive() {
                 if (player.playWhenReady || player.playbackState == Player.STATE_IDLE) return
                 // An HLS station says it is live; a plain stream has no length to say anything.
+                // But nothing has a length before it is prepared: asked then, a file just handed
+                // over with a place to start from (ResumeRules) was taken for a stream and sent
+                // back to its beginning. Only a prepared item's missing length counts.
+                val timeline = player.currentTimeline
+                val prepared = !timeline.isEmpty &&
+                    !timeline.getWindow(player.currentMediaItemIndex, Timeline.Window()).isPlaceholder
                 val live = player.isCurrentMediaItemLive ||
-                    (player.duration == C.TIME_UNSET && !player.isCurrentMediaItemSeekable)
+                    (prepared && player.duration == C.TIME_UNSET && !player.isCurrentMediaItemSeekable)
                 if (live) player.seekToDefaultPosition()
             }
         }
