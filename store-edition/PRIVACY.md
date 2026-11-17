@@ -1,6 +1,6 @@
 # Music Box K — Privacy Policy
 
-Version 1.0.0. Last reviewed 4 November 2026.
+Version 1.0.1. Last reviewed 17 November 2026.
 
 ## The short version
 
@@ -62,6 +62,10 @@ Hosts contacted:
 - **Your own music server**: whichever Navidrome or other Subsonic server, or Jellyfin server, you configure, at the address you type, and no other host. Each request carries your sign-in to it: a salted hash of the password for Subsonic (or the password itself for a server that asks for it, as above), the access token for Jellyfin. Jellyfin is sent the password once, when you connect.
 
 On the phone: with Glance (`com.wanderwildwood.hitome`, the author's lock-screen app) installed, and Settings, "Show what is playing in Glance", turned on (it is off to begin with), the song playing is handed to Glance, and only to Glance, to show on the lock screen, where anyone holding the phone can read it.
+
+The app also asks Home (`com.wanderwildwood.iori`), if it is installed, whether its dark mode is on, and when you open, choose or save a file it asks Cabinet (`com.wanderwildwood.tana`), if that is installed, to show the file picker. Nothing is sent to either.
+
+Other apps can hand the app something to play: a music file, or a `jimeikin://song` link to a song already in its library. It plays only what it was handed and sends nothing back.
 
 In About, "feed the llamas" opens a donation page (square.link), wanderthe.dev opens the author's website and the source code link opens this app's page on GitHub, in your browser and only when you press them. The app does not fetch any of these pages and learns nothing about whether you went.
 

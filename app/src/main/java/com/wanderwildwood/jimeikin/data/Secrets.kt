@@ -14,10 +14,9 @@ import javax.crypto.spec.GCMParameterSpec
  * YouTube account cookie.
  *
  * Both used to sit in the app's preferences file as plain text. On an unrooted phone nothing
- * else can read that file, so the everyday case was already safe — but the app allows backup,
- * and a backup is exactly the thing that carries an app's private files off the phone. A
- * password that leaves the phone in a backup has stopped being kept on the phone, which is
- * what the About screen promises.
+ * else can read that file, so the everyday case was already safe. The app now leaves everything
+ * out of Android's backup and device transfer as well (allowBackup="false", no_backup.xml); the
+ * sealing is the second guard, for a rooted phone or a backup rule that changes later.
  *
  * So they are sealed with a key generated inside the phone's hardware-backed keystore, which
  * is not exportable and is not itself backed up. The stored value is

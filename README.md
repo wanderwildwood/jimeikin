@@ -239,10 +239,9 @@ app, under **Privacy** and **Terms** in About (the **i** at the top right of Set
 also lists the open-source parts it is built with and links to this source.
 
 A music server's password and a connected YouTube account's cookie are sealed with a key held
-in the phone's keystore, which cannot be exported and is not itself backed up, and the file
-holding them is excluded from Android's backups. Restoring this app onto a different phone
-brings your playlists and settings and asks for the server login again, which is the intended
-outcome rather than a shortcoming.
+in the phone's keystore, which cannot be exported. Nothing of the app goes into Android's backup
+or a phone-to-phone transfer; to move playlists and kept stations to another phone, use **Save a
+backup** in Settings.
 
 It declares these permissions, and each is used:
 

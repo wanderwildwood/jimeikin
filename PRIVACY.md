@@ -1,6 +1,6 @@
 # Music Box — Privacy Policy
 
-Version 2.18.15. Last reviewed 4 November 2026.
+Version 2.18.44. Last reviewed 17 November 2026.
 
 ## The short version
 
@@ -68,6 +68,10 @@ Hosts contacted:
 - **MusicBrainz** (`musicbrainz.org`): only if you turn on Settings, "Fill in album details from MusicBrainz" (it is off to begin with), and then only for albums on the phone whose tags have no album artist, year or track numbers. For each such album, once, its title and its artist (or, for an album of many artists, its number of tracks) are sent in a search, and then the identifier of a release that may be it, with the app's name and version; no more than one request a second. Nothing about what you play is sent, and nothing is sent again for that album unless its songs change. What comes back fills the gaps in the app's own library; your files are not changed. Turning the switch off deletes what was found. MusicBrainz is run by the MetaBrainz Foundation, an independent controller under its own policy.
 
 On the phone: with Glance (`com.wanderwildwood.hitome`, the author's lock-screen app) installed, and Settings, "Show what is playing in Glance", turned on (it is off to begin with), the song playing is handed to Glance, and only to Glance, to show on the lock screen, where anyone holding the phone can read it.
+
+The app also asks Home (`com.wanderwildwood.iori`), if it is installed, whether its dark mode is on, and when you open, choose or save a file it asks Cabinet (`com.wanderwildwood.tana`), if that is installed, to show the file picker. Nothing is sent to either.
+
+Other apps can hand Music Box something to play: a music file, a `jimeikin://song` link to a song already in its library, or, in this edition, a YouTube or YouTube Music link or text shared from another app. It plays only what it was handed and sends nothing back.
 
 In About, "feed the llamas" opens a donation page (square.link), wanderthe.dev opens the author's website and the source code link opens this app's page on GitHub, in your browser and only when you press them. The app does not fetch any of these pages and learns nothing about whether you went.
 
