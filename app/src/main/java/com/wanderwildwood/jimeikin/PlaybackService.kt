@@ -59,8 +59,28 @@ import java.util.concurrent.TimeUnit
 class PlaybackService : MediaSessionService() {
     private var mediaSession: MediaSession? = null
 
+    // Where long tracks and book folders stopped (ResumeRules). Kept here, beside the player,
+    // rather than in the screen's loop, so a place is kept while the app is closed and the
+    // music plays on.
+    private val placeTicker = android.os.Handler(android.os.Looper.getMainLooper())
+    private var placeMediaId: String? = null
+    private val placeTick = object : Runnable {
+        override fun run() {
+            val player = mediaSession?.player ?: return
+            keepPlace(player, settle = false)
+            if (player.isPlaying) placeTicker.postDelayed(this, PLACE_TICK_MS)
+        }
+    }
+
+    private fun keepPlace(player: Player, settle: Boolean) {
+        if (player.playbackState != Player.STATE_READY || player.isCurrentMediaItemLive) return
+        val id = player.currentMediaItem?.mediaId?.takeIf { it.isNotEmpty() } ?: return
+        (application as? CalmMusic)?.resumePlaces?.record(id, player.currentPosition, player.duration, settle)
+    }
+
     companion object {
         private const val NOTIFICATION_ID = 1001
+        private const val PLACE_TICK_MS = 2_000L
         private const val CHANNEL_ID = "calmmusic_playback_channel"
         private var errorCallback: ((PlaybackException) -> Unit)? = null
 
@@ -131,10 +151,29 @@ class PlaybackService : MediaSessionService() {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 (application as? CalmMusic)?.playbackStateManager?.updatePlaybackStatus(isPlaying)
+                placeTicker.removeCallbacks(placeTick)
+                if (isPlaying) placeTicker.postDelayed(placeTick, PLACE_TICK_MS) else keepPlace(player, settle = true)
+            }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+                if (playbackState == Player.STATE_ENDED) {
+                    player.currentMediaItem?.mediaId?.let { (application as? CalmMusic)?.resumePlaces?.finished(it) }
+                }
             }
 
             override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
+                // Played through into the next file, or round again: the one before is finished.
+                val places = (application as? CalmMusic)?.resumePlaces
+                val before = placeMediaId
+                if (before != null && (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
+                        reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT)
+                ) {
+                    places?.finished(before)
+                }
+                places?.publish()
+                placeMediaId = mediaItem?.mediaId
                 val meta = mediaItem?.mediaMetadata
                 if (meta != null) {
                     val uri = mediaItem.localConfiguration?.uri
@@ -450,6 +489,7 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        mediaSession?.player?.let { keepPlace(it, settle = true) }
         mediaSession?.player?.stop()
         stopSelf()
         super.onTaskRemoved(rootIntent)
@@ -460,6 +500,8 @@ class PlaybackService : MediaSessionService() {
         mediaSession
 
     override fun onDestroy() {
+        placeTicker.removeCallbacks(placeTick)
+        mediaSession?.player?.let { keepPlace(it, settle = true) }
         _activeSession.value = null
         NowPlaying.set(this, null)
         mediaSession?.run {

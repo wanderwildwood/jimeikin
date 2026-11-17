@@ -438,6 +438,7 @@ fun CalmMusic(
         librarySongs.filter { it.sourceType == "ONLINE_SEARCH_DOWNLOAD" }
     }
     val recordedOnlineCopies by app.online.recorded.collectAsState()
+    val resumeMarks by app.resumePlaces.marks.collectAsState()
     val isDownloaded: (SongUiModel) -> Boolean = remember(onlineDownloads, recordedOnlineCopies) {
         { song -> app.online.copyIn(song, recordedOnlineCopies, onlineDownloads) != null }
     }
@@ -2077,6 +2078,7 @@ fun CalmMusic(
         CompositionLocalProvider(
             LocalEditDetails provides openEditor,
             LocalIsDownloaded provides isDownloaded,
+            com.wanderwildwood.jimeikin.ui.LocalResumeMarks provides resumeMarks,
             LocalAlbumActions provides albumActions,
             LocalNameEditing provides nameEditing,
             LocalNames provides names,

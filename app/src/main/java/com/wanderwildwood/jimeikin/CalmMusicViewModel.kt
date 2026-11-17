@@ -912,6 +912,14 @@ class CalmMusicViewModel(
     ) {
         if (queue.isEmpty() || startIndex !in queue.indices) return
 
+        // A long track or a book folder's file starts where it was stopped (ResumeRules);
+        // everything else starts where it always did. A caller that names a position wins.
+        val startAt = if (startPositionMs > 0L || queue[startIndex].sourceType == "RADIO") {
+            startPositionMs
+        } else {
+            app.resumePlaces.startAt(queue[startIndex].id)
+        }
+
         val previous = _playbackState.value
         val originalQueue = if (isNewQueue) queue else previous.originalPlaybackQueue
         val shuffle = if (isNewQueue) false else previous.isShuffleOn
@@ -934,7 +942,7 @@ class CalmMusicViewModel(
             nowPlayingSong = song,
             isPlaybackPlaying = true,
             isBuffering = shouldShowInitialBuffering,
-            nowPlayingPositionMs = startPositionMs,
+            nowPlayingPositionMs = startAt,
             nowPlayingDurationMs = song.durationMillis ?: 0L,
         )
         _playbackState.value = newState
@@ -968,7 +976,7 @@ class CalmMusicViewModel(
                     controller.setMediaItems(
                         segmentMediaItems,
                         0, // Start at the beginning of THIS segment
-                        startPositionMs
+                        startAt
                     )
 
                     // IMPORTANT: Never delegate REPEAT_ALL to the local player in a mixed queue.
@@ -987,7 +995,7 @@ class CalmMusicViewModel(
             val controller = localController
             if (controller != null) {
                 viewModelScope.launch {
-                    playOnlineSongInQueue(song, startIndex, controller, startPositionMs)
+                    playOnlineSongInQueue(song, startIndex, controller, startAt)
                 }
                 playbackCoordinator.localQueueInitialized = true
             }

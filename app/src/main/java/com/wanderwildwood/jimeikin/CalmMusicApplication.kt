@@ -42,6 +42,11 @@ class CalmMusic : Application() {
         NowPlayingStorage(this)
     }
 
+    /** Where long tracks and book folders stopped; see [com.wanderwildwood.jimeikin.data.ResumeRules]. */
+    val resumePlaces: com.wanderwildwood.jimeikin.data.ResumePlaces by lazy {
+        com.wanderwildwood.jimeikin.data.ResumePlaces(com.wanderwildwood.jimeikin.data.ResumePlaceStore(this))
+    }
+
     /** Names the reader gave songs, albums and artists, laid over the library as it is read. */
     val nameOverrides: com.wanderwildwood.jimeikin.data.NameOverrides by lazy {
         com.wanderwildwood.jimeikin.data.NameOverrides(
