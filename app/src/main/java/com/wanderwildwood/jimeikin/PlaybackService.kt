@@ -106,6 +106,9 @@ class PlaybackService : MediaSessionService() {
         val player = ExoPlayer.Builder(this)
             .setMediaSourceFactory(mediaSourceFactory)
             .setLoadControl(loadControl)
+            // Keeps the phone and its Wi-Fi awake while something plays, and only then, so a
+            // stream does not starve with the screen off.
+            .setWakeMode(C.WAKE_MODE_NETWORK)
             .build()
 
         val audioAttributes = androidx.media3.common.AudioAttributes.Builder()
@@ -357,7 +360,6 @@ class PlaybackService : MediaSessionService() {
 
         val upstreamFactory = OkHttpDataSource.Factory(okHttpClient)
             .setUserAgent(STREAM_USER_AGENT)
-            .setDefaultRequestProperties(app.online.streamHeaders)
 
         val resolvingFactory = ResolvingDataSource.Factory(upstreamFactory) { dataSpec ->
             val uri = dataSpec.uri
@@ -399,7 +401,9 @@ class PlaybackService : MediaSessionService() {
             val (resolvedUrl, resolverLabel) = app.online.resolveStream(videoId)
             app.playbackStateManager.updateStreamResolverLabel(resolverLabel)
 
-            dataSpec.withUri(resolvedUrl.toUri())
+            // YouTube's consent cookie and referer go with YouTube's streams only, not to a
+            // music server or a radio station.
+            dataSpec.withUri(resolvedUrl.toUri()).withAdditionalHeaders(app.online.streamHeaders)
         }
 
         val networkAndCacheStack = CacheDataSource.Factory()

@@ -48,7 +48,16 @@ class DownloadService : Service() {
         lastStart = startId
         // Promised to the system the moment it is started, whatever it was started for: a
         // service started in the foreground that does not say so within a few seconds is killed.
-        goForeground(notification(currentLine()))
+        // When the system refuses (a start it no longer counts as from the foreground), the
+        // service goes and the queue runs on without it, as when start() itself is refused.
+        try {
+            goForeground(notification(currentLine()))
+        } catch (e: Exception) {
+            android.util.Log.w("DownloadService", "could not go to the foreground", e)
+            if (intent?.action == STOP) queue.cancelAll()
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
 
         if (intent?.action == STOP) queue.cancelAll()
 
