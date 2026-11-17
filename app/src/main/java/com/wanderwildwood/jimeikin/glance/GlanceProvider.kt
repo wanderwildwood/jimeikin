@@ -16,7 +16,7 @@ import java.security.MessageDigest
  *
  * It answers Glance alone - any other caller gets nothing - and says nothing at all while this
  * app's own "on the lock screen" setting is off. One row per line: `heading` (first row only,
- * optional), `lead` (a short left column: a time, a temperature), `text`, `bold`, and for a player `playing`.
+ * optional), `lead` (a short left column: a time, a temperature), `text`, `bold`, for a player `playing`, and `more`.
  */
 abstract class GlanceProvider : ContentProvider() {
 
@@ -27,6 +27,11 @@ abstract class GlanceProvider : ContentProvider() {
         val heading: String? = null,
         /** For a player: whether it is playing now. Lets Glance show the one that is when two answer. */
         val playing: Boolean? = null,
+        /**
+         * On this app's own "and 3 more" line, how many things it stands for (3); 0 on any other
+         * line. Glance counts that line as this many when it has to cut it under its "+N more".
+         */
+        val more: Int = 0,
     )
 
     /** This app's own switch for the lock screen. */
@@ -49,7 +54,7 @@ abstract class GlanceProvider : ContentProvider() {
         val cursor = MatrixCursor(COLUMNS)
         if (enabled(context)) {
             try {
-                lines(context).forEach { cursor.addRow(arrayOf<Any?>(it.heading, it.lead, it.text, if (it.bold) 1 else 0, it.playing?.let { p -> if (p) 1 else 0 })) }
+                lines(context).forEach { cursor.addRow(arrayOf<Any?>(it.heading, it.lead, it.text, if (it.bold) 1 else 0, it.playing?.let { p -> if (p) 1 else 0 }, it.more)) }
             } catch (_: Exception) {
                 // A line that could not be made is a line left out, never a broken lock screen.
             }
@@ -84,7 +89,7 @@ abstract class GlanceProvider : ContentProvider() {
 
         /** SHA-256 of the certificate Glance's releases are signed with, lower-case hex. */
         const val READER_CERT_SHA256 = "8b5ad77e1b6c23ad805c7aef9864967bfefbafd442e43a472ab212f0593248b8"
-        private val COLUMNS = arrayOf("heading", "lead", "text", "bold", "playing")
+        private val COLUMNS = arrayOf("heading", "lead", "text", "bold", "playing", "more")
 
         /** Tells Glance to read again: when a setting changes, or new lines are ready. */
         fun changed(context: Context) {
