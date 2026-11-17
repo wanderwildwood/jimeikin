@@ -22,3 +22,11 @@
 -dontwarn jdk.dynalink.**
 # The build leaves protobuf out of the extractor (see build.gradle.kts), shrunk or not.
 -dontwarn com.google.protobuf.**
+
+# Release builds keep warnings and errors in the system log and drop the chatty lines (file
+# names, media buttons) that are only for working on the app.
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}

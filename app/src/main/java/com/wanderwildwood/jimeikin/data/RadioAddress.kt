@@ -105,7 +105,8 @@ object RadioAddress {
                 if (depth < 1) followPlaylists(named, depth + 1) else Outcome.Plays(named)
             }
         } catch (e: Exception) {
-            android.util.Log.w("RadioAddress", "could not open $address", e)
+            // The host only: a typed address may carry a login or a key.
+            android.util.Log.w("RadioAddress", "could not open a station at ${address.toHttpUrlOrNull()?.host ?: "an address"}: ${e.javaClass.simpleName}")
             Outcome.Unreachable
         }
     }
