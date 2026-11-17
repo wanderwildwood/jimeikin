@@ -95,9 +95,10 @@ interface PlaylistDao {
     /**
      * Update all playlist_tracks rows that reference [oldSongId] so that they
      * instead reference [newSongId]. Used when a streaming track is replaced
-     * by a downloaded local file.
+     * by a downloaded local file. A playlist that already holds [newSongId] keeps one place for
+     * it rather than failing on the duplicate (as DownloadMove.repoint does).
      */
-    @Query("UPDATE playlist_tracks SET songId = :newSongId WHERE songId = :oldSongId")
+    @Query("UPDATE OR REPLACE playlist_tracks SET songId = :newSongId WHERE songId = :oldSongId")
     suspend fun updateSongIdForAllPlaylists(oldSongId: String, newSongId: String)
 
     /**

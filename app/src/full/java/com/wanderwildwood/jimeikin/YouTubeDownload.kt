@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
+import androidx.room.withTransaction
 import com.wanderwildwood.jimeikin.data.AlbumEntity
 import com.wanderwildwood.jimeikin.data.ArtistEntity
 import com.wanderwildwood.jimeikin.data.CalmMusicDatabase
@@ -107,7 +108,7 @@ internal suspend fun performYouTubeDownloadInternal(
 
         onProgress(1f)
 
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             try {
                 val settings = app.settingsManager
 
@@ -173,48 +174,53 @@ internal suspend fun performYouTubeDownloadInternal(
                     albumId = albumId
                 )
 
-                if (albumId == null && artistId.isNotBlank()) {
-                    artistDao.upsertAll(listOf(ArtistEntity(
-                        id = artistId,
-                        name = song.artist,
-                        sourceType = "ONLINE_SEARCH_DOWNLOAD"
-                    )))
+                // One transaction: the library takes the whole download or none of it.
+                database.withTransaction {
+                    if (albumId == null && artistId.isNotBlank()) {
+                        artistDao.upsertAll(listOf(ArtistEntity(
+                            id = artistId,
+                            name = song.artist,
+                            sourceType = "ONLINE_SEARCH_DOWNLOAD"
+                        )))
+                    }
+
+                    if (albumId != null && localSongEntity.album != null) {
+                        val albumEntityArtistId = "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey"
+
+                        artistDao.upsertAll(listOf(ArtistEntity(
+                            id = albumEntityArtistId,
+                            name = effectiveAlbumArtist,
+                            sourceType = "ONLINE_SEARCH_DOWNLOAD"
+                        )))
+
+                        albumDao.upsertAll(listOf(AlbumEntity(
+                            id = albumId,
+                            name = localSongEntity.album,
+                            artist = effectiveAlbumArtist,
+                            sourceType = "ONLINE_SEARCH_DOWNLOAD",
+                            artistId = albumEntityArtistId
+                        )))
+                    }
+
+                    songDao.upsertAll(listOf(localSongEntity))
+                    // The row is keyed on its file from here on; this is what still knows it was
+                    // this video, so a listing that names the video can find it on the phone.
+                    app.youTubeCopies.record(videoId, localSongEntity.id)
+                    playlistDao.updateSongIdForAllPlaylists(oldSongId = videoId, newSongId = fileUri.toString())
+
+                    if (localSongEntity.id != videoId) {
+                        songDao.deleteByIds(listOf(videoId))
+                    }
+                    database.dropOrphanedOnlineRows()
                 }
-
-                if (albumId != null && localSongEntity.album != null) {
-                    val albumEntityArtistId = "ONLINE_SEARCH_DOWNLOAD:$albumArtistKey"
-
-                    artistDao.upsertAll(listOf(ArtistEntity(
-                        id = albumEntityArtistId,
-                        name = effectiveAlbumArtist,
-                        sourceType = "ONLINE_SEARCH_DOWNLOAD"
-                    )))
-
-                    albumDao.upsertAll(listOf(AlbumEntity(
-                        id = albumId,
-                        name = localSongEntity.album,
-                        artist = effectiveAlbumArtist,
-                        sourceType = "ONLINE_SEARCH_DOWNLOAD",
-                        artistId = albumEntityArtistId
-                    )))
-                }
-
-                songDao.upsertAll(listOf(localSongEntity))
-                // The row is keyed on its file from here on; this is what still knows it was
-                // this video, so a listing that names the video can find it on the phone.
-                app.youTubeCopies.record(videoId, localSongEntity.id)
-                playlistDao.updateSongIdForAllPlaylists(oldSongId = videoId, newSongId = fileUri.toString())
-
-                if (localSongEntity.id != videoId) {
-                    songDao.deleteByIds(listOf(videoId))
-                }
-                database.dropOrphanedOnlineRows()
+                true
             } catch (e: Exception) {
-                e.printStackTrace()
+                // The file is kept; the row in Downloads says the download failed rather than
+                // that it is in the library.
+                Log.w(TAG, "[$videoId] the library could not take the download", e)
+                false
             }
         }
-
-        return true
     } finally {
         tmpFile?.delete()
         preparedFile?.delete()
