@@ -300,9 +300,10 @@ and installs beside Music Box; the two share only the signing key. Its descripti
 policy are in [store-edition/](store-edition/). How a release of each is made is in
 [RELEASING.md](RELEASING.md).
 
-Both build types share a checked-in debug-style keystore; see `app/build.gradle.kts`. A
-tagged push (`v*`) triggers a GitHub Actions release build that publishes a signed APK to
-Releases.
+No signing key is kept in this repository. Both build types use the release key when it is in
+the gitignored `signing/` folder; without it a debug build uses your own Android debug key and a
+release build comes out unsigned (see `app/build.gradle.kts`). Releases are built locally and
+uploaded to GitHub Releases with `gh`.
 
 ## Credits
 

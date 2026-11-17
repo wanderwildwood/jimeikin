@@ -16,8 +16,9 @@ Both are signed with the key in `signing/` (never in the repo). Builds are local
 `~/legion-build.sh jimeikin` (or `~/dell-build.sh jimeikin`) builds both flavours.
 
 ## Music Box
-Tag `v<versionName>` and `gh release create`, as before. `.github/workflows/release.yml`
-builds only the full flavour and refuses anything of K.
+Build the signed full release APK locally, tag `v<versionName>` and upload it with
+`gh release create`. Nothing is built on GitHub; there is no release workflow. Only the full
+flavour goes here, never K.
 
 ## Music Box K
 1. Build the signed release APK (`assembleStoreRelease`). Gradle then runs `checkStoreApk`, which
