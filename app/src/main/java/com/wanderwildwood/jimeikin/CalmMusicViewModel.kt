@@ -909,6 +909,9 @@ class CalmMusicViewModel(
         isNewQueue: Boolean = true,
         localController: MediaController?,
         startPositionMs: Long = 0L,
+        // False keeps a paused player paused (a reshuffle while paused): the queue changes,
+        // the music does not start.
+        play: Boolean = true,
     ) {
         if (queue.isEmpty() || startIndex !in queue.indices) return
 
@@ -932,8 +935,8 @@ class CalmMusicViewModel(
             isShuffleOn = shuffle,
             currentSongId = song.id,
             nowPlayingSong = song,
-            isPlaybackPlaying = true,
-            isBuffering = shouldShowInitialBuffering,
+            isPlaybackPlaying = play,
+            isBuffering = shouldShowInitialBuffering && play,
             nowPlayingPositionMs = startPositionMs,
             nowPlayingDurationMs = song.durationMillis ?: 0L,
         )
@@ -979,7 +982,7 @@ class CalmMusicViewModel(
                     }
 
                     controller.prepare()
-                    controller.playWhenReady = true
+                    controller.playWhenReady = play
                     playbackCoordinator.localQueueInitialized = true
                 }
             }
@@ -1377,7 +1380,8 @@ class CalmMusicViewModel(
                     startIndex = 0,
                     isNewQueue = false,
                     localController = localController,
-                    startPositionMs = state.nowPlayingPositionMs
+                    startPositionMs = state.nowPlayingPositionMs,
+                    play = state.isPlaybackPlaying,
                 )
             }
 
@@ -1414,7 +1418,8 @@ class CalmMusicViewModel(
                     startIndex = originalIndex,
                     isNewQueue = false,
                     localController = localController,
-                    startPositionMs = state.nowPlayingPositionMs
+                    startPositionMs = state.nowPlayingPositionMs,
+                    play = state.isPlaybackPlaying,
                 )
             }
         }
@@ -1432,7 +1437,9 @@ class CalmMusicViewModel(
         persistPlaybackSnapshot()
 
         val song = state.nowPlayingSong
-        if (playsOnThisPhone(song?.sourceType)) {
+        // A YouTube song plays in the same player, so it takes the setting too; it used to keep
+        // repeating one song after repeat was changed during it.
+        if (playsOnThisPhone(song?.sourceType) || song?.sourceType == "ONLINE_SEARCH") {
             localController?.let { controller ->
                 controller.repeatMode = when (newRepeat) {
                     RepeatMode.ONE -> Player.REPEAT_MODE_ONE
@@ -1466,6 +1473,11 @@ class CalmMusicViewModel(
                 .build()
 
             localController.setMediaItem(mediaItem)
+            localController.repeatMode = if (_playbackState.value.repeatMode == RepeatMode.ONE) {
+                Player.REPEAT_MODE_ONE
+            } else {
+                Player.REPEAT_MODE_OFF
+            }
             localController.prepare()
             if (startPositionMs > 0) {
                 localController.seekTo(startPositionMs)
@@ -1540,6 +1552,7 @@ class CalmMusicViewModel(
             com.wanderwildwood.jimeikin.playback.QueueSkips.attach(skips)
             try {
             var lastOnlineQueueIndex: Int? = null
+            var lastSavedPositionMs = _playbackState.value.nowPlayingPositionMs
             // Once a second, not five times a second. The seek bar and the clock are the
             // only readers, both show whole seconds, and every republish repaints a panel
             // that redraws in full.
@@ -1582,7 +1595,9 @@ class CalmMusicViewModel(
 
                 val currentMediaId = controller.currentMediaItem?.mediaId
                 if (currentMediaId != null && queue.isNotEmpty()) {
-                    val targetIndex = queue.indexOfFirst { it.id == currentMediaId }
+                    // A song queued twice keeps its own place: the first copy is not taken for it.
+                    val targetIndex = com.wanderwildwood.jimeikin.playback.QueuePosition
+                        .follow(queue.map { it.id }, state.playbackQueueIndex, currentMediaId) ?: -1
                     if (targetIndex >= 0 && targetIndex != state.playbackQueueIndex) {
                         val newSong = queue[targetIndex]
                         newState = newState.copy(
@@ -1663,7 +1678,16 @@ class CalmMusicViewModel(
 
                 if (!didAutoAdvance && newState != state) {
                     _playbackState.value = newState
-                    persistPlaybackSnapshot(newState)
+                    // The saved queue is written when the place in it changes, and the position
+                    // every 15 seconds, not on every tick of this loop.
+                    if (newState.playbackQueueIndex != state.playbackQueueIndex ||
+                        newState.playbackQueue != state.playbackQueue ||
+                        newState.isPlaybackPlaying != state.isPlaybackPlaying ||
+                        kotlin.math.abs(newState.nowPlayingPositionMs - lastSavedPositionMs) >= 15_000L
+                    ) {
+                        lastSavedPositionMs = newState.nowPlayingPositionMs
+                        persistPlaybackSnapshot(newState)
+                    }
                 }
 
                 val nextDelayMs = when {
@@ -2178,18 +2202,26 @@ class CalmMusicViewModel(
                                 }
                             }
                         } else {
-                            try {
-                                DocumentFile.fromSingleUri(app, uri)?.delete()
+                            // One of your own files: its row and playlist places go only with
+                            // the file (or when it is already gone), as for a download above.
+                            val gone = try {
+                                val doc = DocumentFile.fromSingleUri(app, uri)
+                                doc == null || doc.delete() || !doc.exists()
                             } catch (_: Exception) {
                                 if (uri.scheme == null || uri.scheme == "file") {
                                     uri.path?.let { path ->
                                         try {
-                                            java.io.File(path).delete()
+                                            val f = java.io.File(path)
+                                            f.delete() || !f.exists()
                                         } catch (_: Exception) {
+                                            false
                                         }
-                                    }
+                                    } ?: false
+                                } else {
+                                    false
                                 }
                             }
+                            if (!gone) return@withContext false
                         }
                     } catch (_: Exception) {
                     }
@@ -2536,8 +2568,11 @@ class CalmMusicViewModel(
                         )
                     }
 
-                    val indexFromSnapshot = snapshot.currentIndex
-                    val effectiveIndex = indexFromSnapshot?.takeIf { it in playbackQueue.indices } ?: 0
+                    // Songs gone from the library were left out above, so the saved place is
+                    // found again by the song it held, not by its old number.
+                    val (effectiveIndex, restoredPositionMs) = com.wanderwildwood.jimeikin.playback.QueuePosition.restore(
+                        snapshot.queueSongIds, snapshot.currentIndex, snapshot.positionMs, playbackQueue.map { it.id },
+                    )
                     val currentSong = playbackQueue[effectiveIndex]
 
                     val repeatMode = when (snapshot.repeatModeKey) {
@@ -2558,7 +2593,7 @@ class CalmMusicViewModel(
                         currentSongId = currentSong.id,
                         nowPlayingSong = currentSong,
                         isPlaybackPlaying = snapshot.isPlaying,
-                        nowPlayingPositionMs = snapshot.positionMs,
+                        nowPlayingPositionMs = restoredPositionMs,
                         nowPlayingDurationMs = currentSong.durationMillis ?: 0L,
                     )
                 }
