@@ -2217,27 +2217,33 @@ class CalmMusicViewModel(
                             }
                         } else {
                             // One of your own files: its row and playlist places go only with
-                            // the file (or when it is already gone), as for a download above.
-                            val gone = try {
-                                val doc = DocumentFile.fromSingleUri(app, uri)
-                                doc == null || doc.delete() || !doc.exists()
-                            } catch (_: Exception) {
-                                if (uri.scheme == null || uri.scheme == "file") {
-                                    uri.path?.let { path ->
-                                        try {
-                                            val f = java.io.File(path)
-                                            f.delete() || !f.exists()
-                                        } catch (_: Exception) {
-                                            false
-                                        }
-                                    } ?: false
-                                } else {
+                            // the file (or when the provider answers that it is already gone),
+                            // as for a download above. A file that could not be reached stays,
+                            // and so does its row. See DeletedFile.
+                            val gone = if (uri.scheme == null || uri.scheme == "file") {
+                                uri.path?.let { path ->
+                                    try {
+                                        val f = java.io.File(path)
+                                        f.delete() || !f.exists()
+                                    } catch (_: Exception) {
+                                        false
+                                    }
+                                } ?: false
+                            } else {
+                                val deleted = try {
+                                    DocumentFile.fromSingleUri(app, uri)?.delete() == true
+                                } catch (_: Exception) {
                                     false
+                                }
+                                com.wanderwildwood.jimeikin.data.DeletedFile.isGone(deleted) {
+                                    app.contentResolver.query(uri, null, null, null, null)?.use { it.count }
                                 }
                             }
                             if (!gone) return@withContext false
                         }
                     } catch (_: Exception) {
+                        // Whatever went wrong, the file may still be there: the row stays with it.
+                        return@withContext false
                     }
                 }
 
