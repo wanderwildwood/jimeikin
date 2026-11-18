@@ -57,6 +57,9 @@ class MusicBoxKTest {
             assertFalse(dir, Regex("Music Box(?! K)").containsMatchIn(brand))
         }
         assertFalse(Regex("Music Box(?! K)").containsMatchIn(own))
+        // The launcher's name: not translated, so the test above skips it, but K must still have its own.
+        val brand = File(res, "store/res/values/brand.xml").readText()
+        assertTrue(Regex("""<string name="app_name"[^>]*>Music Box K</string>""").containsMatchIn(brand))
     }
 
     @Test

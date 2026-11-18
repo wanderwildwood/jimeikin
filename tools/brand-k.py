@@ -12,7 +12,8 @@ for d in ("values", "values-de", "values-fr"):
     out = []
     for m in re.finditer(r'    <string name="([^"]+)"([^>]*)>(.*?)</string>', src, re.S):
         name, attrs, text = m.groups()
-        if "Music Box" in text and name not in own and 'translatable="false"' not in attrs:
+        # app_name is not translated, but it is the launcher's name: the K app keeps its own.
+        if "Music Box" in text and name not in own and ('translatable="false"' not in attrs or name == "app_name"):
             out.append(f'    <string name="{name}"{attrs}>{text.replace("Music Box", "Music Box K")}</string>')
     dest = root / "store/res" / d
     dest.mkdir(parents=True, exist_ok=True)
