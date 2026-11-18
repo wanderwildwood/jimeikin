@@ -165,6 +165,21 @@ class ResumePlacesTest {
     }
 
     @Test
+    fun `a long track the player reaches by itself starts at its place, and keeps it`() {
+        val p = places()
+        p.record(lecture, 30 * min, 60 * min, settle = true)
+        // Played into from the file before it: the player is at its start.
+        assertEquals(30 * min, p.seekOnArrival(lecture, 0L))
+        // Already there, or past it: left alone.
+        assertNull(p.seekOnArrival(lecture, 30 * min))
+        // A file with no place is left where it is.
+        assertNull(p.seekOnArrival(song, 0L))
+        // Once moved there, the next tick keeps the place instead of letting it go.
+        p.record(lecture, 30 * min + 2_000L, 60 * min, settle = false)
+        assertEquals(30 * min + 2_000L, p.startAt(lecture))
+    }
+
+    @Test
     fun `stored text reads back, and anything else is skipped`() {
         val place = ResumePlace("content://x/tree/a/document/b%3Bc;d", 1234L, 99L)
         assertEquals(place, ResumePlaceStore.decode(ResumePlaceStore.encode(place)))

@@ -177,6 +177,18 @@ class PlaybackService : MediaSessionService() {
                 }
                 places?.publish()
                 placeMediaId = mediaItem?.mediaId
+                // The player moved on by itself (played into the next file, or took a Next the
+                // queue did not): a long track or a book's file starts at its kept place, as it
+                // does when the app starts it. A new list of songs (the app's own start) has
+                // already been given its place, or the one its caller named.
+                if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
+                    reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK
+                ) {
+                    val id = mediaItem?.mediaId?.takeIf { it.isNotEmpty() }
+                    if (id != null && !player.isCurrentMediaItemLive) {
+                        places?.seekOnArrival(id, player.currentPosition)?.let { player.seekTo(it) }
+                    }
+                }
                 val meta = mediaItem?.mediaMetadata
                 if (meta != null) {
                     val uri = mediaItem.localConfiguration?.uri

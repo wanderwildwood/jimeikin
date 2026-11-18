@@ -104,6 +104,17 @@ class ResumePlaces(
         places.values.firstOrNull { it.songId == songId }?.positionMs ?: 0L
 
     /**
+     * The player went on to [songId] by itself, at [positionMs]: played through into it, or a
+     * Next from a headset or the notification that the player took. The app's own starts ask
+     * [startAt]; this is the same place for the rest, so a long track reached in the middle of
+     * a run starts where it stopped instead of at 0:00, where the next [record] would have let
+     * its place go. Null: leave the player where it is.
+     */
+    @Synchronized
+    fun seekOnArrival(songId: String, positionMs: Long): Long? =
+        startAt(songId).takeIf { it > 0L && it > positionMs }
+
+    /**
      * The player is at [positionMs] of [durationMs] in [songId]. [settle] says it has stopped
      * there (paused, closed): the place is written at once and the rows are told. While it plays
      * the place is written only every few seconds and the rows are left alone, so a list on the
