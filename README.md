@@ -118,6 +118,16 @@ goes once every track on it is here, and pressing it fetches only the ones that 
 remembers which video each download came from; one downloaded before it did is recognized by
 its title and artist.
 
+## Backup and dark mode
+
+Settings → **Save a backup** writes the playlists you made here (each song's title, artist and
+where it plays from) and your kept radio stations to one file you choose, only when you ask.
+**Restore from a backup** reads such a file back, checks all of it first, and only then replaces
+those playlists and stations.
+
+Settings → **Dark mode** switches the app to white on black. It also follows the phone's dark
+setting, and Home's dark switch if Home is installed.
+
 ## Downloads
 
 Songs from the music server and from YouTube go into one queue and download one at a time, in
@@ -250,6 +260,16 @@ A music server's password and a connected YouTube account's cookie are sealed wi
 in the phone's keystore, which cannot be exported. Nothing of the app goes into Android's backup
 or a phone-to-phone transfer; to move playlists and kept stations to another phone, use **Save a
 backup** in Settings.
+
+If Home or Cabinet is installed, the app asks Home whether its dark mode is on, and asks Cabinet to
+show the file picker; nothing is sent to either. A music file, a `jimeikin://song` link or a
+shared YouTube link handed over from another app is played and nothing is sent back.
+
+Plain http is allowed, because a music server at home is usually served that way and many radio
+stations stream over nothing else. An address typed without a scheme is taken as https; http is
+used only when you type `http://`, and the screen says so when the host is not on a home network.
+Anything fetched over http can be read by others on that network. Where https is used, only the
+phone's own certificates are trusted.
 
 It declares these permissions, and each is used:
 
