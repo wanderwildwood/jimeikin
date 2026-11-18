@@ -72,6 +72,24 @@ class PlaybackService : MediaSessionService() {
         }
     }
 
+    // The player lets its own wake lock go when an item ends, but the next item is started by
+    // the queue a moment later. This short lock keeps the phone awake through that gap with
+    // the screen off, and is let go as soon as something plays again.
+    private var gapLock: android.os.PowerManager.WakeLock? = null
+
+    private fun holdThroughGap() {
+        val lock = gapLock ?: (getSystemService(Context.POWER_SERVICE) as? android.os.PowerManager)
+            ?.newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "jimeikin:queue-gap")
+            ?.apply { setReferenceCounted(false) }
+            ?.also { gapLock = it }
+            ?: return
+        lock.acquire(GAP_LOCK_MS)
+    }
+
+    private fun releaseGapLock() {
+        gapLock?.takeIf { it.isHeld }?.release()
+    }
+
     private fun keepPlace(player: Player, settle: Boolean) {
         if (player.playbackState != Player.STATE_READY || player.isCurrentMediaItemLive) return
         val id = player.currentMediaItem?.mediaId?.takeIf { it.isNotEmpty() } ?: return
@@ -81,6 +99,7 @@ class PlaybackService : MediaSessionService() {
     companion object {
         private const val NOTIFICATION_ID = 1001
         private const val PLACE_TICK_MS = 2_000L
+        private const val GAP_LOCK_MS = 10_000L
         private const val CHANNEL_ID = "calmmusic_playback_channel"
         private var errorCallback: ((PlaybackException) -> Unit)? = null
 
@@ -156,11 +175,13 @@ class PlaybackService : MediaSessionService() {
                 (application as? CalmMusic)?.playbackStateManager?.updatePlaybackStatus(isPlaying)
                 placeTicker.removeCallbacks(placeTick)
                 if (isPlaying) placeTicker.postDelayed(placeTick, PLACE_TICK_MS) else keepPlace(player, settle = true)
+                if (isPlaying) releaseGapLock()
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == Player.STATE_ENDED) {
+                    holdThroughGap()
                     player.currentMediaItem?.mediaId?.let { (application as? CalmMusic)?.resumePlaces?.finished(it) }
                 }
             }
@@ -523,6 +544,7 @@ class PlaybackService : MediaSessionService() {
 
     override fun onDestroy() {
         placeTicker.removeCallbacks(placeTick)
+        releaseGapLock()
         mediaSession?.player?.let { keepPlace(it, settle = true) }
         _activeSession.value = null
         NowPlaying.set(this, null)
