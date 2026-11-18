@@ -133,7 +133,9 @@ class LibraryRepository(
                         // its songs are still there. Until it can be read again, nothing under
                         // it is deleted - a card that was slow to mount used to empty the
                         // whole library.
-                        val hadUnreadableFolder = scannedAudio.unreadableTreeUris.isNotEmpty()
+                        // The same for a folder inside one that would not answer this time.
+                        val hadUnreadableFolder = scannedAudio.unreadableTreeUris.isNotEmpty() ||
+                            scannedAudio.partlyReadTreeUris.isNotEmpty()
                         // Their songs stay in the library, hidden, until the folder reads again.
                         FolderReach.update(folders, scannedAudio.unreadableTreeUris)
                         // Gaps in the tags filled from an online lookup, when the reader asked for that.

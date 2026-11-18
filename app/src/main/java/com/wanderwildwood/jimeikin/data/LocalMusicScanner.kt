@@ -22,6 +22,12 @@ data class LocalScanResult(
     val unreadableTreeUris: Set<String>,
     val playlistFiles: List<ScannedPlaylistFile> = emptyList(),
     val relativePathBySongId: Map<String, String> = emptyMap(),
+    /**
+     * Chosen folders that were read, but with a folder somewhere inside them that would not
+     * answer. Their songs are not hidden, as for [unreadableTreeUris], but nothing missing
+     * from the walk is taken for deleted either.
+     */
+    val partlyReadTreeUris: Set<String> = emptySet(),
 )
 
 /** An .m3u sitting in one of the chosen folders, not yet read. */
@@ -68,6 +74,7 @@ object LocalMusicScanner {
     ): LocalScanResult {
         val result = mutableListOf<ScannedLocalAudio>()
         val unreadableTreeUris = mutableSetOf<String>()
+        val partlyReadTreeUris = mutableSetOf<String>()
         // A file reached through two chosen folders - one inside the other - arrives with a
         // different tree-scoped uri each time and would otherwise be indexed twice. The
         // document id is the same either way, so it is what identifies the file here.
@@ -123,6 +130,7 @@ object LocalMusicScanner {
                 val childrenUri = try {
                     DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, documentId)
                 } catch (_: Exception) {
+                    partlyReadTreeUris.add(uriString)
                     continue
                 }
 
@@ -135,7 +143,7 @@ object LocalMusicScanner {
                 )
 
                 val children = mutableListOf<Child>()
-                try {
+                val answered = try {
                     context.contentResolver.query(
                         childrenUri,
                         arrayOf(
@@ -160,10 +168,15 @@ object LocalMusicScanner {
                                 ),
                             )
                         }
-                    }
+                    } != null
                 } catch (_: Exception) {
-                    // A folder that will not answer is skipped rather than taken as empty;
-                    // the tree-level check above is what decides a whole grant is unreadable.
+                    false
+                }
+                if (!answered) {
+                    // A folder that will not answer (or answers with nothing at all) is skipped
+                    // rather than taken as empty: its songs stay in the library. The tree-level
+                    // check above is what decides a whole grant is unreadable.
+                    partlyReadTreeUris.add(uriString)
                     continue
                 }
 
@@ -239,7 +252,7 @@ object LocalMusicScanner {
 
         if (candidates.isEmpty()) {
             onProgress(0, 0)
-            return LocalScanResult(emptyList(), unreadableTreeUris, playlistFiles, relativePathBySongId)
+            return LocalScanResult(emptyList(), unreadableTreeUris, playlistFiles, relativePathBySongId, partlyReadTreeUris)
         }
 
         val (unchanged, changed) = candidates.partition { candidate ->
@@ -302,7 +315,7 @@ object LocalMusicScanner {
 
         onProgress(processed, total.coerceAtLeast(processed))
 
-        return LocalScanResult(result, unreadableTreeUris, playlistFiles, relativePathBySongId)
+        return LocalScanResult(result, unreadableTreeUris, playlistFiles, relativePathBySongId, partlyReadTreeUris)
     }
 
     fun buildSongEntityFromFile(
