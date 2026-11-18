@@ -134,7 +134,10 @@ class CalmMusicViewModel(
     private val libraryRepository: LibraryRepository by lazy { LibraryRepository(app) }
     private val nowPlayingStorage: NowPlayingStorage by lazy { app.nowPlayingStorage }
 
-    private val playbackCoordinator = PlaybackCoordinator { app.settingsManager.getSubsonicMaxBitrateSync() }
+    private val playbackCoordinator = PlaybackCoordinator(
+        serverBitrateCeiling = { app.settingsManager.getSubsonicMaxBitrateSync() },
+        unknownArtistLabel = { app.getString(R.string.library_artist_unknown) },
+    )
     private var localPlaybackMonitorJob: Job? = null
 
     private var lastCompletedSongId: String? = null
@@ -1472,7 +1475,8 @@ class CalmMusicViewModel(
         withContext(Dispatchers.Main) {
             val metadata = MediaMetadata.Builder()
                 .setTitle(song.title)
-                .setArtist(song.artist)
+                // The notification and a car or headphones' display draw this as it is.
+                .setArtist(ArtistNames.shown(song.artist, app.getString(R.string.library_artist_unknown)))
                 .setAlbumTitle(song.album)
                 .build()
 

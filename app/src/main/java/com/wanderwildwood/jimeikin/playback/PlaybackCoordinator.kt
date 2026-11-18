@@ -2,6 +2,7 @@ package com.wanderwildwood.jimeikin.playback
 
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import com.wanderwildwood.jimeikin.data.ArtistNames
 import com.wanderwildwood.jimeikin.data.withBitrateCeiling
 import com.wanderwildwood.jimeikin.ui.SongUiModel
 
@@ -14,6 +15,8 @@ import com.wanderwildwood.jimeikin.ui.SongUiModel
 class PlaybackCoordinator(
     /** The music server's bitrate ceiling, read each time a queue is built. */
     private val serverBitrateCeiling: () -> Int? = { null },
+    /** The phone's own word for an unknown artist, which the notification shows as it is. */
+    private val unknownArtistLabel: () -> String = { ArtistNames.UNKNOWN },
 ) {
 
     var localPlaybackSubqueue: List<SongUiModel> = emptyList()
@@ -65,10 +68,11 @@ class PlaybackCoordinator(
         localIndexByGlobal = localMap
 
         val ceiling = serverBitrateCeiling()
+        val unknownArtist = unknownArtistLabel()
         localMediaItemsForQueue = localList.map { song ->
             val metadata = MediaMetadata.Builder()
                 .setTitle(song.title)
-                .setArtist(song.artist)
+                .setArtist(ArtistNames.shown(song.artist, unknownArtist))
                 .setAlbumTitle(song.album)
                 .build()
 
