@@ -347,4 +347,4 @@ Privacy: what the app stores and what it sends is set out in [PRIVACY.md](PRIVAC
 
 ## License
 
-GPL-3.0, the same as upstream CalmMusic. See [LICENSE](LICENSE).
+GPL-3.0-only, © wander wildwood, a fork of CalmMusic (GPL-3.0). See [LICENSE](LICENSE).

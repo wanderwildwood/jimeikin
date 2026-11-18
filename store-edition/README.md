@@ -81,4 +81,4 @@ Mudita's MMD library (Apache 2.0), the Lato typeface (SIL OFL 1.1) and Material 
 (Apache 2.0). Tags with jaudiotagger (LGPL 2.1). AndroidX, Jetpack Compose, Media3, Room,
 OkHttp, Kotlin and kotlinx.coroutines are Apache 2.0.
 
-GPL-3.0. Source: <https://github.com/wanderwildwood/jimeikin>.
+GPL-3.0-only, © wander wildwood. Source: <https://github.com/wanderwildwood/jimeikin>.
