@@ -20,6 +20,12 @@ class MusicBoxKTest {
     }
 
     @Test
+    fun theStorePrivacyPolicyNamesThisVersion() {
+        val policy = File("../store-edition/PRIVACY.md").readText()
+        assertTrue("store-edition/PRIVACY.md is not stamped ${BuildConfig.VERSION_NAME}", policy.contains("Version ${BuildConfig.VERSION_NAME}."))
+    }
+
+    @Test
     fun noYouTubeCodeIsOnTheClasspath() {
         for (name in listOf(
             "org.schabi.newpipe.extractor.NewPipe", "org.jsoup.Jsoup", "org.mozilla.javascript.Context",

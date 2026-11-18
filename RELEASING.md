@@ -20,6 +20,9 @@ Build the signed full release APK locally, tag `v<versionName>` and upload it wi
 `gh release create`. Nothing is built on GitHub; there is no release workflow. Only the full
 flavor goes here, never K.
 
+In the commit that raises a version, stamp the same version in `PRIVACY.md` (Music Box) or
+`store-edition/PRIVACY.md` (Music Box K); `MusicBoxIdentityTest` and `MusicBoxKTest` fail otherwise.
+
 ## Music Box K
 1. Build the signed release APK (`assembleStoreRelease`). Gradle then runs `checkStoreApk`, which
    fails the build if the APK's dex, resources or assets contain "youtube", "newpipe" or
