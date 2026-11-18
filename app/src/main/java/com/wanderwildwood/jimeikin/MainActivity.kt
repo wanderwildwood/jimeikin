@@ -1398,22 +1398,33 @@ fun CalmMusic(
         }
     }
 
-    LaunchedEffect(Unit) {
+    // One controller per screen, let go with the screen. A screen rebuilt (a language or font
+    // size change) used to leave its old controller bound to the service for the rest of the
+    // process, keeping the service from ever going idle.
+    DisposableEffect(Unit) {
         val context = appContext
-        try {
+        val future = try {
             val sessionToken = SessionToken(
                 context,
                 ComponentName(context, PlaybackService::class.java)
             )
-            val future = MediaController.Builder(context, sessionToken).buildAsync()
-            future.addListener({
-                try {
-                    localMediaController = future.get()
-                } catch (_: Exception) {
-                }
-            }, ContextCompat.getMainExecutor(context))
+            MediaController.Builder(context, sessionToken).buildAsync().also { future ->
+                future.addListener({
+                    try {
+                        localMediaController = future.get()
+                    } catch (_: Exception) {
+                    }
+                }, ContextCompat.getMainExecutor(context))
+            }
         } catch (e: Exception) {
             Log.e("MainActivity", "Failed to connect to PlaybackService", e)
+            null
+        }
+        onDispose {
+            // The view model outlives this screen; it stops reading the controller before it goes.
+            viewModel.stopLocalPlaybackMonitoring()
+            PlaybackService.registerErrorCallback(null)
+            future?.let { MediaController.releaseFuture(it) }
         }
     }
 

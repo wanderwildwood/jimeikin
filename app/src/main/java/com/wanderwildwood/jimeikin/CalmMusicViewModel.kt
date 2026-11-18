@@ -1527,6 +1527,12 @@ class CalmMusicViewModel(
         }
     }
 
+    /** The screen that handed over the controller is going and will release it. */
+    fun stopLocalPlaybackMonitoring() {
+        localPlaybackMonitorJob?.cancel()
+        localPlaybackMonitorJob = null
+    }
+
     fun startLocalPlaybackMonitoring(controller: MediaController) {
         localPlaybackMonitorJob?.cancel()
         localPlaybackMonitorJob = viewModelScope.launch {
