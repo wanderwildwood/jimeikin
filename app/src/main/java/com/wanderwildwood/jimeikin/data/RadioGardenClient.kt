@@ -2,6 +2,7 @@ package com.wanderwildwood.jimeikin.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -74,7 +75,9 @@ object RadioGarden {
             if (response.isSuccessful) response.body?.string() else null
         }
     } catch (e: Exception) {
-        android.util.Log.w("RadioGarden", "fetch failed: $url", e)
+        // The host and the kind of failure only: the address carries what was typed in a search
+        // and the postcode looked up, and neither belongs in the system log.
+        android.util.Log.w("RadioGarden", "fetch failed: ${url.toHttpUrlOrNull()?.host ?: "an address"}: ${e.javaClass.simpleName}")
         null
     }
 
