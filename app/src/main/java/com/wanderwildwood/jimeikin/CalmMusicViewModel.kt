@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.documentfile.provider.DocumentFile
@@ -2219,9 +2220,9 @@ class CalmMusicViewModel(
                             }
                         } else {
                             // One of your own files: its row and playlist places go only with
-                            // the file (or when the provider answers that it is already gone),
-                            // as for a download above. A file that could not be reached stays,
-                            // and so does its row. See DeletedFile.
+                            // the file (or when its folder answers without it: removed already,
+                            // in a file manager say), as for a download above. A file that could
+                            // not be reached stays, and so does its row. See DeletedFile.
                             val gone = if (uri.scheme == null || uri.scheme == "file") {
                                 uri.path?.let { path ->
                                     try {
@@ -2237,8 +2238,33 @@ class CalmMusicViewModel(
                                 } catch (_: Exception) {
                                     false
                                 }
-                                com.wanderwildwood.jimeikin.data.DeletedFile.isGone(deleted) {
-                                    app.contentResolver.query(uri, null, null, null, null)?.use { it.count }
+                                val treeId = try {
+                                    if (DocumentsContract.isTreeUri(uri)) DocumentsContract.getTreeDocumentId(uri) else null
+                                } catch (_: Exception) {
+                                    null
+                                }
+                                val documentId = try {
+                                    DocumentsContract.getDocumentId(uri)
+                                } catch (_: Exception) {
+                                    null
+                                }
+                                com.wanderwildwood.jimeikin.data.DeletedFile.isGone(deleted, treeId, documentId) { folderId ->
+                                    app.contentResolver.query(
+                                        DocumentsContract.buildChildDocumentsUriUsingTree(uri, folderId),
+                                        arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                                        null,
+                                        null,
+                                        null,
+                                    )?.use { cursor ->
+                                        // A listing still loading is not the whole folder.
+                                        if (cursor.extras?.getBoolean(DocumentsContract.EXTRA_LOADING) == true) {
+                                            null
+                                        } else {
+                                            buildList<String> {
+                                                while (cursor.moveToNext()) cursor.getString(0)?.let { add(it) }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             if (!gone) return@withContext false
