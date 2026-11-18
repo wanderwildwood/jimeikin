@@ -96,11 +96,11 @@ android {
             signingConfig = realSigningConfig
 
             // Two builds of the same commit differed by 120 bytes, and this was all of it:
-            // AGP stamps the git revision into META-INF, CI builds from a clone and the
-            // build box builds from an rsync with no .git, so one said the commit and the
-            // other said NO_SUPPORTED_VCS_FOUND. Off, and a release APK built here hashes
-            // the same as the one GitHub publishes - which is the only way the checksum in
-            // a forum post can be checked against anything but itself.
+            // AGP stamps the git revision into META-INF, and a build from a clone and a build
+            // from a copy with no .git differ there: one says the commit, the other says
+            // NO_SUPPORTED_VCS_FOUND. Off, and two local builds of the same commit hash the
+            // same however the tree got there - which is the only way the checksum in a
+            // forum post can be checked against anything but itself.
             vcsInfo {
                 include = false
             }
