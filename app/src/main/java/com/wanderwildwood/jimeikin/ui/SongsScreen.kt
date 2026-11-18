@@ -39,6 +39,12 @@ data class SongUiModel(
 val LocalIsDownloaded = compositionLocalOf<(SongUiModel) -> Boolean> { { false } }
 
 /**
+ * Where each song that keeps its place stopped, by song id: long tracks and the file a book
+ * folder was left on (see ResumeRules). Its row says so in place of the bare length.
+ */
+val LocalResumeMarks = compositionLocalOf<Map<String, Long>> { emptyMap() }
+
+/**
  * Whether a download-it-all button has anything behind it: a song still on a music server, or a
  * YouTube song not yet downloaded where YouTube downloads are on. Songs already on the phone
  * need nothing.
