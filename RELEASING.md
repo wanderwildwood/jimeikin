@@ -6,19 +6,19 @@ the public releases page: its builds live only in the PRIVATE repository `wander
 
 | | Music Box | Music Box K |
 |---|---|---|
-| flavour | `full` | `store` |
+| flavor | `full` | `store` |
 | application id | `com.wanderwildwood.jimeikin` | `com.wanderwildwood.jimeikin.k` |
-| version line | 2.18.x (`defaultConfig`) | 1.0.x (in the `store` flavour) |
+| version line | 2.18.x (`defaultConfig`) | 1.0.x (in the `store` flavor) |
 | goes to | public GitHub release `v<version>` | private repo `jimeikin-k` release, then the InkApps portal by hand |
 | built APK | `app/build/outputs/apk/full/release/jimeikin-full-<v>.apk` | `app/build/outputs/apk/store/release/jimeikin-k-<v>.apk` |
 
 Both are signed with the key in `signing/` (never in the repo). Builds are local:
-`~/legion-build.sh jimeikin` (or `~/dell-build.sh jimeikin`) builds both flavours.
+`~/legion-build.sh jimeikin` (or `~/dell-build.sh jimeikin`) builds both flavors.
 
 ## Music Box
 Build the signed full release APK locally, tag `v<versionName>` and upload it with
 `gh release create`. Nothing is built on GitHub; there is no release workflow. Only the full
-flavour goes here, never K.
+flavor goes here, never K.
 
 ## Music Box K
 1. Build the signed release APK (`assembleStoreRelease`). Gradle then runs `checkStoreApk`, which
@@ -30,7 +30,7 @@ flavour goes here, never K.
    screenshot list). That is all; it publishes nothing.
 3. Upload to the portal by hand.
 
-Changing the K version: `versionName` and `versionCode` in the `store` flavour only. Music Box's:
+Changing the K version: `versionName` and `versionCode` in the `store` flavor only. Music Box's:
 `defaultConfig` only. Never raise one to follow the other.
 
 Any string that says "Music Box" in `app/src/main/res` needs a K twin: run `tools/brand-k.py`

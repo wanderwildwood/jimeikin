@@ -74,7 +74,7 @@ typed into the radio search. There are no ads, no analytics and no tracking. A m
 password is sealed with a key in the phone's keystore. The full policy is in
 [PRIVACY.md](PRIVACY.md); the same is said in the app, under **Privacy** and **Terms** in About.
 
-## Credits and licence
+## Credits and license
 
 Built on [CalmMusic](https://github.com/davidraywilson/CalmMusic) by David Ray Wilson. UI with
 Mudita's MMD library (Apache 2.0), the Lato typeface (SIL OFL 1.1) and Material Symbols icons

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Regenerates app/src/store/res/values*/brand.xml: every main string that says "Music Box"
-again, as "Music Box K", so the K app (the store flavour) names itself in every language
+again, as "Music Box K", so the K app (the store flavor) names itself in every language
 without the full app's strings being touched. Run after adding or changing a string in
 app/src/main/res that contains "Music Box"; BrandTest fails when one is missing.
-Strings the store flavour defines itself (app/src/store/res/values/strings.xml) are edited there."""
+Strings the store flavor defines itself (app/src/store/res/values/strings.xml) are edited there."""
 import re, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent / "app/src"
 own = set(re.findall(r'name="([^"]+)"', (root / "store/res/values/strings.xml").read_text()))
