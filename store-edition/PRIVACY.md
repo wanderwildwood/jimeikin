@@ -1,6 +1,6 @@
 # Music Box K — Privacy Policy
 
-Version 1.0.1. Last reviewed 17 November 2026.
+Version 1.0.1. Last reviewed 18 November 2026.
 
 ## The short version
 
@@ -12,7 +12,7 @@ Music Box K is the version of Music Box offered in Mudita's store, with music on
 
 ## What the app stores, and where
 
-On the phone, in the app's own private storage: the library index, playlists, the queue, a list of the last week's downloads, the names you give songs, albums and artists, the songs you heart, and settings. These never leave the phone except as described under backups below.
+On the phone, in the app's own private storage: the library index, playlists, the queue, a list of the last week's downloads, the names you give songs, albums and artists, the songs you heart, where you stopped in long tracks and in audiobook and podcast folders (for each, the song and how far into it, up to 200 of them; a place is forgotten once its file is played to the end), and settings. These never leave the phone except as described under backups below.
 
 **A music server's address, user name and password.** If you add a Navidrome or other Subsonic server, its address and user name are kept in the app's settings file, and the password is sealed with an AES-GCM key generated in the phone's hardware-backed keystore (a key that cannot be exported) before it is written. If the key is lost, as after a restore onto another phone, the password cannot be read back and the app asks again. Usually the password is not sent: each request carries a salted hash of it (Subsonic's token sign-in). A server that does not accept that, such as Nextcloud Music, is sent the password itself, hex-encoded and not encrypted, with each request, as its protocol requires; Music Box K says so on the server page. Use https for such a server. The developer runs no server and receives nothing.
 
