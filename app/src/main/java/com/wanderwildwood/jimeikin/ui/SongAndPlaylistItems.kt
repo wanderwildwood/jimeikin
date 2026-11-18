@@ -65,6 +65,7 @@ fun SongItem(
     // length, off the end of a 480px line. A screen that already names the artist or the
     // album says so, and the row leaves that part out.
     val localFileLabel = stringResource(R.string.player_song_local_file)
+    val unknownArtistLabel = stringResource(R.string.library_artist_unknown)
     // A long track or a book's file that was stopped partway says where, with its length.
     val stoppedLabel = LocalResumeMarks.current[song.id]?.let { at ->
         val atText = com.wanderwildwood.jimeikin.formatDurationMillis(at) ?: "0:00"
@@ -82,6 +83,7 @@ fun SongItem(
         knownArtist,
         knownAlbum,
         localFileLabel,
+        unknownArtistLabel,
         stoppedLabel,
     ) {
         val local = song.sourceType == "LOCAL_FILE" ||
@@ -105,7 +107,7 @@ fun SongItem(
         fun sameName(a: String?, b: String?) =
             !a.isNullOrBlank() && !b.isNullOrBlank() && ArtistNames.key(a) == ArtistNames.key(b)
 
-        val baseArtist = song.artist
+        val baseArtist = ArtistNames.shown(song.artist, unknownArtistLabel)
             .ifBlank { if (local) localFileLabel else "" }
             .takeUnless { sameName(it, knownArtist) }
             .orEmpty()

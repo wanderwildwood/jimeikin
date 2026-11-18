@@ -396,7 +396,7 @@ internal class YouTubeMusicInnertubeClientImpl(
             results += InnertubeSongResult(
                 videoId = videoId,
                 title = title,
-                artist = artist?.takeIf { it.isNotBlank() } ?: "Unknown artist",
+                artist = artist?.takeIf { it.isNotBlank() } ?: com.wanderwildwood.jimeikin.data.ArtistNames.UNKNOWN,
                 album = album,
                 durationMillis = durationText?.let { parseDurationToMillis(it) },
             )
@@ -908,7 +908,7 @@ internal class YouTubeMusicInnertubeClientImpl(
             }
         }
 
-        val safeArtist = artist?.takeIf { it.isNotBlank() } ?: "Unknown artist"
+        val safeArtist = artist?.takeIf { it.isNotBlank() } ?: com.wanderwildwood.jimeikin.data.ArtistNames.UNKNOWN
         val durationMillis = durationText?.let { parseDurationToMillis(it) }
 
         return InnertubeSongResult(

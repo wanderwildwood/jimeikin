@@ -39,6 +39,7 @@ import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import android.view.KeyEvent
+import com.wanderwildwood.jimeikin.data.ArtistNames
 import com.wanderwildwood.jimeikin.data.MusicServerClient
 import com.wanderwildwood.jimeikin.data.ServerLogin
 import com.wanderwildwood.jimeikin.data.serverClient
@@ -512,7 +513,8 @@ class PlaybackService : MediaSessionService() {
             } else {
                 NowPlaying.Now(
                     title = title,
-                    artist = meta.artist?.toString()?.takeIf { it.isNotBlank() },
+                    artist = meta.artist?.toString()?.takeIf { it.isNotBlank() }
+                        ?.let { ArtistNames.shown(it, getString(R.string.library_artist_unknown)) },
                     isPlaying = player.playWhenReady,
                 )
             },

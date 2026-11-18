@@ -171,7 +171,7 @@ private fun UpNextRow(
                 stringResource(R.string.queue_playing)
             } else {
                 listOfNotNull(
-                    song.artist.takeIf { it.isNotBlank() },
+                    artistShown(song.artist).takeIf { it.isNotBlank() },
                     song.durationText?.takeIf { it.isNotBlank() },
                 ).joinToString(" • ")
             }

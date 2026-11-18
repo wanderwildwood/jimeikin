@@ -233,7 +233,7 @@ private fun SearchArtistItem(
             .padding(bottom = 8.dp),
     ) {
         TextMMD(
-            text = artist.name,
+            text = artistShown(artist.name),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             maxLines = 1,

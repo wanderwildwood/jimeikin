@@ -175,7 +175,7 @@ private fun SelectableSongItem(
                 val isMp4 = isLocal && fileExtension == "mp4"
 
                 val localFileLabel = stringResource(R.string.player_song_local_file)
-                val baseArtist = song.artist.ifBlank { if (isLocal) localFileLabel else "" }
+                val baseArtist = artistShown(song.artist).ifBlank { if (isLocal) localFileLabel else "" }
                 val prefix = when {
                     isMp4 -> "MP4 • "
                     else -> ""

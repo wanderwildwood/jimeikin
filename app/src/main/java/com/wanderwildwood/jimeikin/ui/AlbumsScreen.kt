@@ -234,10 +234,11 @@ fun AlbumItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+                val albumArtist = album.artist?.let { artistShown(it) }
                 val details = when {
-                    !album.artist.isNullOrBlank() && album.releaseYear != null ->
-                        stringResource(R.string.library_album_artist_and_year, album.artist, album.releaseYear)
-                    !album.artist.isNullOrBlank() -> album.artist
+                    !albumArtist.isNullOrBlank() && album.releaseYear != null ->
+                        stringResource(R.string.library_album_artist_and_year, albumArtist, album.releaseYear)
+                    !albumArtist.isNullOrBlank() -> albumArtist
                     album.releaseYear != null -> album.releaseYear.toString()
                     else -> ""
                 }

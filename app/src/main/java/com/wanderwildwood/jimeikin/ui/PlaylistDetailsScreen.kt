@@ -296,8 +296,9 @@ private fun EditablePlaylistSongItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
+                val shownArtist = artistShown(song.artist)
                 val subtitle = buildString {
-                    val baseArtist = song.artist
+                    val baseArtist = shownArtist
                     if (baseArtist.isNotBlank()) {
                         append(baseArtist)
                     }

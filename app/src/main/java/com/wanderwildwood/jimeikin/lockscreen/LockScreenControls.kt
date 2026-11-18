@@ -413,7 +413,7 @@ private fun ControlsPanel(
     onStop: () -> Unit,
 ) {
     val shape = RoundedCornerShape(8.dp)
-    val label = listOf(title, artist).filter { it.isNotBlank() }.joinToString(" - ")
+    val label = listOf(title, com.wanderwildwood.jimeikin.ui.artistShown(artist)).filter { it.isNotBlank() }.joinToString(" - ")
         .ifEmpty { stringResource(R.string.lockscreen_nothing_named) }
 
     Row(

@@ -20,6 +20,17 @@ import java.text.Normalizer
  */
 object ArtistNames {
 
+    /**
+     * The name a song saved without one is filed under. It is also part of that artist's id,
+     * so it stays this fixed English text in the library; [shown] puts the phone's own word
+     * for it in its place wherever a name is drawn.
+     */
+    const val UNKNOWN = "Unknown artist"
+
+    /** [name] as drawn: the fixed [UNKNOWN] marker becomes [unknown], the phone's own word. */
+    fun shown(name: String, unknown: String): String =
+        if (name.trim() == UNKNOWN) unknown else name
+
     /** What two spellings of the same name have in common. */
     fun key(name: String): String {
         // "&" and the word it stands for are the same word. This is the one substitution

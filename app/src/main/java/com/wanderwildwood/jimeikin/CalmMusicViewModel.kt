@@ -1772,7 +1772,7 @@ class CalmMusicViewModel(
             }
 
             // Separate track artist vs album artist so albums can be grouped by album artist.
-            val trackArtistName = songToSave.artist.takeIf { it.isNotBlank() } ?: "Unknown artist"
+            val trackArtistName = songToSave.artist.takeIf { it.isNotBlank() } ?: ArtistNames.UNKNOWN
             val albumName = songToSave.album?.takeIf { it.isNotBlank() }
 
             // Try to infer a stable album artist from the existing library when possible.

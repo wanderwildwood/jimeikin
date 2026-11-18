@@ -139,4 +139,13 @@ class ArtistNamesTest {
         val band = ArtistNames.albumGrouping(listOf("Iron & Wine"))
         assertNotEquals(band("Shepherd", "Iron & Wine"), band("Shepherd", "Iron"))
     }
+
+    @Test
+    fun theUnknownMarkerIsDrawnInThePhonesLanguage() {
+        assertEquals("Unbekannter Künstler", ArtistNames.shown(ArtistNames.UNKNOWN, "Unbekannter Künstler"))
+        assertEquals("Unknown artist", ArtistNames.shown("Unknown artist", "Unknown artist"))
+        // A real name, and an empty one, are drawn as they are.
+        assertEquals("Daft Punk", ArtistNames.shown("Daft Punk", "Artiste inconnu"))
+        assertEquals("", ArtistNames.shown("", "Artiste inconnu"))
+    }
 }

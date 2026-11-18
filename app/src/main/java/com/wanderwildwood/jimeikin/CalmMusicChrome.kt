@@ -175,7 +175,7 @@ fun CalmMusicTopAppBar(
                         val artist = selectedAlbum.artist
                         if (!artist.isNullOrBlank()) {
                             TextMMD(
-                                text = artist,
+                                text = com.wanderwildwood.jimeikin.ui.artistShown(artist),
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Normal,
                                 maxLines = 1,
@@ -189,7 +189,7 @@ fun CalmMusicTopAppBar(
                     currentDestination?.route == Screen.OnlineArtistDetails.route) &&
                     selectedArtistName != null -> {
                     TextMMD(
-                        text = selectedArtistName,
+                        text = com.wanderwildwood.jimeikin.ui.artistShown(selectedArtistName),
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

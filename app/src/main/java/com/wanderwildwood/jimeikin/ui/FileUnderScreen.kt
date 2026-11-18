@@ -50,7 +50,7 @@ fun FileUnderScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
             TextMMD(
-                text = stringResource(R.string.file_under_lead, artist.name),
+                text = stringResource(R.string.file_under_lead, artistShown(artist.name)),
                 style = MaterialTheme.typography.bodyLarge,
             )
             val note = when {

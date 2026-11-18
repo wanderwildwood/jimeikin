@@ -289,7 +289,7 @@ fun NowPlayingScreen(
             // the song it names is the one already open.
             if (!isVideo) {
                 TextMMD(
-                    text = artist,
+                    text = artistShown(artist),
                     modifier = if (onArtistClick != null) Modifier.clickable(onClick = onArtistClick) else Modifier,
                     style = MaterialTheme.typography.titleLarge,
                     lineHeight = 29.5.sp,

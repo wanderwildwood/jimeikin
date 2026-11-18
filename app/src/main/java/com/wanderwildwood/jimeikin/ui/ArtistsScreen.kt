@@ -159,7 +159,7 @@ fun ArtistItem(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 TextMMD(
-                    text = artist.name,
+                    text = artistShown(artist.name),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
