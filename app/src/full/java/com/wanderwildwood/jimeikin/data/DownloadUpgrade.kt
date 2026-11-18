@@ -6,6 +6,7 @@ import android.util.Log
 import com.wanderwildwood.jimeikin.BuildConfig
 import com.wanderwildwood.jimeikin.CalmMusic
 import com.wanderwildwood.jimeikin.NoAacStream
+import com.wanderwildwood.jimeikin.R
 import com.wanderwildwood.jimeikin.downloadAudioStream
 import com.wanderwildwood.jimeikin.youTubeCopies
 import com.wanderwildwood.jimeikin.youTubeInnertubeClient
@@ -47,7 +48,8 @@ object DownloadUpgrade {
 
     sealed class Result {
         object Done : Result()
-        data class Failed(val reason: String) : Result()
+        /** [reason]: a string resource, the words the Downloads list shows after "Did not download". */
+        data class Failed(val reason: Int) : Result()
 
         /** Not now - the song is in the queue being played - and tried again next launch. */
         object Later : Result()
@@ -101,12 +103,14 @@ object DownloadUpgrade {
         val database = CalmMusicDatabase.getDatabase(app)
         val row = database.songDao().getSongById(songId)
         val old = row?.let { DownloadReplace.Place.ofRow(it.audioUri) }
-        fun fail(reason: String): Result {
-            Log.w(TAG, "not made AAC: ${old?.name ?: songId}: $reason")
+        // What the log says, and the app's own words for the Downloads list (never an
+        // exception's text, which is English and can be anything).
+        fun fail(reason: Int, detail: String): Result {
+            Log.w(TAG, "not made AAC: ${old?.name ?: songId}: $detail")
             return Result.Failed(reason)
         }
-        if (row == null || old == null) return@withContext fail("it is not in the library any more")
-        if (!DownloadReplace.exists(app, old)) return@withContext fail("its file is missing")
+        if (row == null || old == null) return@withContext fail(R.string.download_upgrade_not_in_library, "not in the library")
+        if (!DownloadReplace.exists(app, old)) return@withContext fail(R.string.download_upgrade_file_missing, "file missing")
         val setSource: (MediaExtractor) -> Unit = when (old) {
             is DownloadReplace.Place.Path -> { extractor -> extractor.setDataSource(old.file.path) }
             is DownloadReplace.Place.Document -> { extractor -> extractor.setDataSource(app, old.document, null) }
@@ -144,16 +148,16 @@ object DownloadUpgrade {
             val url = videoId?.let { aacUrl(app, it) }
             val how = if (url != null) {
                 downloadAudioStream(client, url, fetched, onProgress)
-                YouTubeAudioFile.remux(fetched, work) ?: return@withContext fail("YouTube's AAC could not be copied")
+                YouTubeAudioFile.remux(fetched, work) ?: return@withContext fail(R.string.download_upgrade_not_copied, "AAC stream not remuxed")
                 "fetched again from YouTube"
             } else {
-                YouTubeAudioFile.transcodeToAac(setSource, work) ?: return@withContext fail("it could not be encoded as AAC")
+                YouTubeAudioFile.transcodeToAac(setSource, work) ?: return@withContext fail(R.string.download_upgrade_not_encoded, "not transcoded")
                 val why = if (videoId == null) "its video is not known" else "YouTube has no AAC for it"
                 "transcoded from Opus at ${YouTubeAudioFile.TRANSCODE_BIT_RATE / 1000} kb/s, $why"
             }
             if (!YouTubeAudioFile.writeTags(work, tags)) Log.w(TAG, "the tags would not take: ${old.name}")
             if (!YouTubeAudioFile.verify(work, oldUs, MediaFormat.MIMETYPE_AUDIO_AAC)) {
-                return@withContext fail("the new file did not check out")
+                return@withContext fail(R.string.download_upgrade_not_checked, "new file did not verify")
             }
             DownloadReplace.replace(app, database, row, old, work)
             Log.i(TAG, "made AAC: ${old.name}, $how")
@@ -161,7 +165,8 @@ object DownloadUpgrade {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            fail(e.message ?: e.javaClass.simpleName)
+            Log.w(TAG, "not made AAC: ${old.name}", e)
+            fail(R.string.download_upgrade_not_made, e.javaClass.simpleName)
         } finally {
             fetched.delete()
             work.delete()

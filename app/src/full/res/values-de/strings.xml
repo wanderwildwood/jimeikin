@@ -75,4 +75,11 @@
         <item quantity="other">%1$d nicht gefunden</item>
     </plurals>
     <string name="settings_musicbrainz_filled_and_not_found">%1$s, %2$s</string>
+    <!-- Downloads: why a song could not be made AAC, after "Did not download · " -->
+    <string name="download_upgrade_not_in_library">er ist nicht mehr in der Mediathek</string>
+    <string name="download_upgrade_file_missing">seine Datei fehlt</string>
+    <string name="download_upgrade_not_copied">die AAC-Kopie konnte nicht erstellt werden</string>
+    <string name="download_upgrade_not_encoded">er konnte nicht als AAC kodiert werden</string>
+    <string name="download_upgrade_not_checked">die neue Datei hat die Prüfung nicht bestanden</string>
+    <string name="download_upgrade_not_made">die neue Datei konnte nicht erstellt werden</string>
 </resources>

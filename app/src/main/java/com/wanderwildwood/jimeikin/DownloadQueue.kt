@@ -322,7 +322,9 @@ class DownloadQueue(private val app: CalmMusic) {
             return
         } catch (e: Exception) {
             Log.w(TAG, "download failed: ${item.songId}", e)
-            DownloadState.FAILED to (e.message ?: e.javaClass.simpleName)
+            // The list says "Did not download" and no more: an exception's text is English,
+            // and can be a raw HTTP code or a Java class name. The log keeps it.
+            DownloadState.FAILED to null
         }
         set(item.id) { status ->
             if (status.state != DownloadState.DOWNLOADING) {

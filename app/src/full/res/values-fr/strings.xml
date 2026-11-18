@@ -61,4 +61,11 @@
         <item quantity="other">%1$d introuvables</item>
     </plurals>
     <string name="settings_musicbrainz_filled_and_not_found">%1$s, %2$s</string>
+    <!-- Downloads: why a song could not be made AAC, after "Did not download · " -->
+    <string name="download_upgrade_not_in_library">il n\'est plus dans la bibliothèque</string>
+    <string name="download_upgrade_file_missing">son fichier est introuvable</string>
+    <string name="download_upgrade_not_copied">la copie AAC n\'a pas pu être faite</string>
+    <string name="download_upgrade_not_encoded">il n\'a pas pu être encodé en AAC</string>
+    <string name="download_upgrade_not_checked">le nouveau fichier n\'a pas passé la vérification</string>
+    <string name="download_upgrade_not_made">le nouveau fichier n\'a pas pu être créé</string>
 </resources>

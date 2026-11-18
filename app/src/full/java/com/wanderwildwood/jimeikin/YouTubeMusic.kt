@@ -492,7 +492,7 @@ class YouTubeMusic(private val app: CalmMusic) : OnlineMusic {
     ): Pair<DownloadState, String?> =
         when (val result = DownloadUpgrade.upgrade(app, songId, client, inUse, onProgress)) {
             DownloadUpgrade.Result.Done -> DownloadState.DOWNLOADED to null
-            is DownloadUpgrade.Result.Failed -> DownloadState.FAILED to result.reason
+            is DownloadUpgrade.Result.Failed -> DownloadState.FAILED to app.getString(result.reason)
             DownloadUpgrade.Result.Later -> DownloadState.NOT_FINISHED to null
         }
 

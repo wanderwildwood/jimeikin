@@ -84,4 +84,11 @@
     <string name="settings_youtube_links_some">Some addresses only</string>
     <string name="settings_youtube_links_off">Off</string>
     <string name="settings_youtube_links_hint">Android sends web links to the browser until you say which ones an app may open. Tap here, then Add link, and tick the YouTube addresses.</string>
+    <!-- Downloads: why a song could not be made AAC, after "Did not download · " -->
+    <string name="download_upgrade_not_in_library">it is not in the library any more</string>
+    <string name="download_upgrade_file_missing">its file is missing</string>
+    <string name="download_upgrade_not_copied">the AAC copy could not be made</string>
+    <string name="download_upgrade_not_encoded">it could not be encoded as AAC</string>
+    <string name="download_upgrade_not_checked">the new file did not check out</string>
+    <string name="download_upgrade_not_made">the new file could not be made</string>
 </resources>
