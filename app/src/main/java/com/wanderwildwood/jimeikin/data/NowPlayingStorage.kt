@@ -14,6 +14,8 @@ data class NowPlayingSnapshot(
     val positionMs: Long,
     val repeatModeKey: String,
     val isShuffleOn: Boolean,
+    /** The queue's order before it was shuffled; empty when shuffle is off. */
+    val originalQueueSongIds: List<String> = emptyList(),
 )
 
 class NowPlayingStorage(context: Context) {
@@ -29,6 +31,7 @@ class NowPlayingStorage(context: Context) {
             .putLong(KEY_POSITION_MS, snapshot.positionMs)
             .putString(KEY_REPEAT_MODE, snapshot.repeatModeKey)
             .putBoolean(KEY_IS_SHUFFLE_ON, snapshot.isShuffleOn)
+            .putString(KEY_ORIGINAL_QUEUE_IDS, snapshot.originalQueueSongIds.joinToString(DELIMITER))
             .apply()
     }
 
@@ -47,6 +50,11 @@ class NowPlayingStorage(context: Context) {
         val positionMs = prefs.getLong(KEY_POSITION_MS, 0L)
         val repeatModeKey = prefs.getString(KEY_REPEAT_MODE, NowPlayingRepeatModeKeys.OFF) ?: NowPlayingRepeatModeKeys.OFF
         val isShuffleOn = prefs.getBoolean(KEY_IS_SHUFFLE_ON, false)
+        // A snapshot saved by an older version has none.
+        val originalIds = prefs.getString(KEY_ORIGINAL_QUEUE_IDS, null)
+            ?.split(DELIMITER)
+            ?.filter { it.isNotEmpty() }
+            ?: emptyList()
 
         return NowPlayingSnapshot(
             queueSongIds = ids,
@@ -55,6 +63,7 @@ class NowPlayingStorage(context: Context) {
             positionMs = positionMs,
             repeatModeKey = repeatModeKey,
             isShuffleOn = isShuffleOn,
+            originalQueueSongIds = originalIds,
         )
     }
 
@@ -66,6 +75,7 @@ class NowPlayingStorage(context: Context) {
         private const val KEY_POSITION_MS = "position_ms"
         private const val KEY_REPEAT_MODE = "repeat_mode"
         private const val KEY_IS_SHUFFLE_ON = "is_shuffle_on"
+        private const val KEY_ORIGINAL_QUEUE_IDS = "original_queue_ids"
         private const val DELIMITER = ","
         private const val INDEX_NONE = -1
     }

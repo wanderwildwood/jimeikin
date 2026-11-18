@@ -35,4 +35,18 @@ object QueuePosition {
         if (places.isEmpty()) return 0 to 0L
         return places[copy.coerceAtMost(places.size - 1)] to savedPositionMs
     }
+
+    /**
+     * The order a shuffled queue had before it was shuffled, put back from its saved ids, out of
+     * the songs [kept] in the restored queue. Empty when it does not hold exactly the same songs
+     * (nothing saved, from before it was saved, or songs left out of one and not the other):
+     * turning shuffle off then only turns it off, and the songs stay in the order they are.
+     */
+    fun <T> original(savedOriginalIds: List<String>, kept: List<T>, idOf: (T) -> String): List<T> {
+        if (savedOriginalIds.isEmpty()) return emptyList()
+        val byId = kept.associateBy(idOf)
+        val original = savedOriginalIds.mapNotNull { byId[it] }
+        val sameSongs = original.map(idOf).groupingBy { it }.eachCount() == kept.map(idOf).groupingBy { it }.eachCount()
+        return if (sameSongs) original else emptyList()
+    }
 }

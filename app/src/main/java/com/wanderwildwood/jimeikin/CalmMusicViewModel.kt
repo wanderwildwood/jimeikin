@@ -828,6 +828,7 @@ class CalmMusicViewModel(
             RepeatMode.ONE -> NowPlayingRepeatModeKeys.ONE
         }
         val isShuffleOn = state.isShuffleOn
+        val originalIds = if (isShuffleOn) state.originalPlaybackQueue.map { it.id } else emptyList()
 
         viewModelScope.launch(Dispatchers.IO) {
             nowPlayingStorage.save(
@@ -838,6 +839,7 @@ class CalmMusicViewModel(
                     positionMs = positionMs,
                     repeatModeKey = repeatModeKey,
                     isShuffleOn = isShuffleOn,
+                    originalQueueSongIds = originalIds,
                 )
             )
         }
@@ -2607,7 +2609,12 @@ class CalmMusicViewModel(
                         playbackQueue = playbackQueue,
                         playbackQueueEntities = playbackQueueEntities,
                         playbackQueueIndex = effectiveIndex,
-                        originalPlaybackQueue = if (snapshot.isShuffleOn) playbackQueue else emptyList(),
+                        // The order from before the shuffle, so turning shuffle off puts it back.
+                        originalPlaybackQueue = if (snapshot.isShuffleOn) {
+                            com.wanderwildwood.jimeikin.playback.QueuePosition.original(snapshot.originalQueueSongIds, playbackQueue) { it.id }
+                        } else {
+                            emptyList()
+                        },
                         repeatMode = repeatMode,
                         isShuffleOn = snapshot.isShuffleOn,
                         currentSongId = currentSong.id,

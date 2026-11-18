@@ -44,4 +44,23 @@ class QueuePositionTest {
         val saved = listOf("a", "b", "a")
         assertEquals(2 to 10L, QueuePosition.restore(saved, 2, 10L, listOf("a", "b", "a")))
     }
+
+    @Test
+    fun `the order from before a shuffle comes back from its saved ids`() {
+        val shuffled = listOf("c", "a", "b", "a")
+        assertEquals(listOf("a", "b", "c", "a"), QueuePosition.original(listOf("a", "b", "c", "a"), shuffled) { it })
+    }
+
+    @Test
+    fun `a song gone from the library is left out of the saved order too`() {
+        assertEquals(listOf("a", "b", "c"), QueuePosition.original(listOf("a", "b", "c", "d"), listOf("c", "a", "b")) { it })
+    }
+
+    @Test
+    fun `no saved order, or one that does not hold the same songs, gives none`() {
+        val shuffled = listOf("c", "a", "b")
+        assertEquals(emptyList<String>(), QueuePosition.original(emptyList(), shuffled) { it })
+        assertEquals(emptyList<String>(), QueuePosition.original(listOf("a", "b"), shuffled) { it })
+        assertEquals(emptyList<String>(), QueuePosition.original(listOf("a", "b", "c", "c"), shuffled) { it })
+    }
 }
