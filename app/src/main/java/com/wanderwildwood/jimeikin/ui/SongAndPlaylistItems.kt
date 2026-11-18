@@ -102,18 +102,10 @@ fun SongItem(
         }
 
         val mp4 = local && fileExtension == "mp4"
-        // Compared the same way the library groups artists, so a page headed Björk does not
-        // start repeating the artist again the moment one track is tagged Bjork.
-        fun sameName(a: String?, b: String?) =
-            !a.isNullOrBlank() && !b.isNullOrBlank() && ArtistNames.key(a) == ArtistNames.key(b)
-
-        val baseArtist = ArtistNames.shown(song.artist, unknownArtistLabel)
-            .ifBlank { if (local) localFileLabel else "" }
-            .takeUnless { sameName(it, knownArtist) }
-            .orEmpty()
+        val baseArtist = rowArtist(song.artist, knownArtist, local, localFileLabel, unknownArtistLabel)
         val album = song.album
             ?.takeIf { it.isNotBlank() }
-            ?.takeUnless { sameName(it, knownAlbum) }
+            ?.takeUnless { sameRowName(it, knownAlbum) }
         // Where it stopped leads the line, so a long artist or album cuts the names, not it.
         val durationText = if (stoppedLabel != null) null else song.durationText?.takeIf { it.isNotBlank() }
         val prefix = if (mp4) "MP4 • " else ""
@@ -526,3 +518,25 @@ fun SelectablePlaylistItem(
         }
     }
 }
+
+// Compared the same way the library groups artists, so a page headed Björk does not
+// start repeating the artist again the moment one track is tagged Bjork.
+internal fun sameRowName(a: String?, b: String?) =
+    !a.isNullOrBlank() && !b.isNullOrBlank() && ArtistNames.key(a) == ArtistNames.key(b)
+
+/**
+ * The artist a song row shows, or "" when the page already names it. The stored name is
+ * compared with the page's, since both keep the fixed English [ArtistNames.UNKNOWN] marker;
+ * only what is drawn becomes the phone's own word for it.
+ */
+internal fun rowArtist(
+    artist: String,
+    knownArtist: String?,
+    local: Boolean,
+    localFileLabel: String,
+    unknownArtistLabel: String,
+): String =
+    artist.ifBlank { if (local) localFileLabel else "" }
+        .takeUnless { sameRowName(it, knownArtist) }
+        ?.let { ArtistNames.shown(it, unknownArtistLabel) }
+        .orEmpty()
