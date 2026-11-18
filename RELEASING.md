@@ -12,8 +12,8 @@ the public releases page: its builds live only in the PRIVATE repository `wander
 | goes to | public GitHub release `v<version>` | private repo `jimeikin-k` release, then the InkApps portal by hand |
 | built APK | `app/build/outputs/apk/full/release/jimeikin-full-<v>.apk` | `app/build/outputs/apk/store/release/jimeikin-k-<v>.apk` |
 
-Both are signed with the key in `signing/` (never in the repo). Builds are local:
-`~/legion-build.sh jimeikin` (or `~/dell-build.sh jimeikin`) builds both flavors.
+Both are signed with the key in `signing/` (never in the repo). Builds are local: one release build
+on the build machine makes both flavors.
 
 ## Music Box
 Build the signed full release APK locally, tag `v<versionName>` and upload it with
@@ -27,8 +27,8 @@ In the commit that raises a version, stamp the same version in `PRIVACY.md` (Mus
 1. Build the signed release APK (`assembleStoreRelease`). Gradle then runs `checkStoreApk`, which
    fails the build if the APK's dex, resources or assets contain "youtube", "newpipe" or
    "schabi" in any letter case.
-2. `tools/package-k.sh <jimeikin-k-<v>.apk> <jimeikin-full-<v>.apk>` verifies K is signed with the
-   full edition's key and writes `~/Desktop/dev/apps/music-box-k/release/jimeikin-k-<v>.apk`, `.sha256`
+2. `tools/package-k.sh <jimeikin-k-<v>.apk> <jimeikin-full-<v>.apk> <out-dir>` verifies K is signed
+   with the full edition's key and writes `<out-dir>/jimeikin-k-<v>.apk`, `.sha256`
    and `portal-notes.md` (version, what is inside, privacy and terms text, store listing text,
    screenshot list). That is all; it publishes nothing.
 3. Upload to the portal by hand.

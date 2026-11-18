@@ -1,10 +1,10 @@
 #!/bin/bash
-# usage: tools/package-k.sh <signed jimeikin-k-<version>.apk> <signed jimeikin-full-<version>.apk>
+# usage: tools/package-k.sh <signed jimeikin-k-<version>.apk> <signed jimeikin-full-<version>.apk> <out-dir>
 # Music Box K goes to the InkApps portal only: nothing here publishes, tags or pushes.
 # Checks the K APK is signed with the full edition's key, then writes
-# ~/Desktop/dev/apps/music-box-k/release/{jimeikin-k-<version>.apk, .sha256, portal-notes.md}.
+# <out-dir>/{jimeikin-k-<version>.apk, .sha256, portal-notes.md}.
 set -eu
-k=${1:?K apk}; full=${2:?full apk}
+k=${1:?K apk}; full=${2:?full apk}; out=${3:?out dir}
 here=$(cd "$(dirname "$0")/.." && pwd)
 bt=$(ls -d ~/Android/Sdk/build-tools/* | sort -V | tail -1)
 cert() { "$bt/apksigner" verify --print-certs "$1" | grep -m1 'SHA-256 digest' | awk '{print $NF}'; }
@@ -12,7 +12,7 @@ cert() { "$bt/apksigner" verify --print-certs "$1" | grep -m1 'SHA-256 digest' |
 badging=$("$bt/aapt2" dump badging "$k" | head -1)
 case "$badging" in *"name='com.wanderwildwood.jimeikin.k'"*) ;; *) echo "not the K app"; exit 1;; esac
 v=$(echo "$badging" | grep -o "versionName='[^']*'" | cut -d"'" -f2)
-out=~/Desktop/dev/apps/music-box-k/release; mkdir -p "$out"
+mkdir -p "$out"
 cp "$k" "$out/jimeikin-k-$v.apk"; (cd "$out" && sha256sum "jimeikin-k-$v.apk" > "jimeikin-k-$v.apk.sha256")
 {
   echo "# Music Box K $v - notes for the InkApps portal"; echo
