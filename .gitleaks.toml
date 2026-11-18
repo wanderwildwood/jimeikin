@@ -1,0 +1,14 @@
+# gitleaks reads this file from the repository root before every push.
+# It keeps every default rule and lets through exactly two strings: the API keys that
+# YouTube's own web player sends with every request to its innertube API, published in
+# every YouTube page and in NewPipe and similar clients. Neither is a secret of this
+# project. The first is in YouTubeMusicInnertubeClient.kt (full flavor); the second is
+# the older web key the same file carried in upstream CalmMusic's history. Any other key
+# still fails the check.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "YouTube's public innertube web keys"
+regexes = ['''^AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30$''', '''^AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8$''']

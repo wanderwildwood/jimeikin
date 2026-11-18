@@ -96,18 +96,21 @@ private val VISITOR_DATA_REGEX: Regex = Regex("\"visitorData\":\"([^\"]+)\"")
 private const val PARAMS_SONGS: String = "EgWKAQIIAWoKEAkQBRAKEAMQBA%3D%3D"
 private const val PARAMS_ALBUMS: String = "EgWKAQIYAWoKEAkQChAFEAMQBA%3D%3D"
 private const val PARAMS_ARTISTS: String = "EgWKAQIgAWoKEAkQChAFEAMQBA%3D%3D"
+
+// YouTube's public web key: the one its own web player sends with every innertube request,
+// published in every YouTube page. Not a secret; .gitleaks.toml lets exactly this string through.
+private const val INNERTUBE_KEY: String = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
 private const val NEXT_URL: String =
-    "https://youtubei.googleapis.com/youtubei/v1/next?prettyPrint=false&key=AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
+    "https://youtubei.googleapis.com/youtubei/v1/next?prettyPrint=false&key=$INNERTUBE_KEY"
 private const val BROWSE_URL: String =
-    "https://youtubei.googleapis.com/youtubei/v1/browse?prettyPrint=false&key=AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
+    "https://youtubei.googleapis.com/youtubei/v1/browse?prettyPrint=false&key=$INNERTUBE_KEY"
 
 internal class YouTubeMusicInnertubeClientImpl(
     private val httpClient: OkHttpClient,
     private val cookieProvider: () -> String? = { null },
 ) : YouTubeMusicInnertubeClient {
 
-    private val apiKey: String = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
-    private val baseUrl: String = "https://youtubei.googleapis.com/youtubei/v1/search?prettyPrint=false&key=$apiKey"
+    private val baseUrl: String = "https://youtubei.googleapis.com/youtubei/v1/search?prettyPrint=false&key=$INNERTUBE_KEY"
 
     /**
      * Audio streams are resolved straight from Innertube's player endpoint.
