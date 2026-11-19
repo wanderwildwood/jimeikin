@@ -209,6 +209,10 @@ queue: next plays the next song, and previous starts the song again, or goes bac
 pressed in its first three seconds. Settings can make them skip ahead 30 seconds and back 10
 instead.
 
+Play on headphones, in a car or in a navigation app works with Music Box closed: the last
+queue carries on at the song and place it stopped. A song that is only on YouTube is passed
+over, and a radio station starts live.
+
 ## Opening a file from another app
 
 Music Box is offered for any audio file — "Open with" in a file manager, a download, an

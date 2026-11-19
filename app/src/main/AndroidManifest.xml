@@ -40,6 +40,16 @@
             </intent-filter>
         </service>
 
+        <!-- A play button on headphones, in a car or in a navigation app, with the app closed:
+             starts PlaybackService, which carries on with the saved queue (onPlaybackResumption). -->
+        <receiver
+            android:name="androidx.media3.session.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".DownloadService"
             android:exported="false"

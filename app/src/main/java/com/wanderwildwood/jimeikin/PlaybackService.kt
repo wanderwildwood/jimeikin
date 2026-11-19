@@ -366,6 +366,25 @@ class PlaybackService : MediaSessionService() {
         mediaSession = MediaSession.Builder(this, sessionPlayer)
             .setSessionActivity(sessionActivityPendingIntent)
             .setCallback(object : MediaSession.Callback {
+                // A play button pressed while nothing is loaded, usually with the app closed:
+                // carry on with the saved queue (Resumption). Read off the main thread.
+                override fun onPlaybackResumption(
+                    mediaSession: MediaSession,
+                    controller: MediaSession.ControllerInfo,
+                ): com.google.common.util.concurrent.ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+                    val result = com.google.common.util.concurrent.SettableFuture
+                        .create<MediaSession.MediaItemsWithStartPosition>()
+                    val app = application as? CalmMusic
+                    Thread {
+                        val saved = runCatching {
+                            app?.let { runBlocking { com.wanderwildwood.jimeikin.playback.Resumption.saved(it) } }
+                        }
+                        saved.getOrNull()?.let { result.set(it) }
+                            ?: result.setException(saved.exceptionOrNull() ?: UnsupportedOperationException("nothing to resume"))
+                    }.start()
+                    return result
+                }
+
                 override fun onMediaButtonEvent(
                     session: MediaSession,
                     controllerInfo: MediaSession.ControllerInfo,
