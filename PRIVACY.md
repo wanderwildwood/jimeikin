@@ -1,6 +1,6 @@
 # Music Box — Privacy Policy
 
-Version 2.18.45. Last reviewed 18 November 2026.
+Version 2.18.46. Last reviewed 19 November 2026.
 
 ## The short version
 
