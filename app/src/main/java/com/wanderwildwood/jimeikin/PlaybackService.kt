@@ -91,6 +91,12 @@ class PlaybackService : MediaSessionService() {
         gapLock?.takeIf { it.isHeld }?.release()
     }
 
+    private fun keepSpot(player: Player) {
+        val id = player.currentMediaItem?.mediaId?.takeIf { it.isNotEmpty() } ?: return
+        val at = if (player.isCurrentMediaItemLive) 0L else player.currentPosition
+        (application as? CalmMusic)?.nowPlayingStorage?.saveSpot(id, at)
+    }
+
     private fun keepPlace(player: Player, settle: Boolean) {
         if (player.playbackState != Player.STATE_READY || player.isCurrentMediaItemLive) return
         val id = player.currentMediaItem?.mediaId?.takeIf { it.isNotEmpty() } ?: return
@@ -174,6 +180,9 @@ class PlaybackService : MediaSessionService() {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 (application as? CalmMusic)?.playbackStateManager?.updatePlaybackStatus(isPlaying)
+                // Where the player stopped, for a play button pressed after the app is closed
+                // (playback/Resumption). A change of song keeps it too (onMediaItemTransition).
+                if (!isPlaying) keepSpot(player)
                 placeTicker.removeCallbacks(placeTick)
                 if (isPlaying) placeTicker.postDelayed(placeTick, PLACE_TICK_MS) else keepPlace(player, settle = true)
                 if (isPlaying) releaseGapLock()
@@ -189,6 +198,7 @@ class PlaybackService : MediaSessionService() {
 
             override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
+                keepSpot(player)
                 // Played through into the next file, or round again: the one before is finished.
                 val places = (application as? CalmMusic)?.resumePlaces
                 val before = placeMediaId

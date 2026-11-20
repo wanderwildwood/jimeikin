@@ -35,6 +35,19 @@ class NowPlayingStorage(context: Context) {
             .apply()
     }
 
+    /**
+     * Where the player itself last was: the song and the place in it, saved by the playback
+     * service on every pause and every change of song, including those made from headphones,
+     * the notification or a car, which the screen's snapshot does not hear about.
+     */
+    fun saveSpot(songId: String, positionMs: Long) {
+        prefs.edit().putString(KEY_SPOT_ID, songId).putLong(KEY_SPOT_MS, positionMs.coerceAtLeast(0L)).apply()
+    }
+
+    /** The song and place [saveSpot] kept, or null. */
+    fun spot(): Pair<String, Long>? =
+        prefs.getString(KEY_SPOT_ID, null)?.takeIf { it.isNotEmpty() }?.let { it to prefs.getLong(KEY_SPOT_MS, 0L) }
+
     fun load(): NowPlayingSnapshot? {
         val queueStr = prefs.getString(KEY_QUEUE_IDS, null) ?: return null
         val ids = queueStr
@@ -76,6 +89,8 @@ class NowPlayingStorage(context: Context) {
         private const val KEY_REPEAT_MODE = "repeat_mode"
         private const val KEY_IS_SHUFFLE_ON = "is_shuffle_on"
         private const val KEY_ORIGINAL_QUEUE_IDS = "original_queue_ids"
+        private const val KEY_SPOT_ID = "spot_id"
+        private const val KEY_SPOT_MS = "spot_ms"
         private const val DELIMITER = ","
         private const val INDEX_NONE = -1
     }

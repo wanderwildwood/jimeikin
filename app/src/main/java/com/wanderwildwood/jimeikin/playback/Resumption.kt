@@ -38,9 +38,18 @@ object Resumption {
             }
         }
         if (queue.isEmpty()) return null
-        val (index, positionMs) = QueuePosition.restore(
+        val (savedIndex, savedMs) = QueuePosition.restore(
             snapshot.queueSongIds, snapshot.currentIndex, snapshot.positionMs, queue.map { it.id },
         )
+        // The player's own last spot beats the screen's snapshot when its song is in the queue:
+        // a pause or a skip from headphones or the notification reaches only the player. The
+        // copy nearest the snapshot's place is taken, for a song queued twice.
+        val spot = app.nowPlayingStorage.spot()
+        val spotIndex = spot?.let { (id, _) ->
+            queue.indices.filter { queue[it].id == id }.minByOrNull { kotlin.math.abs(it - savedIndex) }
+        }
+        val index = spotIndex ?: savedIndex
+        val positionMs = if (spotIndex != null) spot.second else savedMs
         val coordinator = PlaybackCoordinator(
             serverBitrateCeiling = { app.settingsManager.getSubsonicMaxBitrateSync() },
             unknownArtistLabel = { app.getString(R.string.library_artist_unknown) },
