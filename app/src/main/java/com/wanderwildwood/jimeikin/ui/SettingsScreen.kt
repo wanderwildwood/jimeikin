@@ -1,6 +1,7 @@
 package com.wanderwildwood.jimeikin.ui
 
 import com.wanderwildwood.jimeikin.lockscreen.LockScreenControls
+import com.wanderwildwood.jimeikin.lockscreen.SystemLockPlayer
 import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.Lifecycle
@@ -128,6 +129,10 @@ fun SettingsScreen(
             onNotice(message)
         }
     }
+    // Where the phone's lock screen has its own player for every app this app's strip never
+    // shows, so its row is left out, unless the service is still on and can be turned off.
+    val systemPlayer = remember { SystemLockPlayer.present() }
+    val lockScreenRow = remember { !systemPlayer || LockScreenControls.isEnabled(context) }
     PagedColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
@@ -319,7 +324,7 @@ fun SettingsScreen(
             )
         }
 
-        item {
+        if (lockScreenRow) item {
             // Off until the reader turns the service on in Android's own settings, which is
             // the only place it can be turned on; this row says which it is and goes there.
             val context = LocalContext.current
@@ -341,10 +346,10 @@ fun SettingsScreen(
             Column {
                 ValueRow(
                     label = stringResource(R.string.settings_lockscreen_controls),
-                    value = if (lockScreenControlsOn) {
-                        stringResource(R.string.settings_lockscreen_controls_on)
-                    } else {
-                        stringResource(R.string.settings_lockscreen_controls_off)
+                    value = when {
+                        systemPlayer -> stringResource(R.string.settings_lockscreen_controls_system)
+                        lockScreenControlsOn -> stringResource(R.string.settings_lockscreen_controls_on)
+                        else -> stringResource(R.string.settings_lockscreen_controls_off)
                     },
                     onClick = {
                         asked = true

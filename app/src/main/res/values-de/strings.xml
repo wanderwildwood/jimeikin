@@ -473,6 +473,7 @@
     <string name="settings_lockscreen_controls">Sperrbildschirm-Steuerung</string>
     <string name="settings_lockscreen_controls_on">An</string>
     <string name="settings_lockscreen_controls_off">Aus — in den Bedienungshilfen einschalten</string>
+    <string name="settings_lockscreen_controls_system">Nicht nötig: Das Telefon zeigt seinen eigenen Player. In den Bedienungshilfen ausschalten</string>
     <string name="settings_background_playback">Wiedergabe im Hintergrund</string>
     <!-- Value under "Background playback" when the battery exemption is granted -->
     <string name="settings_background_playback_allowed">Erlaubt</string>

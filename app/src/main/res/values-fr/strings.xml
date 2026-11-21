@@ -441,6 +441,7 @@
     <string name="settings_lockscreen_controls">Contrôles sur l\'écran de verrouillage</string>
     <string name="settings_lockscreen_controls_on">Activé</string>
     <string name="settings_lockscreen_controls_off">Désactivé — activer dans l\'accessibilité</string>
+    <string name="settings_lockscreen_controls_system">Inutile : le téléphone affiche son propre lecteur. Désactiver dans l\'accessibilité</string>
     <string name="settings_background_playback">Lecture en arrière-plan</string>
     <!-- Value under "Background playback" when the battery exemption is granted -->
     <string name="settings_background_playback_allowed">Autorisé</string>
