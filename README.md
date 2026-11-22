@@ -349,6 +349,8 @@ uploaded to GitHub Releases with `gh`.
 
 Privacy: what the app stores and what it sends is set out in [PRIVACY.md](PRIVACY.md).
 
+Questions, ideas, or just saying hello: the wander the dev Discord, <https://discord.gg/UMW8yJg7dQ>
+
 ## License
 
 GPL-3.0-only, © wander wildwood, a fork of CalmMusic (GPL-3.0). See [LICENSE](LICENSE).
