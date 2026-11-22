@@ -300,15 +300,6 @@ private fun CalmMusicTopAppBarActions(
             )
         }
 
-        // A cog, top right. Settings used to be two taps down inside a "More" tab, which
-        // promised a menu of places and held one.
-        IconButton(onClick = onNavigateToSettingsClick) {
-            Icon(
-                imageVector = Icons.Settings,
-                contentDescription = stringResource(R.string.main_cd_settings),
-                modifier = Modifier.size(22.dp),
-            )
-        }
     }
 
     // About is not a setting, but it is what a stranger looks for before trusting an app, and
@@ -457,6 +448,19 @@ private fun CalmMusicTopAppBarActions(
         // thumb already on its way to them. Kept for good, it was a hole at the end of the
         // bar on a phone where nothing had played yet, or once the queue was emptied.
         Spacer(modifier = Modifier.size(48.dp))
+    }
+
+    // A cog, top right, and the last of the row on every tab. Settings used to be two taps down
+    // inside a "More" tab. It sat between Search and each tab's own buttons and the headphones,
+    // so it stood somewhere else on every tab (22 Nov 2026); as the last button it stays put.
+    if (currentDestination?.route != Screen.Search.route && currentDestination?.route in navRoutes && !editingPlaylists) {
+        IconButton(onClick = onNavigateToSettingsClick) {
+            Icon(
+                imageVector = Icons.Settings,
+                contentDescription = stringResource(R.string.main_cd_settings),
+                modifier = Modifier.size(22.dp),
+            )
+        }
     }
 }
 
