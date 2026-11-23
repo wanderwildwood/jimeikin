@@ -159,6 +159,11 @@ fun SettingsScreen(
     // shows, so its row is left out, unless the service is still on and can be turned off.
     val systemPlayer = remember { SystemLockPlayer.present() }
     val lockScreenRow = remember { !systemPlayer || LockScreenControls.isEnabled(context) }
+    // The Glance row is for a reader who has Glance, or whose switch is still on so it can be
+    // turned off. Read and written here rather than passed down: nothing else follows it.
+    val glanceHere = remember { context.packageManager.getLaunchIntentForPackage(com.wanderwildwood.jimeikin.glance.GlanceProvider.READER) != null }
+    val glanceSettings = (context.applicationContext as com.wanderwildwood.jimeikin.CalmMusic).settingsManager
+    var playingOnLockScreen by remember { mutableStateOf(glanceSettings.getPlayingOnLockScreenSync()) }
     PagedColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
@@ -296,17 +301,14 @@ fun SettingsScreen(
             )
         }
 
-        item {
-            // Read and written here rather than passed down: nothing else on this screen, or in
-            // the app, follows it. Glance asks for it each time it draws.
-            val settings = (context.applicationContext as com.wanderwildwood.jimeikin.CalmMusic).settingsManager
-            var playingOnLockScreen by remember { mutableStateOf(settings.getPlayingOnLockScreenSync()) }
+        if (glanceHere || playingOnLockScreen) item {
+            // Glance asks for the switch each time it draws.
             SwitchRow(
                 label = stringResource(R.string.settings_playing_on_lock_screen),
                 checked = playingOnLockScreen,
                 onCheckedChange = { on ->
                     playingOnLockScreen = on
-                    settings.setPlayingOnLockScreen(on)
+                    glanceSettings.setPlayingOnLockScreen(on)
                     com.wanderwildwood.jimeikin.glance.GlanceProvider.changed(context)
                 },
             )
