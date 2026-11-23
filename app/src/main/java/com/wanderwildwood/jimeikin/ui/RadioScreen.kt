@@ -78,6 +78,11 @@ fun RadioScreen(
     onKeepAddressStation: (name: String, streamUrl: String) -> Unit,
     onPausePlayback: () -> Unit,
     isAppPlaying: Boolean,
+    /** Puts a favourite in a folder ("" takes it out of any). */
+    onMoveStation: (RadioStationEntity, String) -> Unit = { _, _ -> },
+    onRenameFolder: (from: String, to: String) -> Unit = { _, _ -> },
+    /** A pull down on the favourites syncs them with the music server; null without one. */
+    onPullAtTop: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -96,6 +101,12 @@ fun RadioScreen(
     var browsing by remember { mutableStateOf(false) }
     var addingByAddress by remember { mutableStateOf(false) }
 
+    // Favourites in folders: the folder open, the favourite whose hold asked where it goes, and
+    // the folder whose hold asked for a new name. Each is a page of its own, as Add by address is.
+    var openFolder by rememberSaveable { mutableStateOf<String?>(null) }
+    var holding by remember { mutableStateOf<RadioStationEntity?>(null) }
+    var renaming by rememberSaveable { mutableStateOf<String?>(null) }
+
     // One box per level, cleared on the way in. Two hundred and twenty-seven countries and, in
     // France alone, over a thousand towns: a list that can only be paged through is a list you
     // give up on.
@@ -111,14 +122,48 @@ fun RadioScreen(
     var searching by remember { mutableStateOf(false) }
     var searchedFor by remember { mutableStateOf("") }
 
-    BackHandler(enabled = browsing || searchOpen || addingByAddress) {
+    BackHandler(enabled = browsing || searchOpen || addingByAddress || holding != null || renaming != null || openFolder != null) {
         when {
+            holding != null -> holding = null
+            renaming != null -> renaming = null
             addingByAddress -> addingByAddress = false
             browsingPlace != null -> browsingPlace = null
             browsingCountry != null && !searchOpen -> browsingCountry = null
             searchOpen -> onSearchOpenChange(false)
-            else -> browsing = false
+            browsing -> browsing = false
+            else -> openFolder = null
         }
+    }
+
+    // A folder that has emptied is gone, so its page closes.
+    if (openFolder != null && keptStations.none { it.folder == openFolder }) openFolder = null
+    val folders = keptStations.map { it.folder }.filter { it.isNotBlank() }.distinct().sortedBy { it.lowercase() }
+
+    holding?.let { station ->
+        StationFolderPage(
+            station = keptStations.firstOrNull { it.id == station.id } ?: station,
+            folders = folders,
+            onMove = { folder ->
+                holding = null
+                onMoveStation(station, folder)
+            },
+            onRemove = {
+                holding = null
+                onForgetStation(station)
+            },
+        )
+        return
+    }
+    renaming?.let { folder ->
+        RenameFolderPage(
+            folder = folder,
+            onRename = { to ->
+                renaming = null
+                if (openFolder == folder) openFolder = to
+                onRenameFolder(folder, to)
+            },
+        )
+        return
     }
 
     LaunchedEffect(searchOpen) {
@@ -272,12 +317,17 @@ fun RadioScreen(
 
         else -> RadioHome(
             keptStations = keptStations,
+            folders = folders,
+            openFolder = openFolder,
+            onOpenFolder = { openFolder = it },
+            onHoldFolder = { renaming = it },
+            onHoldStation = { holding = it },
+            onPullAtTop = onPullAtTop,
             hasTuner = tunerPackage != null,
             onPlayStation = { station ->
                 if (isAppPlaying) onPausePlayback()
                 onPlayStation(station)
             },
-            onForgetStation = onForgetStation,
             onBrowse = { browsing = true },
             onAddByAddress = { addingByAddress = true },
             onOpenTuner = {
@@ -309,6 +359,8 @@ private fun StationRow(
     isFavourite: Boolean,
     onPlay: () -> Unit,
     onToggleFavourite: () -> Unit,
+    /** What holding does, said under the row; null for the usual add / remove line. */
+    holdHint: String? = null,
 ) {
     Column(
         modifier = Modifier
@@ -319,7 +371,8 @@ private fun StationRow(
         TextMMD(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, maxLines = 2)
         if (subtitle != null) TextMMD(subtitle, style = MaterialTheme.typography.labelSmall, maxLines = 1)
         TextMMD(
-            text = if (isFavourite) stringResource(R.string.player_radio_favorite_hold_to_remove) else stringResource(R.string.player_radio_hold_to_add),
+            text = holdHint
+                ?: if (isFavourite) stringResource(R.string.player_radio_favorite_hold_to_remove) else stringResource(R.string.player_radio_hold_to_add),
             style = MaterialTheme.typography.labelSmall,
         )
     }
@@ -428,16 +481,34 @@ private fun ChannelList(
 @Composable
 private fun RadioHome(
     keptStations: List<RadioStationEntity>,
+    folders: List<String>,
+    openFolder: String?,
+    onOpenFolder: (String) -> Unit,
+    onHoldFolder: (String) -> Unit,
+    onHoldStation: (RadioStationEntity) -> Unit,
     hasTuner: Boolean,
     onPlayStation: (RadioStationEntity) -> Unit,
-    onForgetStation: (RadioStationEntity) -> Unit,
     onBrowse: () -> Unit,
     onAddByAddress: () -> Unit,
     onOpenTuner: () -> Unit,
+    onPullAtTop: (() -> Unit)? = null,
 ) {
+    if (openFolder != null) {
+        FolderStations(
+            folder = openFolder,
+            stations = keptStations.filter { it.folder == openFolder },
+            onPlayStation = onPlayStation,
+            onHoldStation = onHoldStation,
+            onHoldFolder = { onHoldFolder(openFolder) },
+        )
+        return
+    }
+    // Folders first, by name, then the favourites in none.
+    val loose = keptStations.filter { it.folder.isBlank() }
     PagedColumnMMD(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        onPullAtTop = onPullAtTop,
     ) {
         // The two ways in stay at the top. They were under the favourites, which was fine with
         // three of them and would not have been with thirty: the doors would have walked off
@@ -492,17 +563,188 @@ private fun RadioHome(
             }
         }
 
-        items(keptStations.size) { index ->
-            val station = keptStations[index]
-            StationRow(
-                title = station.title,
-                subtitle = listOf(station.place, station.country).filter { it.isNotBlank() }.joinToString(" • ").ifBlank { null },
-                isFavourite = true,
-                onPlay = { onPlayStation(station) },
-                onToggleFavourite = { onForgetStation(station) },
+        items(folders.size) { index ->
+            val folder = folders[index]
+            FolderRow(
+                name = folder,
+                count = keptStations.count { it.folder == folder },
+                onOpen = { onOpenFolder(folder) },
+                onHold = { onHoldFolder(folder) },
             )
-            if (index != keptStations.lastIndex) DottedRule(start = 0.dp)
+            if (index != folders.lastIndex || loose.isNotEmpty()) DottedRule(start = 0.dp)
         }
+
+        items(loose.size) { index ->
+            val station = loose[index]
+            FavouriteRow(station, onPlay = { onPlayStation(station) }, onHold = { onHoldStation(station) })
+            if (index != loose.lastIndex) DottedRule(start = 0.dp)
+        }
+    }
+}
+
+/** A favourite: tap to hear it, hold to put it in a folder or take it off the list. */
+@Composable
+private fun FavouriteRow(station: RadioStationEntity, onPlay: () -> Unit, onHold: () -> Unit) {
+    StationRow(
+        title = station.title,
+        subtitle = listOf(station.place, station.country).filter { it.isNotBlank() }.joinToString(" • ").ifBlank { null },
+        isFavourite = true,
+        onPlay = onPlay,
+        onToggleFavourite = onHold,
+        holdHint = stringResource(R.string.player_radio_favorite_hold_for_folder),
+    )
+}
+
+/** A folder of favourites: tap to open it, hold to rename it. */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FolderRow(name: String, count: Int, onOpen: () -> Unit, onHold: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(onClick = onOpen, onLongClick = onHold)
+            .padding(vertical = 10.dp),
+    ) {
+        TextMMD(
+            stringResource(R.string.player_radio_folder_row, name),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+        )
+        TextMMD(plural(count), style = MaterialTheme.typography.labelSmall, maxLines = 1)
+    }
+}
+
+/** One folder open: its name at the head (hold it to rename), its stations under it. */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FolderStations(
+    folder: String,
+    stations: List<RadioStationEntity>,
+    onPlayStation: (RadioStationEntity) -> Unit,
+    onHoldStation: (RadioStationEntity) -> Unit,
+    onHoldFolder: () -> Unit,
+) {
+    PagedColumnMMD(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(onClick = {}, onLongClick = onHoldFolder)
+                    .padding(vertical = 10.dp),
+            ) {
+                TextMMD(folder, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 2)
+                TextMMD(stringResource(R.string.player_radio_folder_hold_to_rename), style = MaterialTheme.typography.labelSmall)
+            }
+            HorizontalDividerMMD(thickness = 2.dp)
+        }
+        items(stations.size) { index ->
+            val station = stations[index]
+            FavouriteRow(station, onPlay = { onPlayStation(station) }, onHold = { onHoldStation(station) })
+            if (index != stations.lastIndex) DottedRule(start = 0.dp)
+        }
+    }
+}
+
+/**
+ * Where a held favourite goes: one of the folders (its own filled), none, a new folder by name,
+ * or off the list. One tap does it and the page closes.
+ */
+@Composable
+private fun StationFolderPage(
+    station: RadioStationEntity,
+    folders: List<String>,
+    onMove: (String) -> Unit,
+    onRemove: () -> Unit,
+) {
+    var newName by remember { mutableStateOf("") }
+    val focus = LocalFocusManager.current
+    val make = { newName.trim().takeIf { it.isNotEmpty() }?.let { focus.clearFocus(); onMove(it) } }
+    PagedColumnMMD(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        item {
+            TextMMD(station.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 2)
+            Spacer(Modifier.height(12.dp))
+            TextMMD(stringResource(R.string.player_radio_folder_put_in), style = MaterialTheme.typography.labelSmall)
+            Spacer(Modifier.height(4.dp))
+        }
+        item {
+            HouseButton(
+                label = stringResource(R.string.player_radio_folder_none),
+                onClick = { onMove("") },
+                on = station.folder.isBlank(),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            )
+        }
+        items(folders.size) { index ->
+            val folder = folders[index]
+            HouseButton(
+                label = folder,
+                onClick = { onMove(folder) },
+                on = station.folder == folder,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            )
+        }
+        item {
+            Spacer(Modifier.height(12.dp))
+            TextFieldMMD(
+                modifier = Modifier.fillMaxWidth(),
+                value = newName,
+                onValueChange = { newName = it },
+                label = { TextMMD(text = stringResource(R.string.player_radio_folder_new_label)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { make() }),
+            )
+            Spacer(Modifier.height(8.dp))
+            HouseButton(
+                label = stringResource(R.string.player_radio_folder_new),
+                onClick = { make() },
+                enabled = newName.isNotBlank(),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        item {
+            Spacer(Modifier.height(16.dp))
+            HorizontalDividerMMD(thickness = 2.dp)
+            Spacer(Modifier.height(12.dp))
+            HouseButton(
+                label = stringResource(R.string.player_radio_remove_favorite),
+                onClick = onRemove,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+/** A folder's new name. Renaming onto a folder that exists puts the two together. */
+@Composable
+private fun RenameFolderPage(folder: String, onRename: (String) -> Unit) {
+    var name by remember { mutableStateOf(folder) }
+    val focus = LocalFocusManager.current
+    val done = { name.trim().takeIf { it.isNotEmpty() }?.let { focus.clearFocus(); onRename(it) } }
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        TextFieldMMD(
+            modifier = Modifier.fillMaxWidth(),
+            value = name,
+            onValueChange = { name = it },
+            label = { TextMMD(text = stringResource(R.string.player_radio_folder_rename_label)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { done() }),
+        )
+        Spacer(Modifier.height(12.dp))
+        HouseButton(
+            label = stringResource(R.string.player_radio_folder_rename),
+            onClick = { done() },
+            enabled = name.isNotBlank(),
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

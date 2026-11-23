@@ -1,5 +1,6 @@
 package com.wanderwildwood.jimeikin.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -23,6 +24,8 @@ data class RadioStationEntity(
     val country: String,
     val streamUrl: String,
     val keptAtMillis: Long,
+    /** The folder it is kept in, or "" for none. A folder is only its name: it exists while a station is in it. */
+    @ColumnInfo(defaultValue = "") val folder: String = "",
 )
 
 @Dao
@@ -39,6 +42,12 @@ interface RadioStationDao {
 
     @Query("SELECT id FROM radio_stations")
     suspend fun keptIds(): List<String>
+
+    @Query("UPDATE radio_stations SET folder = :folder WHERE id = :id")
+    suspend fun setFolder(id: String, folder: String)
+
+    @Query("UPDATE radio_stations SET folder = :to WHERE folder = :from")
+    suspend fun renameFolder(from: String, to: String)
 
     @Query("DELETE FROM radio_stations")
     suspend fun forgetAll()

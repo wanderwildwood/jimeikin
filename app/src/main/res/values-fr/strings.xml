@@ -377,6 +377,16 @@
     <string name="player_radio_fm_subtitle">Ouvre le tuner du téléphone. Nécessite des écouteurs.</string>
     <string name="player_radio_no_favorites">Pas encore de stations préférées</string>
     <string name="player_radio_favorites">Stations préférées</string>
+    <string name="player_radio_favorite_hold_for_folder">Préférée — maintenez appuyé pour son dossier ou la supprimer</string>
+    <string name="player_radio_folder_row">%1$s ›</string>
+    <string name="player_radio_folder_hold_to_rename">Maintenez appuyé pour renommer</string>
+    <string name="player_radio_folder_put_in">La ranger dans</string>
+    <string name="player_radio_folder_none">Aucun dossier</string>
+    <string name="player_radio_folder_new_label">Nom d’un nouveau dossier</string>
+    <string name="player_radio_folder_new">La mettre dans le nouveau dossier</string>
+    <string name="player_radio_remove_favorite">Retirer des préférées</string>
+    <string name="player_radio_folder_rename_label">Nom du dossier</string>
+    <string name="player_radio_folder_rename">Renommer</string>
     <string name="player_radio_favorites_hint">Maintenez appuyé sur une station n\'importe où dans cette application pour la mettre ici.</string>
     <string name="player_radio_search_label">Station, ville ou code postal</string>
     <string name="player_radio_searching">Recherche…</string>
@@ -436,6 +446,16 @@
     <string name="settings_skip_buttons">Boutons suivant et précédent du casque</string>
     <string name="settings_skip_buttons_songs">Morceau suivant et précédent</string>
     <string name="settings_skip_buttons_seek">Avancer de 30 s et reculer de 10 s</string>
+    <string name="main_title_sound">Son</string>
+    <string name="settings_sound">Son</string>
+    <string name="sound_bands">Égaliseur</string>
+    <string name="sound_presets">Préréglages</string>
+    <string name="sound_off">Désactivé</string>
+    <string name="sound_own">Le vôtre</string>
+    <string name="sound_no_equalizer">Ce téléphone n’a pas d’égaliseur.</string>
+    <string name="sound_hz">%1$d Hz</string>
+    <string name="sound_khz">%1$s kHz</string>
+    <string name="sound_db">%1$s dB</string>
     <!-- Row title: whether the app may keep playing in the background -->
     <!-- Settings row for the optional lock-screen music controls, which are turned on in Android's Accessibility settings -->
     <string name="settings_lockscreen_controls">Contrôles sur l\'écran de verrouillage</string>
@@ -697,6 +717,21 @@
     <string name="trouble_close">OK</string>
     <!-- Settings: backup and restore of playlists and kept stations, through the file picker -->
     <string name="settings_save_backup">Enregistrer une sauvegarde</string>
+    <string name="radio_sync_done">Stations synchronisées avec le serveur de musique</string>
+    <string name="radio_sync_read_only">Stations reprises du serveur de musique. Seul son administrateur peut y ajouter des stations, donc aucune n’y a été envoyée.</string>
+    <string name="radio_sync_failed">Stations non synchronisées : %1$s</string>
+    <string name="settings_stations_save">Enregistrer les stations en .m3u</string>
+    <string name="settings_stations_save_note">Pour tout lecteur, dossiers compris</string>
+    <string name="settings_stations_open">Ajouter des stations depuis un .m3u</string>
+    <string name="settings_stations_open_note">Ajoute celles qui ne sont pas encore gardées</string>
+    <string name="stations_m3u_saved">Stations enregistrées</string>
+    <string name="stations_m3u_not_saved">Impossible d’enregistrer les stations</string>
+    <string name="stations_m3u_unreadable">Aucune station dans ce fichier</string>
+    <string name="stations_m3u_none_new">Toutes les stations de ce fichier sont déjà gardées</string>
+    <plurals name="stations_m3u_added">
+        <item quantity="one">%d station ajoutée</item>
+        <item quantity="other">%d stations ajoutées</item>
+    </plurals>
     <string name="settings_save_backup_note">Enregistre vos playlists et vos stations de radio gardées dans un fichier de votre choix. Non enregistrés : les titres eux-mêmes, les cœurs, les réglages et les playlists lues depuis des fichiers .m3u.</string>
     <string name="settings_restore">Restaurer une sauvegarde</string>
     <string name="settings_restore_armed">Restaurer — vos playlists et stations sont remplacées par celles du fichier ; touchez encore pour le choisir</string>

@@ -165,10 +165,17 @@ class PlaybackService : MediaSessionService() {
 
         player.setHandleAudioBecomingNoisy(true)
 
+        // The equalizer chosen under Settings -> Sound, laid over this player's sound.
+        com.wanderwildwood.jimeikin.playback.SoundShaping.attach(this, player.audioSessionId)
+
         player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
                 errorCallback?.invoke(error)
                 super.onPlayerError(error)
+            }
+
+            override fun onAudioSessionIdChanged(audioSessionId: Int) {
+                com.wanderwildwood.jimeikin.playback.SoundShaping.attach(this@PlaybackService, audioSessionId)
             }
 
             // Whatever changed - a new song, play, pause, a stop - Glance's line is worked out
@@ -584,6 +591,7 @@ class PlaybackService : MediaSessionService() {
             release()
         }
         mediaSession = null
+        com.wanderwildwood.jimeikin.playback.SoundShaping.detach()
         super.onDestroy()
     }
 }

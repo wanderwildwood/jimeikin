@@ -408,6 +408,16 @@
     <string name="player_radio_fm_subtitle">Opens the phone\'s tuner. Needs headphones.</string>
     <string name="player_radio_no_favorites">No favorite stations yet</string>
     <string name="player_radio_favorites">Favorite stations</string>
+    <string name="player_radio_favorite_hold_for_folder">A favorite — hold for its folder or to remove</string>
+    <string name="player_radio_folder_row">%1$s ›</string>
+    <string name="player_radio_folder_hold_to_rename">Hold to rename</string>
+    <string name="player_radio_folder_put_in">Keep it in</string>
+    <string name="player_radio_folder_none">No folder</string>
+    <string name="player_radio_folder_new_label">Name of a new folder</string>
+    <string name="player_radio_folder_new">Put it in the new folder</string>
+    <string name="player_radio_remove_favorite">Remove from favorites</string>
+    <string name="player_radio_folder_rename_label">Folder name</string>
+    <string name="player_radio_folder_rename">Rename</string>
     <string name="player_radio_favorites_hint">Hold a station anywhere in this app to put it here.</string>
     <string name="player_radio_search_label">Station, town or postal code</string>
     <string name="player_radio_searching">Looking…</string>
@@ -471,6 +481,16 @@
     <string name="settings_skip_buttons_songs">Next and previous song</string>
     <!-- Ahead 30 seconds, back 10 seconds -->
     <string name="settings_skip_buttons_seek">Skip ahead 30 s and back 10 s</string>
+    <string name="main_title_sound">Sound</string>
+    <string name="settings_sound">Sound</string>
+    <string name="sound_bands">Equalizer</string>
+    <string name="sound_presets">Presets</string>
+    <string name="sound_off">Off</string>
+    <string name="sound_own">Your own</string>
+    <string name="sound_no_equalizer">This phone has no equalizer.</string>
+    <string name="sound_hz">%1$d Hz</string>
+    <string name="sound_khz">%1$s kHz</string>
+    <string name="sound_db">%1$s dB</string>
     <!-- Settings switch: the song playing is handed to the Glance app for its lock-screen panel -->
     <string name="settings_playing_on_lock_screen">Show what is playing in Glance</string>
     <!-- Row title: whether the app may keep playing in the background -->
@@ -785,6 +805,21 @@
     <string name="trouble_close">OK</string>
     <!-- Settings: backup and restore of playlists and kept stations, through the file picker -->
     <string name="settings_save_backup">Save a backup</string>
+    <string name="radio_sync_done">Stations synced with the music server</string>
+    <string name="radio_sync_read_only">Stations brought from the music server. It lets only its admin add stations, so none went to it.</string>
+    <string name="radio_sync_failed">Stations not synced: %1$s</string>
+    <string name="settings_stations_save">Save stations as .m3u</string>
+    <string name="settings_stations_save_note">For any player, folders included</string>
+    <string name="settings_stations_open">Add stations from .m3u</string>
+    <string name="settings_stations_open_note">Adds the ones not kept yet</string>
+    <string name="stations_m3u_saved">Stations saved</string>
+    <string name="stations_m3u_not_saved">The stations could not be saved</string>
+    <string name="stations_m3u_unreadable">No stations found in that file</string>
+    <string name="stations_m3u_none_new">Every station in that file is already kept</string>
+    <plurals name="stations_m3u_added">
+        <item quantity="one">%d station added</item>
+        <item quantity="other">%d stations added</item>
+    </plurals>
     <string name="settings_save_backup_note">Saves your playlists and kept radio stations to one file you pick. Not saved: the songs themselves, hearts, settings, and playlists read from .m3u files.</string>
     <string name="settings_restore">Restore from a backup</string>
     <string name="settings_restore_armed">Restore — your playlists and stations are replaced by the file\'s; tap again to choose it</string>

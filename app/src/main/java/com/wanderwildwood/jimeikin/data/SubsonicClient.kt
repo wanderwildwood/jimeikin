@@ -163,6 +163,25 @@ class SubsonicClient(
         return SubsonicResult.Success(ids)
     }
 
+    /** The server's own list of internet radio stations (Navidrome's Radios). */
+    suspend fun fetchRadioStations(): SubsonicResult<List<ServerStation>> =
+        request("getInternetRadioStations").map { body ->
+            val array = body.optJSONObject("internetRadioStations")?.optJSONArray("internetRadioStation")
+            (0 until (array?.length() ?: 0)).mapNotNull { i ->
+                val o = array!!.getJSONObject(i)
+                val id = o.optString("id").takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val stream = o.optString("streamUrl").trim().takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                ServerStation(id, o.optString("name").ifBlank { stream }, stream)
+            }
+        }
+
+    /** Adds a station to the server's list. Navidrome lets only an admin do this (error 50). */
+    suspend fun createRadioStation(name: String, streamUrl: String): SubsonicResult<Unit> =
+        request("createInternetRadioStation", mapOf("streamUrl" to streamUrl, "name" to name)).map { }
+
+    suspend fun deleteRadioStation(id: String): SubsonicResult<Unit> =
+        request("deleteInternetRadioStation", mapOf("id" to id)).map { }
+
     /** The same file, for keeping. Subsonic's download never transcodes. */
     fun downloadUrl(songId: String): String = url("download", mapOf("id" to songId))
 
@@ -417,6 +436,9 @@ data class SubsonicLibrary(
     val albums: List<SubsonicAlbum>,
     val songs: List<SubsonicSong>,
 )
+
+/** A station on the server's radio list. */
+data class ServerStation(val id: String, val name: String, val streamUrl: String)
 
 data class SubsonicPlaylist(
     val id: String,

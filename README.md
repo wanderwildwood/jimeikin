@@ -118,12 +118,16 @@ goes once every track on it is here, and pressing it fetches only the ones that 
 remembers which video each download came from; one downloaded before it did is recognized by
 its title and artist.
 
-## Backup and dark mode
+## Backup, sound and dark mode
 
 Settings → **Save a backup** writes the playlists you made here (each song's title, artist and
 where it plays from) and your kept radio stations to one file you choose, only when you ask.
 **Restore from a backup** reads such a file back, checks all of it first, and only then replaces
 those playlists and stations.
+
+Settings → **Sound** is the phone's own equalizer: its presets, and five bands you can each
+step up or down. You hear each change as you make it. A phone without an equalizer has no
+Sound row.
 
 Settings → **Dark mode** switches the app to white on black. It also follows the phone's dark
 setting, and Home's dark switch if Home is installed.
@@ -187,8 +191,22 @@ typing one is actually asking. Both lists take a filter as well, because France 
 than eighteen hundred stations.
 
 Tap a station to hear it. Hold one to put it in **Favorite stations**, at the top of the Radio
-tab under the two ways in; hold it again, there or anywhere else, to take it back out. Nothing
-is written down until you hold a row, so a station can be listened to without joining a list. The list is [radio.garden](https://radio.garden)'s, which is worth browsing the way
+tab under the two ways in; hold it again while browsing to take it back out. Nothing is written
+down until you hold a row, so a station can be listened to without joining a list. Holding a
+favorite on the Radio tab asks where it goes: into a folder (one you have, or a new one by
+name), out of any folder, or off the list. Folders sit above the loose favorites; tap one to
+open it, hold one to rename it. A folder is gone once nothing is in it.
+
+With a music server set up (Navidrome or another Subsonic server), favorite stations are kept
+the same as the server's own radio list, so a station kept here is in its web player and desktop
+apps too, and one added there turns up here. This happens when the Radio tab opens and after each
+change; pull the list down to do it now. Folders stay on the phone, since the server's list has
+none. Navidrome lets only its admin add to that list; for anyone else the server's stations come
+to the phone and nothing goes back.
+
+Settings → **Save stations as .m3u** writes your favorites, folders included, as a station list
+any player reads (VLC, foobar2000 and the like). **Add stations from .m3u** reads one back,
+adding the stations not kept yet. The list is [radio.garden](https://radio.garden)'s, which is worth browsing the way
 that site is worth browsing: not by searching for a station you already know, but by going
 somewhere. Keep one and it sits at the top of the screen. A kept station stores the address of
 the stream itself, so it goes on playing whatever becomes of radio.garden.

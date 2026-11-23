@@ -1002,6 +1002,24 @@ fun CalmMusic(
 
     LaunchedEffect(Unit) { reloadRadioStations() }
 
+    // Favourite stations and the music server's radio list kept the same (RadioServerSync).
+    // Quiet unless asked for with a pull, which says how it went.
+    fun syncRadioWithServer(asked: Boolean = false) {
+        libraryScope.launch {
+            val outcome = com.wanderwildwood.jimeikin.data.RadioServerSync.sync(app)
+            reloadRadioStations()
+            if (!asked) return@launch
+            val message = when (outcome) {
+                com.wanderwildwood.jimeikin.data.RadioServerSync.Outcome.NoServer -> null
+                is com.wanderwildwood.jimeikin.data.RadioServerSync.Outcome.Synced ->
+                    context.getString(if (outcome.readOnly) R.string.radio_sync_read_only else R.string.radio_sync_done)
+                is com.wanderwildwood.jimeikin.data.RadioServerSync.Outcome.Failed ->
+                    context.getString(R.string.radio_sync_failed, outcome.message)
+            } ?: return@launch
+            snackbarHostState.showSnackbar(message = message, withDismissAction = false, duration = SnackbarDurationMMD.Short)
+        }
+    }
+
     fun keepRadioStation(channel: com.wanderwildwood.jimeikin.data.RadioChannel) {
         libraryScope.launch {
             // The stream url is resolved now and stored, rather than resolved at play time.
@@ -1029,6 +1047,7 @@ fun CalmMusic(
                 )
             }
             reloadRadioStations()
+            syncRadioWithServer()
             snackbarHostState.showSnackbar(
                 message = context.getString(R.string.main_station_kept, channel.title),
                 withDismissAction = false,
@@ -1092,6 +1111,7 @@ fun CalmMusic(
                 )
             }
             reloadRadioStations()
+            syncRadioWithServer()
             snackbarHostState.showSnackbar(
                 message = context.getString(R.string.main_station_kept, name),
                 withDismissAction = false,
@@ -1104,6 +1124,23 @@ fun CalmMusic(
         libraryScope.launch {
             val dao = com.wanderwildwood.jimeikin.data.CalmMusicDatabase.getDatabase(app).radioStationDao()
             withContext(Dispatchers.IO) { dao.forget(station.id) }
+            reloadRadioStations()
+            syncRadioWithServer()
+        }
+    }
+
+    fun moveRadioStation(station: com.wanderwildwood.jimeikin.data.RadioStationEntity, folder: String) {
+        libraryScope.launch {
+            val dao = com.wanderwildwood.jimeikin.data.CalmMusicDatabase.getDatabase(app).radioStationDao()
+            withContext(Dispatchers.IO) { dao.setFolder(station.id, folder.trim()) }
+            reloadRadioStations()
+        }
+    }
+
+    fun renameRadioFolder(from: String, to: String) {
+        libraryScope.launch {
+            val dao = com.wanderwildwood.jimeikin.data.CalmMusicDatabase.getDatabase(app).radioStationDao()
+            withContext(Dispatchers.IO) { dao.renameFolder(from, to.trim()) }
             reloadRadioStations()
         }
     }
@@ -1122,6 +1159,7 @@ fun CalmMusic(
                 playlistDao = database.playlistDao(),
             )
             settingsManager.setSubsonicConfig(null)
+            com.wanderwildwood.jimeikin.data.RadioServerSync.forget(app)
             serverStatus = context.getString(R.string.main_server_forgotten)
             viewModel.refreshLibraryFromDatabase()
             playlistsViewModel.refreshPlaylists()
@@ -2595,6 +2633,7 @@ fun CalmMusic(
                 }
 
                 composable(Screen.Radio.route) {
+                    LaunchedEffect(Unit) { syncRadioWithServer() }
                     RadioScreen(
                         searchOpen = radioSearchOpen,
                         onSearchOpenChange = { radioSearchOpen = it },
@@ -2622,8 +2661,15 @@ fun CalmMusic(
                         onForgetStation = { station -> forgetRadioStation(station) },
                         onKeepAddressStation = { name, stream -> keepAddressStation(name, stream) },
                         onPausePlayback = { viewModel.togglePlayback(localMediaController) },
-                        isAppPlaying = playbackState.isPlaybackPlaying
+                        isAppPlaying = playbackState.isPlaybackPlaying,
+                        onMoveStation = { station, folder -> moveRadioStation(station, folder) },
+                        onRenameFolder = { from, to -> renameRadioFolder(from, to) },
+                        onPullAtTop = if (subsonicConfig != null) ({ syncRadioWithServer(asked = true) }) else null,
                     )
+                }
+
+                composable(Screen.Sound.route) {
+                    com.wanderwildwood.jimeikin.ui.SoundScreen()
                 }
 
                 composable(Screen.Downloads.route) {
@@ -2699,6 +2745,9 @@ fun CalmMusic(
                         onNavigateToDownloadsClick = {
                             navController.navigate(Screen.Downloads.route) { launchSingleTop = true }
                         },
+                        onNavigateToSoundClick = {
+                            navController.navigate(Screen.Sound.route) { launchSingleTop = true }
+                        },
                         musicServerSummary = if (subsonicConfig == null) {
                             stringResource(R.string.main_server_not_connected)
                         } else {
@@ -2726,11 +2775,16 @@ fun CalmMusic(
                         localScanDeletedMissing = localScanDeletedMissing,
                         localScanUnreadableFolders = localScanUnreadableFolders,
                         onLibraryRestored = {
+                            // The restored list replaces the old one: a station missing now was
+                            // not removed, so the sync forgets what was agreed and only adds.
+                            com.wanderwildwood.jimeikin.data.RadioServerSync.forget(app)
                             libraryScope.launch {
                                 playlistsViewModel.refreshPlaylists()
                                 reloadRadioStations()
+                                syncRadioWithServer()
                             }
                         },
+                        onStationsImported = { syncRadioWithServer() },
                         onNotice = { message ->
                             libraryScope.launch {
                                 snackbarHostState.showSnackbar(
@@ -3445,6 +3499,7 @@ fun getAppBarTitle(currentDestination: NavDestination?, isEditingPlaylist: Boole
         currentDestination?.route == Screen.Downloads.route -> stringResource(R.string.main_title_downloads)
         currentDestination?.route == Screen.Settings.route -> stringResource(R.string.main_title_settings)
         currentDestination?.route == Screen.MusicServer.route -> stringResource(R.string.main_title_music_server)
+        currentDestination?.route == Screen.Sound.route -> stringResource(R.string.main_title_sound)
         currentDestination?.route == Screen.OnlineSignIn.route -> stringResource(R.string.main_title_online_sign_in)
         currentDestination?.route == Screen.EditDetails.route -> stringResource(R.string.main_title_edit_details)
         currentDestination?.route == Screen.FileUnder.route -> stringResource(R.string.main_title_file_under)

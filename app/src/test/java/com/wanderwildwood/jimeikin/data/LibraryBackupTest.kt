@@ -29,6 +29,7 @@ class LibraryBackupTest {
         ),
         stations = listOf(
             RadioStationEntity("rg1", "Valley FM", "Springfield", "Nowhere", "https://stream.example.org/valley", 99),
+            RadioStationEntity("ADDRESS:https://stream.example.org/jazz", "Harbour Jazz", "stream.example.org", "", "https://stream.example.org/jazz", 98, folder = "Evening"),
         ),
     )
 

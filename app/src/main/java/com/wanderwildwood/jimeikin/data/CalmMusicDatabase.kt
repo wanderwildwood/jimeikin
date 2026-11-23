@@ -18,7 +18,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         NameOverrideEntity::class,
         HeartedSongEntity::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = false,
 )
 abstract class CalmMusicDatabase : RoomDatabase() {
@@ -100,6 +100,13 @@ abstract class CalmMusicDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) = LegacyKinds.migrate(db)
         }
 
+        // Favourite stations can be kept in folders: one column, "" for none.
+        private val MIGRATION_12_13 = object : Migration(12, 13) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE radio_stations ADD COLUMN folder TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         fun getDatabase(context: Context): CalmMusicDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -107,7 +114,7 @@ abstract class CalmMusicDatabase : RoomDatabase() {
                     CalmMusicDatabase::class.java,
                     "calmmusic.db",
                 )
-                    .addMigrations(MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12)
+                    .addMigrations(MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13)
                     // Only a database from before the migrations began may be rebuilt. The
                     // blanket fallback this was would also have erased every playlist the first
                     // time a version went out without its migration; now that refuses to open,

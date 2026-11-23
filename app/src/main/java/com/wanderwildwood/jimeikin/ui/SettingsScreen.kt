@@ -74,6 +74,8 @@ fun SettingsScreen(
     onChooseFolderAgainClick: (String) -> Unit = {},
     onRescanLocalMusicClick: () -> Unit,
     onNavigateToDownloadsClick: () -> Unit,
+    /** Opens Sound (the equalizer). The row is left out on a phone without one. */
+    onNavigateToSoundClick: () -> Unit = {},
     musicServerSummary: String,
     onNavigateToMusicServerClick: () -> Unit,
     isMusicServerConnected: Boolean,
@@ -89,6 +91,8 @@ fun SettingsScreen(
     localScanDeletedMissing: Int?,
     localScanUnreadableFolders: Int?,
     onLibraryRestored: () -> Unit,
+    /** Stations were added from an .m3u file: reload them, and sync them with the server. */
+    onStationsImported: () -> Unit = {},
     /** Says how a backup or restore went at the foot, where it stays until the next press. */
     onNotice: (String) -> Unit,
 ) {
@@ -127,6 +131,28 @@ fun SettingsScreen(
                 LibraryBackupFiles.Result.Unreadable -> context.getString(R.string.restore_unreadable)
             }
             onNotice(message)
+        }
+    }
+    // Favourite stations as an .m3u, for any player; and back, adding what is not kept yet.
+    val saveStations = rememberLauncherForActivityResult(FilesCreateDocument("audio/x-mpegurl")) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val ok = com.wanderwildwood.jimeikin.data.StationsM3u.save(context, uri)
+            onNotice(context.getString(if (ok) R.string.stations_m3u_saved else R.string.stations_m3u_not_saved))
+        }
+    }
+    val openStations = rememberLauncherForActivityResult(FilesOpenDocument(writable = false)) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val added = com.wanderwildwood.jimeikin.data.StationsM3u.open(context, uri)
+            if (added != null && added > 0) onStationsImported()
+            onNotice(
+                when (added) {
+                    null -> context.getString(R.string.stations_m3u_unreadable)
+                    0 -> context.getString(R.string.stations_m3u_none_new)
+                    else -> context.resources.getQuantityString(R.plurals.stations_m3u_added, added, added)
+                },
+            )
         }
     }
     // Where the phone's lock screen has its own player for every app this app's strip never
@@ -312,6 +338,17 @@ fun SettingsScreen(
         }
 
         item {
+            soundSummary()?.let { summary ->
+                ValueRow(
+                    label = stringResource(R.string.settings_sound),
+                    value = summary,
+                    onClick = onNavigateToSoundClick,
+                    enabled = true,
+                )
+            }
+        }
+
+        item {
             ValueRow(
                 label = stringResource(R.string.settings_background_playback),
                 value = if (hasBatteryOptimizationExemption) {
@@ -413,6 +450,28 @@ fun SettingsScreen(
                 onConfirm = {
                     runCatching { restoreBackup.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) }
                 },
+            )
+        }
+
+        item {
+            ValueRow(
+                label = stringResource(R.string.settings_stations_save),
+                value = stringResource(R.string.settings_stations_save_note),
+                onClick = { runCatching { saveStations.launch("stations.m3u") } },
+                enabled = true,
+            )
+        }
+
+        item {
+            ValueRow(
+                label = stringResource(R.string.settings_stations_open),
+                value = stringResource(R.string.settings_stations_open_note),
+                onClick = {
+                    runCatching {
+                        openStations.launch(arrayOf("audio/x-mpegurl", "audio/mpegurl", "application/vnd.apple.mpegurl", "text/plain", "application/octet-stream"))
+                    }
+                },
+                enabled = true,
             )
         }
 

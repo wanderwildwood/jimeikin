@@ -78,6 +78,8 @@ object LibraryBackup {
                 put("country", s.country)
                 put("stream", s.streamUrl)
                 put("kept", s.keptAtMillis)
+                // Written only when there is one, so a backup without folders reads as before.
+                if (s.folder.isNotBlank()) put("folder", s.folder)
             })
         })
         return root.toString(2)
@@ -139,6 +141,7 @@ object LibraryBackup {
                     country = o.getString("country"),
                     streamUrl = stream,
                     keptAtMillis = o.getLong("kept"),
+                    folder = o.optString("folder", "").trim(),
                 )
             }
             require(stations.map { it.id }.toSet().size == stations.size)
