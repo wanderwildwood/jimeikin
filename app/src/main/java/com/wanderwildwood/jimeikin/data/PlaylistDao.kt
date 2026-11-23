@@ -23,9 +23,12 @@ interface PlaylistDao {
 
     @Query(
         "SELECT p.id, p.name, p.description, p.createdAt, " +
-            "COUNT(pt.songId) AS songCount " +
+            // Counted as the playlist shows them: a place whose song is not in the library now
+            // (its card's folder let go) is kept, so it can come back, but is not counted.
+            "COUNT(s.id) AS songCount " +
             "FROM playlists p " +
             "LEFT JOIN playlist_tracks pt ON pt.playlistId = p.id " +
+            "LEFT JOIN songs s ON s.id = pt.songId " +
             "GROUP BY p.id " +
             "ORDER BY p.createdAt DESC",
     )

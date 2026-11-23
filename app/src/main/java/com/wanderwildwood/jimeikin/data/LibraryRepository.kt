@@ -311,7 +311,14 @@ class LibraryRepository(
                             val carried = MusicFolderSongs.carryOver(
                                 leaving = songsToDelete,
                                 arriving = scannedById.keys - existingById.keys,
-                            )
+                            ).toMutableMap()
+                            // Songs that left in an earlier scan without being found again (a
+                            // card read as empty while it was failing, then the folder chosen
+                            // again) still have playlist places and hearts, under ids no song has
+                            // now. Each is looked for among everything found, at the same place.
+                            val orphans = orphanFolderSongIds() - songsToDelete - scannedById.keys
+                            MusicFolderSongs.carryOver(leaving = orphans, arriving = scannedById.keys)
+                                .forEach { (old, new) -> if (new !in carried.values) carried[old] = new }
                             if (carried.isNotEmpty()) {
                                 carryOver(carried)
                                 android.util.Log.i("LibraryRepository", "${carried.size} songs found again in a new folder")
@@ -492,6 +499,22 @@ class LibraryRepository(
      * does for a download that moves. Where the new song already has its own (a heart given to
      * it since, or a place in the same playlist), that one stays and the old one goes.
      */
+    /**
+     * Ids read from a chosen folder that playlists or hearts still hold but no song has: left
+     * behind when their songs went from the library and were not found again in the same scan.
+     */
+    private fun orphanFolderSongIds(): Set<String> {
+        val ids = HashSet<String>()
+        val db = database.openHelper.readableDatabase
+        for (table in listOf("playlist_tracks", "hearted_songs")) {
+            db.query(
+                "SELECT DISTINCT songId FROM $table WHERE songId LIKE 'content://%/tree/%' " +
+                    "AND songId NOT IN (SELECT id FROM songs)",
+            ).use { c -> while (c.moveToNext()) c.getString(0)?.let(ids::add) }
+        }
+        return ids
+    }
+
     private suspend fun carryOver(newIdByOld: Map<String, String>) {
         database.runInTransaction {
             val db = database.openHelper.writableDatabase
